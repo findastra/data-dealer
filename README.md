@@ -4,7 +4,23 @@
 
 > Private working repo. Created by Astra.
 
-## Process flow
+## Start here (v2, Oct 2026)
+
+| What | Where |
+| --- | --- |
+| Plan v2: the flow, every change from v1, phases | [`docs/PLAN-v2.md`](docs/PLAN-v2.md) |
+| Process flow chart v2 | [`diagrams/pipeline-v2.png`](diagrams/pipeline-v2.png) |
+| Live ops dashboard (source) | [`dashboard/`](dashboard/) — build with `python3 dashboard/build.py` |
+| Research (provenance, legal, market, synthetic data, agents, VCs, economics) | [`docs/research/`](docs/research/) |
+| Guardrails and model roster | [`docs/guardrails.md`](docs/guardrails.md), [`docs/models.md`](docs/models.md) |
+| Pitch narrative: mini deck → technical deck | [`docs/pitch/`](docs/pitch/) |
+| Agents (pipeline + six exec hats) and skills | [`.claude/agents/`](.claude/agents/), [`skills/`](skills/) |
+| For any AI assistant working here | [`AGENTS.md`](AGENTS.md), [`handoffs/`](handoffs/) |
+| Weekly briefs | [`briefs/`](briefs/) |
+
+![Data Dealer process flow v2](diagrams/pipeline-v2.png)
+
+## Process flow (v1, kept for reference)
 
 The full process flow diagram lives in [`docs/process-flow.mmd`](docs/process-flow.mmd), with rendered copies in [`docs/process-flow.svg`](docs/process-flow.svg) and [`docs/process-flow.png`](docs/process-flow.png).
 
