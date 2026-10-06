@@ -53,7 +53,7 @@ nav.tabs a[aria-current="page"]{color:var(--bg);background:var(--ink)}
 .zoom{margin-left:auto;display:flex;gap:4px}
 .zoom button{background:var(--panel-2);border:1px solid var(--line-2);border-radius:4px;padding:4px 9px;cursor:pointer;font:500 .75rem/1 var(--f-mono)}
 .zoom button:hover{border-color:var(--muted)}
-.scroller{overflow:auto;max-height:calc(100vh - 150px)}
+.scroller{overflow:auto;max-height:calc(100vh - 150px);max-height:calc(100dvh - 150px);-webkit-overflow-scrolling:touch}
 svg#pfd{display:block}
 
 /* svg styling */
@@ -221,7 +221,7 @@ td.num{text-align:right}
 .btn[disabled]{opacity:.5;cursor:default}
 .opt{background:transparent;border:1px dashed var(--line-2);border-radius:999px;padding:5px 10px;cursor:pointer;font:400 .78rem/1.2 var(--f-body);color:var(--ink)}
 .opt:hover{border-color:var(--audit)}
-.as textarea{width:100%;min-height:70px;background:#000;color:var(--ink);border:1px solid var(--line-2);border-radius:4px;padding:8px 10px;font:400 .88rem/1.45 var(--f-body);resize:vertical}
+.as textarea{width:100%;min-height:90px;background:#000;color:var(--ink);border:1px solid var(--line-2);border-radius:4px;padding:8px 10px;font:400 16px/1.45 var(--f-body);resize:vertical}
 .as pre{white-space:pre-wrap;background:#000;border:1px solid var(--line);border-radius:4px;padding:10px 12px;font:400 .78rem/1.5 var(--f-mono);max-height:260px;overflow:auto;margin:6px 0 0}
 .as details summary{cursor:pointer;font:500 .76rem/1 var(--f-mono);color:var(--agent)}
 .note{font-size:.78rem;color:var(--muted)}
@@ -240,16 +240,16 @@ td.num{text-align:right}
 .verdict.fixed{color:var(--agent);border-color:color-mix(in srgb,var(--agent) 50%,transparent)}
 @media (max-width:1180px){.card.span2{grid-column:auto}}
 
-/* Chip, the pocket pet: neon shell with a heavy outline, LCD screens */
-:root{--neon:#e8ff1f;--neon-ink:#0a0b05;--lcd:#c3d39b;--lcd-ink:#1f2b0e;--lcd-mid:#7d8f55;--f-pixel:"Silkscreen","IBM Plex Mono",ui-monospace,monospace;--f-lcd:"VT323","IBM Plex Mono",ui-monospace,monospace}
-.pet-launch{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:40;width:76px;height:92px;border-radius:24px 24px 28px 28px;background:var(--neon);border:3px solid var(--neon-ink);box-shadow:0 0 0 3px var(--neon),0 0 26px color-mix(in srgb,var(--neon) 45%,transparent);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:0}
+/* Chip, the pocket assistant: soft-neon shell with a heavy outline, LCD screens */
+:root{--neon:#d9e25a;--neon-ink:#0a0b05;--lcd:#c3d39b;--lcd-ink:#1f2b0e;--lcd-mid:#7d8f55;--f-pixel:"Silkscreen","IBM Plex Mono",ui-monospace,monospace;--f-lcd:"VT323","IBM Plex Mono",ui-monospace,monospace}
+.pet-launch{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:40;width:76px;height:92px;border-radius:24px 24px 28px 28px;background:var(--neon);border:3px solid var(--neon-ink);box-shadow:0 0 0 3px var(--neon),0 0 10px color-mix(in srgb,var(--neon) 18%,transparent);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:0}
 .pet-launch::before{content:"";position:absolute;top:-14px;left:14px;width:8px;height:12px;background:var(--neon);border:3px solid var(--neon-ink);border-bottom:0;border-radius:5px 5px 0 0}
 .pet-launch canvas{width:52px;height:39px;image-rendering:pixelated;background:var(--lcd);border:3px solid var(--neon-ink);border-radius:9px}
 .pet-launch .lbl{font:700 10px/1 var(--f-pixel);color:var(--neon-ink);letter-spacing:.12em}
 .pet-launch .badge{position:absolute;top:-10px;right:-10px;background:var(--neon-ink);color:var(--neon);font:700 11px/1 var(--f-pixel);border-radius:999px;padding:5px 7px;border:2px solid var(--neon)}
 .pet-launch:hover{transform:translateY(-2px)}
 .pet-launch:focus-visible,.pet button:focus-visible,.pet input:focus-visible{outline:3px solid var(--neon-ink);outline-offset:2px}
-.pet{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:41;width:min(380px,calc(100vw - 32px));height:min(660px,calc(100vh - 120px));background:var(--neon);border:3px solid var(--neon-ink);border-radius:34px 34px 40px 40px;box-shadow:0 0 0 3px var(--neon),0 0 34px color-mix(in srgb,var(--neon) 35%,transparent);display:flex;flex-direction:column;padding:14px 14px 16px;gap:10px;color:var(--neon-ink)}
+.pet{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:41;width:min(400px,calc(100vw - 32px));height:min(680px,calc(100vh - 120px));height:min(680px,calc(100dvh - 120px));background:var(--neon);border:3px solid var(--neon-ink);border-radius:34px 34px 40px 40px;box-shadow:0 0 0 3px var(--neon),0 0 12px color-mix(in srgb,var(--neon) 15%,transparent);display:flex;flex-direction:column;padding:14px 14px 16px;gap:10px;color:var(--neon-ink)}
 .pet::before{content:"";position:absolute;top:-18px;left:34px;width:10px;height:15px;background:var(--neon);border:3px solid var(--neon-ink);border-bottom:0;border-radius:6px 6px 0 0}
 .pet-head{display:flex;align-items:center;gap:10px}
 .pet-head b{font:700 18px/1 var(--f-pixel);letter-spacing:.08em}
@@ -272,8 +272,42 @@ td.num{text-align:right}
 .pet-quick button{background:var(--neon-ink);color:var(--neon);border:0;border-radius:999px;padding:7px 10px;font:700 9.5px/1 var(--f-pixel);letter-spacing:.06em;cursor:pointer}
 .pet-quick button:hover{background:#2a2d12}
 .pet-in{display:flex;gap:8px}
-.pet-in input{flex:1;min-width:0;background:#fbffd6;color:var(--neon-ink);border:3px solid var(--neon-ink);border-radius:12px;padding:6px 10px;font:20px/1 var(--f-lcd)}
+.pet-in input{flex:1;min-width:0;background:#eef0cf;color:var(--neon-ink);border:3px solid var(--neon-ink);border-radius:12px;padding:6px 10px;font:20px/1 var(--f-lcd)}
 .pet-in button{background:var(--neon-ink);color:var(--neon);border:0;border-radius:12px;padding:0 14px;font:700 11px/1 var(--f-pixel);letter-spacing:.08em;cursor:pointer}
+.pet-tabs{display:flex;gap:6px}
+.pet-tabs button{flex:1;background:transparent;color:var(--neon-ink);border:3px solid var(--neon-ink);border-radius:10px;padding:7px 0;font:700 10px/1 var(--f-pixel);letter-spacing:.08em;cursor:pointer}
+.pet-tabs button[aria-pressed="true"]{background:var(--neon-ink);color:var(--neon)}
+.pet-goals{flex:1;min-height:0;overflow:auto;padding:8px 12px}
+.pg-h{font:700 10px/1 var(--f-pixel);letter-spacing:.1em;margin:12px 0 4px;color:var(--lcd-mid)}
+.pg{display:grid;grid-template-columns:18px minmax(0,1fr);gap:8px;padding:7px 0;border-bottom:2px dotted color-mix(in srgb,var(--lcd-ink) 28%,transparent)}
+.pg:last-child{border-bottom:0}
+.pg .bx{width:14px;height:14px;border:2px solid var(--lcd-ink);margin-top:3px}
+.pg.done .bx{background:var(--lcd-ink)}
+.pg .t{font:20px/1.05 var(--f-lcd);overflow-wrap:anywhere}
+.pg.done .t{text-decoration:line-through;opacity:.6}
+.pg .pgm{font:16px/1.1 var(--f-lcd);color:var(--lcd-mid);overflow-wrap:anywhere}
+.pg-btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:5px}
+.pg-btns button{background:var(--lcd-ink);color:var(--lcd);border:0;border-radius:6px;padding:5px 8px;font:700 9px/1 var(--f-pixel);letter-spacing:.06em;cursor:pointer}
+.pg-btns button[disabled]{opacity:.5}
+@keyframes flash{0%{box-shadow:0 0 0 3px var(--audit)}100%{box-shadow:0 0 0 3px transparent}}
+.flash{animation:flash 1.8s ease-out}
+/* touch screens (iPad, phone): bigger tap targets, no hover-only cues */
+@media (pointer:coarse){
+  nav.tabs a{padding:12px 11px}
+  .zoom button{padding:10px 16px;font-size:.9rem}
+  .btn{padding:11px 14px;font-size:.84rem}
+  .opt{padding:10px 14px;font-size:.9rem}
+  .rail header .back{padding:9px 12px}
+  .sw h3{padding:6px 0}
+  .flist button{padding:11px 10px}
+  .hats button{padding:11px 14px}
+  .pet-tabs button{padding:13px 0;font-size:11px}
+  .pg-btns button{padding:10px 12px;font-size:10.5px}
+  .pet-quick button{padding:11px 12px;font-size:10.5px}
+  .pet-x{width:40px;height:40px}
+  .pet-in button{padding:0 18px}
+  .chip button{padding:4px 2px}
+}
 @media (max-width:520px){.pet{right:12px;left:12px;width:auto}.pet-launch{right:12px}}
 @media (prefers-reduced-motion:reduce){.pet-launch:hover{transform:none}}
 
@@ -307,7 +341,7 @@ td.num{text-align:right}
       <div class="canvasbox">
         <div class="canvashead">
           <h1>Process flow</h1>
-          <p>Data plane on top, control plane below. Click any part for what it does, its software, model and harness; hover to trace its flows.</p>
+          <p>Data plane on top, control plane below. Tap or click any part for what it does, its software, model and harness, and to trace its flows.</p>
           <div class="zoom" role="group" aria-label="Zoom">
             <button type="button" data-z="-">−</button><button type="button" data-z="fit">Fit</button><button type="button" data-z="+">+</button>
           </div>
@@ -340,12 +374,14 @@ td.num{text-align:right}
   <section id="v-plan" class="view page" hidden></section>
 </main>
 
-<button type="button" class="pet-launch" id="pet-open" aria-label="Open Chip, the explainer pet"><canvas id="pet-mini" width="32" height="24"></canvas><span class="lbl">CHIP</span><span class="badge" id="pet-badge" hidden>0</span></button>
-<section class="pet" id="pet" hidden aria-label="Chip, the explainer pet">
-  <div class="pet-head"><b>CHIP</b><span>data dealer<br>pocket pet</span><button type="button" class="pet-x" id="pet-close" aria-label="Close Chip">×</button></div>
-  <div class="lcd pet-screen"><canvas id="pet-big" width="32" height="24"></canvas><div class="pet-stats"><div>MOOD<span id="st-mood"></span></div><div>FED&nbsp;&nbsp;<span id="st-fed"></span></div><div id="st-state">ready</div></div></div>
-  <div class="lcd pet-log" id="pet-log" aria-live="polite"></div>
-  <div class="pet-quick"><button type="button" data-q="explain">EXPLAIN IT SIMPLY</button><button type="button" data-q="planes">DATA VS CONTROL PLANE</button><button type="button" data-q="tasks">MY ASSIGNMENTS</button><button type="button" data-q="audits">AUDITS</button></div>
+<button type="button" class="pet-launch" id="pet-open" aria-label="Open Chip, your pocket assistant"><canvas id="pet-mini" width="32" height="24"></canvas><span class="lbl">CHIP</span><span class="badge" id="pet-badge" hidden>0</span></button>
+<section class="pet" id="pet" hidden aria-label="Chip, your pocket assistant">
+  <div class="pet-head"><b>CHIP</b><span>data dealer<br>pocket assistant</span><button type="button" class="pet-x" id="pet-close" aria-label="Close Chip">×</button></div>
+  <div class="lcd pet-screen"><canvas id="pet-big" width="32" height="24"></canvas><div class="pet-stats"><div>AUDITS<span id="st-mood"></span></div><div>DONE&nbsp;&nbsp;&nbsp;<span id="st-fed"></span></div><div id="st-state">ready</div></div></div>
+  <div class="pet-tabs" role="group" aria-label="Chip views"><button type="button" data-v="goals" aria-pressed="true">GOALS <span id="pet-goal-n"></span></button><button type="button" data-v="chat" aria-pressed="false">ASK CHIP</button></div>
+  <div class="lcd pet-goals" id="pet-goals"></div>
+  <div class="lcd pet-log" id="pet-log" aria-live="polite" hidden></div>
+  <div class="pet-quick" hidden><button type="button" data-q="explain">EXPLAIN IT SIMPLY</button><button type="button" data-q="planes">DATA VS CONTROL PLANE</button><button type="button" data-q="tasks">MY ASSIGNMENTS</button><button type="button" data-q="audits">AUDITS</button></div>
   <form class="pet-in" id="pet-form"><input id="pet-text" autocomplete="off" placeholder="Ask Chip anything…" aria-label="Message Chip"><button type="submit" id="pet-send">SEND</button></form>
 </section>
 
@@ -744,7 +780,7 @@ function renderAgents(){
   <div class="files"><div class="flist" role="group" aria-label="Files">${groups.map(([g,fn])=>{const fs=REPO_FILES.filter(fn);return fs.length?`<h4>${g}</h4>${fs.map(f=>`<button type="button" data-p="${esc(f.path)}" aria-pressed="false">${esc(f.path.replace(/^\.claude\/agents\//,"").replace(/^skills\//,"skills/"))}</button>`).join("")}`:""}).join("")}
   <h4>Claude session skills (not in repo)</h4>${SESSION_SKILLS.map(([n,d])=>`<div style="padding:5px 8px;font-size:.78rem"><span class="mono">${esc(n)}</span><br><span style="color:var(--muted)">${esc(d)}</span></div>`).join("")}</div>
   <article class="doc" id="doc"></article></div>`;
-  const show=p=>{const f=REPO_FILES.find(f=>f.path===p);v.querySelectorAll(".flist button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.p===p));$("#doc").innerHTML=`<div class="path">${esc(f.path)}</div>${md(f.content)}`};
+  const show=showFile=p=>{const f=REPO_FILES.find(f=>f.path===p);if(!f)return;v.querySelectorAll(".flist button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.p===p));$("#doc").innerHTML=`<div class="path">${esc(f.path)}</div>${md(f.content)}`};
   v.querySelectorAll(".flist button").forEach(b=>b.addEventListener("click",()=>show(b.dataset.p)));
   show(REPO_FILES[0].path);
 }
@@ -773,14 +809,14 @@ function renderMoney(){
    <tr><td>Synthesis + judges compute</td><td>GPU hours + API calls for this dataset</td><td class="num">−$800</td></tr>
    <tr><td><b>Platform gross profit</b></td><td>59% gross margin</td><td class="num"><b>$5,900</b></td></tr></tbody></table></div>
   <p style="color:var(--muted);font-size:.84rem">Each later sale of the same dataset skips the compute line, so margin rises with repeat sales. That reuse is the core of the model.</p>
-  <h2>Self-funding rules</h2><div class="grid3">
+  <h2 id="m-rules">Self-funding rules</h2><div class="grid3">
    <div class="pcard"><h3>Compute ceiling</h3><p>Compute spend stays at or under 25% of trailing 90-day revenue once live.</p></div>
    <div class="pcard"><h3>Pay from cash</h3><p>Royalties are paid only from collected money, after the ${PARAMS.holdbackDays}-day hold.</p></div>
    <div class="pcard"><h3>Runway floor</h3><p>Below ${PARAMS.runwayFloorMonths} months of runway, new bounties pause automatically.</p></div>
    <div class="pcard"><h3>Agent caps</h3><p>Every buying agent has a daily and per-order cap, enforced in code at Settlement.</p></div>
    <div class="pcard"><h3>New-contributor cap</h3><p>Payout limit per contributor until three uploads have passed Verification.</p></div>
    <div class="pcard"><h3>Growth throttle</h3><p>Grow supply only as fast as demand absorbs it: open bounties never exceed escrowed buyer money.</p></div></div>
-  <h2>Limits: what the system may never do</h2>
+  <h2 id="m-limits">Limits: what the system may never do</h2>
   <div class="pcard"><ul>
    <li>A model never moves money, holds a key or signs a manifest.</li>
    <li>No health records, biometrics, minors' data, government IDs, or data the contributor doesn't own.</li>
@@ -809,7 +845,7 @@ const RESEARCH=[
 ];
 function renderResearch(){
   $("#v-research").innerHTML=`<span class="eyebrow">docs/research in the repo</span><h1>Research</h1><p class="lede">What the plan rests on. Full notes with more detail are in the repo; these are the findings that changed the design.</p>
-  <div class="grid2">${RESEARCH.map(r=>`<div class="pcard"><span class="eyebrow">${esc(r.e)}</span><h3>${esc(r.t)}</h3><ul>${r.b.map(b=>`<li>${esc(b)}</li>`).join("")}</ul><div class="src">Sources: ${r.s.map(([n,u])=>`<a href="${u}" target="_blank" rel="noopener">${esc(n)}</a>`).join(" · ")}</div></div>`).join("")}</div>`;
+  <div class="grid2">${RESEARCH.map(r=>`<div class="pcard" id="r-${r.e.toLowerCase().replace(/[^a-z]+/g,"-").replace(/-+$/,"")}"><span class="eyebrow">${esc(r.e)}</span><h3>${esc(r.t)}</h3><ul>${r.b.map(b=>`<li>${esc(b)}</li>`).join("")}</ul><div class="src">Sources: ${r.s.map(([n,u])=>`<a href="${u}" target="_blank" rel="noopener">${esc(n)}</a>`).join(" · ")}</div></div>`).join("")}</div>`;
 }
 let hatSel=0;
 function renderBrief(){
@@ -861,9 +897,9 @@ function assignHTML(a,compact){
   let ctl="";
   if(a.kind==="decision"){
     ctl+=a.answer?`<p class="ans"><b>Your answer</b>${esc(a.answer)}</p>`:"";
-    ctl+=`<div class="as-ctl"><button type="button" class="btn${a.answer?"":" primary"}" data-act="answer">${a.answer?"Change answer":"Answer"}</button>${done?"":""}</div>`;
+    ctl+=`<div class="as-ctl"><button type="button" class="btn${a.answer?"":" primary"}" data-act="answer">${a.answer?"Change answer":"Answer"}</button>${areaOf(a)?`<button type="button" class="btn" data-act="go">Go to ${esc(areaOf(a).label)} →</button>`:""}</div>`;
   }else{
-    ctl+=`<div class="as-ctl"><button type="button" class="btn${done?"":" primary"}" data-act="toggle">${done?"Mark not done":"Mark done"}</button>${a.prompt?`<button type="button" class="btn" data-act="copy">Copy prompt</button>`:""}</div>`;
+    ctl+=`<div class="as-ctl"><button type="button" class="btn${done?"":" primary"}" data-act="toggle">${done?"Mark not done":"Mark done"}</button>${a.prompt?`<button type="button" class="btn" data-act="copy">Copy prompt</button>`:""}${areaOf(a)?`<button type="button" class="btn" data-act="go">Go to ${esc(areaOf(a).label)} →</button>`:""}</div>`;
     if(a.prompt) ctl+=`<details><summary>Show the prompt</summary><pre>${esc(a.prompt)}</pre></details>`;
   }
   return `<div class="as${done?" is-done":""}" data-id="${esc(a.id)}"><div class="as-top">${pri}<span class="tag">${esc(a.hat)}</span><span class="tag">${esc(a.kind)}</span></div>
@@ -874,6 +910,7 @@ function bindAssign(root){
     const a=ASSIGN.find(x=>x.id===el.dataset.id); if(!a) return;
     el.querySelectorAll("[data-act]").forEach(b=>b.addEventListener("click",async()=>{
       const act=b.dataset.act;
+      if(act==="go"){goArea(areaOf(a),a.id);return}
       if(act==="copy"){try{await navigator.clipboard.writeText(a.prompt);b.textContent="Copied"}catch(e){const pre=el.querySelector("pre");el.querySelector("details").open=true;const r=document.createRange();r.selectNodeContents(pre);const s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent="Selected: press copy"}return}
       if(act==="toggle"){b.disabled=true;try{await saveAssign(a.id,{status:a.status==="done"?"open":"done"})}catch(e){b.disabled=false;flash(el,e)}return}
       if(act==="answer"){
@@ -919,7 +956,7 @@ function renderAssignPage(){
 function onAssign(){
   const open=ASSIGN.filter(a=>a.status!=="done"), now=open.filter(a=>a.priority==="now");
   $("#assign-count").textContent=assignState==="ready"?`${now.length} now · ${open.length} open`:"–";
-  renderAssignNow(); renderGate(); petStats();
+  renderAssignNow(); renderGate(); petStats(); renderPetGoals();
   if(location.hash==="#assign") renderAssignPage();
   const badge=$("#pet-badge"); badge.hidden=!now.length; badge.textContent=now.length;
 }
@@ -980,7 +1017,7 @@ const REVIEW=[
 ];
 const GUARDS=["A model never moves money, holds a key or signs a manifest","No unscrubbed data in write-once storage","No health records, biometrics, minors' data, government IDs, financial account data, scraped data, or data the contributor doesn't own","Child-safety hash scan before any person or model sees a file","Exclusive deals, takedowns, recalls and large refunds need a person at the Review desk","API-model output is never used as training rows","No judge from the generator's model family","Log entries are never deleted","No bounty before escrow","No purchase before buyer verification","Nothing goes live until the go-live gate is all green"];
 
-/* ===== Chip, the pocket pet ===== */
+/* ===== Chip, the pocket assistant ===== */
 const PET={sample:undefined,blocked:false,busy:false,ctl:null,turns:[],bob:0,blinkIn:8,greeted:false};
 const reduceMotion=matchMedia("(prefers-reduced-motion: reduce)").matches;
 async function getSample(){
@@ -1030,13 +1067,15 @@ function petStats(){
   $("#st-mood").innerHTML=`<span class="pips" aria-label="${mood} of 4">${pips(mood)}</span>`;
   $("#st-fed").innerHTML=`<span class="pips" aria-label="${fed} of 4">${pips(fed)}</span>`;
   const f=petFace();
-  $("#st-state").textContent={think:"thinking…",sleep:"asleep",worried:"worried",hungry:"hungry: feed me answers",happy:"happy"}[f];
+  const nowOpen=ASSIGN.filter(a=>a.priority==="now"&&a.status!=="done").length;
+  $("#st-state").textContent={think:"thinking…",sleep:"offline",worried:"an audit failed",hungry:`${nowOpen} goal${nowOpen===1?"":"s"} need you now`,happy:"all clear"}[f];
 }
 function petMsg(kind,text){const d=document.createElement("div");d.className="pm "+kind;d.textContent=text;$("#pet-log").appendChild(d);$("#pet-log").scrollTop=1e9;return d}
 function openPet(){
   $("#pet").hidden=false;$("#pet-open").hidden=true;petStats();petTick();
   if(!PET.greeted){PET.greeted=true;const n=ASSIGN.filter(a=>a.priority==="now"&&a.status!=="done").length;
-    petMsg("bot",`Hi, I'm Chip! I explain Data Dealer in plain words and keep an eye on your assignments.${assignState==="ready"?` Feed me by finishing them: ${n} need you now.`:""} Tap a button or ask me anything.`)}
+    petMsg("bot",`Hi, I'm Chip, your pocket assistant. I keep your goals, take you to the part of the dashboard each one is about, and explain anything in plain words.${assignState==="ready"?` ${n} goal${n===1?"":"s"} need you now.`:""}`)}
+  setPetView(petView);
   $("#pet-text").focus();
 }
 function closePet(){$("#pet").hidden=true;$("#pet-open").hidden=false;$("#pet-open").focus()}
@@ -1063,10 +1102,10 @@ function petRules(){
     design_audits:lastAudit.map(a=>`${a.ok?"PASS":"FAIL"}: ${a.name}`),
     go_live_gate:gateItems().map(g=>`${g.ok?"green":"blocked"}: ${g.name}`),
     revenue:["Dataset sales","Bounties (buyer-funded, escrowed)","Verify & compliance API (subscription)","Exclusive licenses"],
-    assignments:ASSIGN.map(a=>({id:a.id,title:a.title,kind:a.kind,priority:a.priority,status:a.status,answer:a.answer||"",options:a.options||[]})),
+    assignments:ASSIGN.map(a=>({id:a.id,title:a.title,kind:a.kind,priority:a.priority,status:a.status,answer:a.answer||"",options:a.options||[],applies_to:areaOf(a)?.label||null})),
     dashboard_pages:Object.keys(VIEWS)
   };
-  return `You are Chip, a small pixel pocket pet who lives on the Data Dealer operations dashboard. You talk with the founder; call them "you".
+  return `You are Chip, a small pixel pocket assistant who lives on the Data Dealer operations dashboard. You talk with the founder; call them "you".
 
 How to answer:
 - Plain, everyday words, as if talking to a smart friend who has never worked in tech. The first time you use a technical word, explain it in a few words.
@@ -1076,7 +1115,7 @@ How to answer:
 - You are not a lawyer or accountant; say so when an answer depends on law, tax or money decisions.
 - Cheerful and a little playful, never sugary. At most one emoji.
 
-What you can do with tools: open a dashboard page, highlight a part of the diagram, list assignments, save the founder's answer to a decision, or mark a task done or not done. Only save an answer or change a task when the founder clearly tells you their decision or asks you to; then say exactly what you saved.
+What you can do with tools: open a dashboard page, highlight a part of the diagram, list assignments (goals), take the founder to the area a goal applies to, save the founder's answer to a decision, or mark a task done or not done. When the founder asks about a goal or where it fits, take them to its area with go_to_goal_area. Only save an answer or change a task when the founder clearly tells you their decision or asks you to; then say exactly what you saved.
 
 Naming: the system uses literal engineering names, not metaphors. The data plane uses supply-chain words (Onboarding, Quarantine, Verification, Seed store, Synthesis, Eval panel, Attestation, Catalog, Settlement, Fulfillment). The control plane, which the founder calls the living layer, uses agentic-systems words (agents, harness, evals, the human-in-the-loop Review desk, role agents). If someone uses an old casino name (Table, Dealer, Cage, Shoe, Deck, Pit Boss, Forge, Ledger, Assay), say what it is called now. Data Dealer is the company's name.
 
@@ -1088,18 +1127,20 @@ const PET_TOOLS=[
   execute:({page})=>{const p=String(page);if(!VIEWS.hasOwnProperty(p))throw new Error("unknown page");location.hash="#"+p;return "opened "+p}},
  {name:"highlight_part",description:"Show one part of the process-flow diagram and its details. Use the part id from DATA.parts. Returns the part's name.",inputSchema:{type:"object",properties:{id:{type:"string"}},required:["id"]},
   execute:({id})=>{const k=String(id);if(!byId[k])throw new Error("unknown part id");location.hash="#flow";setTimeout(()=>select(k),60);return "highlighted "+byId[k].t}},
- {name:"list_assignments",description:"List the founder's assignments with id, title, kind, priority, status and saved answer.",
-  execute:()=>ASSIGN.map(a=>({id:a.id,title:a.title,kind:a.kind,priority:a.priority,status:a.status,answer:a.answer||""}))},
+ {name:"list_assignments",description:"List the founder's assignments (goals) with id, title, kind, priority, status, saved answer and the dashboard area each applies to.",
+  execute:()=>ASSIGN.map(a=>({id:a.id,title:a.title,kind:a.kind,priority:a.priority,status:a.status,answer:a.answer||"",applies_to:areaOf(a)?.label||null}))},
+ {name:"go_to_goal_area",description:"Take the founder to the dashboard area where an assignment applies (its page, diagram part or section), or to the assignment itself if it has no area. Returns where it went.",inputSchema:{type:"object",properties:{id:{type:"string"}},required:["id"]},
+  execute:({id})=>{const a=ASSIGN.find(x=>x.id===String(id));if(!a)throw new Error("unknown assignment id");return "went to "+goArea(areaOf(a),a.id)}},
  {name:"save_answer",description:"Save the founder's answer to a decision assignment and mark it done. Only when the founder clearly states the decision. Returns 'saved'.",inputSchema:{type:"object",properties:{id:{type:"string"},answer:{type:"string"}},required:["id","answer"]},
   execute:async({id,answer},ctx)=>{const a=ASSIGN.find(x=>x.id===String(id));if(!a)throw new Error("unknown assignment id");if(a.kind!=="decision")throw new Error("not a decision; use set_task_done");const v=String(answer).trim();if(!v)throw new Error("empty answer");if(ctx.signal.aborted)throw new Error("stopped");await saveAssign(a.id,{answer:v,status:"done"});return "saved"}},
  {name:"set_task_done",description:"Mark a task assignment done or not done, when the founder says so. Returns the new status.",inputSchema:{type:"object",properties:{id:{type:"string"},done:{type:"boolean"}},required:["id","done"]},
   execute:async({id,done},ctx)=>{const a=ASSIGN.find(x=>x.id===String(id));if(!a)throw new Error("unknown assignment id");if(ctx.signal.aborted)throw new Error("stopped");const st=done===true||done==="true"?"done":"open";await saveAssign(a.id,{status:st});return st}}
 ];
-const PET_COPY={not_granted:"I need your OK to use Claude on this page. Without it I can still list your assignments and audits.",sampling_disabled:"Claude isn't available to me on this account. I can still list your assignments and audits.",rate_limited:"I'm out of breath. Give me a minute and ask again.",session_expired:"You've been signed out. Sign in again and I'll be right here.",refused:"I can't help with that one. Try asking another way.",empty_completion:"I came up empty. Try asking for something smaller.",prompt_too_large:"That's too much for me at once. Try a shorter question."};
+const PET_COPY={not_granted:"I need your OK to use Claude on this page. Without it I can still show your goals and audits.",sampling_disabled:"Claude isn't available to me on this account. I can still show your goals and audits.",rate_limited:"I'm out of breath. Give me a minute and ask again.",session_expired:"You've been signed out. Sign in again and I'll be right here.",refused:"I can't help with that one. Try asking another way.",empty_completion:"I came up empty. Try asking for something smaller.",prompt_too_large:"That's too much for me at once. Try a shorter question."};
 async function petAsk(text){
   if(PET.busy) return;
   const s=await getSample();
-  if(!s){petMsg("me",text);petMsg("bot","I can only think out loud when this dashboard is open inside Claude. I can still list your assignments and audits.");return}
+  if(!s){petMsg("me",text);petMsg("bot","I can only answer questions when this dashboard is open inside Claude. Your goals are on the GOALS tab.");return}
   PET.turns.push({role:"user",content:text});petMsg("me",text);
   const bubble=petMsg("bot","thinking…");
   PET.busy=true;PET.ctl=new AbortController();setSend(true);petStats();petTick();
@@ -1126,12 +1167,104 @@ function bindPet(){
   $("#pet-form").addEventListener("submit",e=>{e.preventDefault();const t=$("#pet-text").value.trim();if(!t)return;$("#pet-text").value="";petAsk(t)});
   document.querySelectorAll(".pet-quick button").forEach(b=>b.addEventListener("click",()=>{
     const q=b.dataset.q;
-    if(q==="tasks"){petMsg("me","My assignments");petMsg("bot",localTasks());return}
+    if(q==="tasks"){setPetView("goals");return}
     if(q==="audits"){petMsg("me","Audits");petMsg("bot",localAudits());return}
     if(q==="explain") petAsk("Explain the whole Data Dealer system to me in plain words, start to finish, in about 6 short sentences.");
     if(q==="planes") petAsk("What is the difference between the data plane and the control plane here, in plain words?");
   }));
+  document.querySelectorAll(".pet-tabs button").forEach(b=>b.addEventListener("click",()=>setPetView(b.dataset.v)));
+  $("#pet-form").addEventListener("submit",()=>{if(petView!=="chat")setPetView("chat")},true);
   setInterval(petTick,450);petTick();
+}
+
+
+/* ===== goal areas: where each assignment applies on the dashboard ===== */
+const AREAS={
+ vertical:{page:"research",anchor:"r-market",label:"Market research"},
+ names:{page:"naming",label:"Naming"},
+ "connect-astra":{page:"flow",part:"evalpanel",label:"Eval panel"},
+ "connect-claude2":{page:"agents",file:"handoffs/002-claude2-red-team-plan.md",label:"Red-team card"},
+ entity:{page:"money",label:"Money"},
+ calls:{page:"research",anchor:"r-market",label:"Market research"},
+ lawyer:{page:"flow",part:"onboarding",label:"Onboarding"},
+ royalty:{page:"flow",part:"settlement",label:"Settlement"},
+ holdback:{page:"flow",part:"settlement",label:"Settlement"},
+ burn:{page:"money",anchor:"m-rules",label:"Self-funding rules"},
+ datatype:{page:"flow",part:"synthesis",label:"Synthesis"},
+ reviewer:{page:"money",anchor:"m-limits",label:"Limits"},
+ accounts:{page:"flow",anchor:"rail",label:"Software list"},
+ cloud:{page:"flow",anchor:"rail",label:"Software list"},
+ "first-ship":{page:"flow",part:"gateway",label:"Gateway"},
+ raise:{page:"research",anchor:"r-investors",label:"What VCs fund"},
+ geo:{page:"flow",part:"onboarding",label:"Onboarding"},
+ excluded:{page:"money",anchor:"m-limits",label:"Limits"},
+ dmca:{page:"flow",part:"review",label:"Review desk"},
+ grades:{page:"flow",part:"verification",label:"Verification"},
+ passbar:{page:"flow",part:"evalpanel",label:"Eval panel"},
+ canary:{page:"flow",part:"fulfillment",label:"Fulfillment"},
+ verifypage:{page:"flow",part:"tlog",label:"Transparency log"},
+ contrib50:{page:"flow",part:"contributors",label:"Contributors"},
+ pricing:{page:"money",label:"Money"}
+};
+const areaOf=a=>(a&&a.area&&a.area.page&&VIEWS.hasOwnProperty(a.area.page))?a.area:(a?AREAS[a.id]||null:null);
+let showFile=null;
+function flashEl(el){if(!el)return;el.classList.remove("flash");void el.offsetWidth;el.classList.add("flash")}
+function scrollToEl(el){if(el)el.scrollIntoView({behavior:reduceMotion?"auto":"smooth",block:"center",inline:"center"})}
+function focusAssign(id,openEditor){
+  const el=document.querySelector(`#v-assign .as[data-id="${CSS.escape(id)}"]`);
+  if(!el) return;
+  scrollToEl(el);flashEl(el);
+  if(openEditor){const b=el.querySelector('[data-act="answer"]');if(b)b.click()}
+}
+function goArea(area,assignId){
+  if(!area){location.hash="#assign";setTimeout(()=>focusAssign(assignId),150);return "the assignment itself"}
+  location.hash="#"+area.page;
+  setTimeout(()=>{
+    if(area.page==="flow"&&area.part&&byId[area.part]){select(area.part);const n=document.querySelector(`.node[data-id="${area.part}"]`);scrollToEl(n)}
+    if(area.anchor==="rail"){const r=document.querySelector(".rail");scrollToEl(r);flashEl(r)}
+    else if(area.anchor){const el=document.getElementById(area.anchor);scrollToEl(el);flashEl(el)}
+    if(area.file&&showFile){showFile(area.file);flashEl(document.getElementById("doc"))}
+  },150);
+  return area.label;
+}
+
+/* ===== Chip: goals view ===== */
+let petView="goals";
+function setPetView(v){
+  petView=v;
+  document.querySelectorAll(".pet-tabs button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===v));
+  $("#pet-goals").hidden=v!=="goals"; $("#pet-log").hidden=v!=="chat"; $(".pet-quick").hidden=v!=="chat";
+  if(v==="goals") renderPetGoals();
+}
+function petGoalHTML(a){
+  const ar=areaOf(a), done=a.status==="done";
+  const act=a.kind==="decision"?`<button type="button" data-g="answer">${a.answer?"EDIT ANSWER":"ANSWER"}</button>`:`<button type="button" data-g="toggle">${done?"UNDO":"MARK DONE"}</button>`;
+  return `<div class="pg${done?" done":""}" data-id="${esc(a.id)}"><i class="bx" aria-hidden="true"></i><div>
+    <div class="t">${esc(a.title)}</div>
+    <div class="pgm">${esc(a.hat)} · ${esc(a.kind)}${ar?" · applies to "+esc(ar.label):""}</div>
+    ${a.answer?`<div class="pgm">answer: ${esc(a.answer)}</div>`:""}
+    <div class="pg-btns">${ar?`<button type="button" data-g="go">GO →</button>`:""}${act}${a.prompt?`<button type="button" data-g="prompt">COPY PROMPT</button>`:""}</div></div></div>`;
+}
+function renderPetGoals(){
+  const el=$("#pet-goals"); if(!el) return;
+  const nowOpen=ASSIGN.filter(a=>a.priority==="now"&&a.status!=="done").length;
+  $("#pet-goal-n").textContent=assignState==="ready"?String(ASSIGN.filter(a=>a.status!=="done").length):"";
+  if(assignState!=="ready"){el.innerHTML=`<div class="pm sys">Your goals load when this dashboard is open in Claude.</div>`;return}
+  const list=sortedAssign(), groups=[["now","DO NOW"],["next","NEXT"],["later","LATER"]];
+  let h=`<div class="pm sys">${nowOpen?`${nowOpen} need you now.`:"Nothing urgent."} Tap GO to jump to where a goal applies.</div>`;
+  groups.forEach(([p,l])=>{const xs=list.filter(a=>a.priority===p&&a.status!=="done");if(xs.length)h+=`<div class="pg-h">${l} · ${xs.length}</div>`+xs.map(petGoalHTML).join("")});
+  const done=list.filter(a=>a.status==="done"); if(done.length) h+=`<div class="pg-h">DONE · ${done.length}</div>`+done.map(petGoalHTML).join("");
+  el.innerHTML=h;
+  el.querySelectorAll(".pg").forEach(row=>{
+    const a=ASSIGN.find(x=>x.id===row.dataset.id); if(!a) return;
+    row.querySelectorAll("[data-g]").forEach(b=>b.addEventListener("click",async()=>{
+      const g=b.dataset.g;
+      if(g==="go"){goArea(areaOf(a),a.id);closePet();return}
+      if(g==="answer"){location.hash="#assign";closePet();setTimeout(()=>focusAssign(a.id,true),150);return}
+      if(g==="toggle"){b.disabled=true;try{await saveAssign(a.id,{status:a.status==="done"?"open":"done"})}catch(e){b.disabled=false;b.textContent="CAN'T SAVE"}return}
+      if(g==="prompt"){try{await navigator.clipboard.writeText(a.prompt);b.textContent="COPIED"}catch(e){location.hash="#assign";closePet();setTimeout(()=>{focusAssign(a.id);const d=document.querySelector(`#v-assign .as[data-id="${CSS.escape(a.id)}"] details`);if(d)d.open=true},150)}}
+    }));
+  });
 }
 
 /* ===== router ===== */

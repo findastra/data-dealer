@@ -10,6 +10,8 @@
 
 Private: open it signed in to Astra's Claude account. The link never changes; every update is published to the same address. The source is in [`dashboard/`](dashboard/).
 
+**On iPad or phone:** open the link above in Safari while signed in to Claude, then tap Share → **Add to Home Screen** for one-tap access. The page is built for touch: tap a part of the diagram to see it, tap **CHIP** (bottom right) for your goals, **GO →** to jump to where a goal applies, and **ANSWER** to record a decision. Answers save straight to the dashboard.
+
 | What | Where |
 | --- | --- |
 | Plan v2: the flow, every change from v1, phases | [`docs/PLAN-v2.md`](docs/PLAN-v2.md) |
