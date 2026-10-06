@@ -22,6 +22,7 @@ Private: open it signed in to Astra's Claude account. The link never changes; ev
 | Pitch narrative: mini deck → technical deck | [`docs/pitch/`](docs/pitch/) |
 | Agents (pipeline + six role agents) and skills | [`.claude/agents/`](.claude/agents/), [`skills/`](skills/) |
 | For any AI assistant working here | [`AGENTS.md`](AGENTS.md), [`handoffs/`](handoffs/) |
+| Team: how the three subscriptions split the work | [`docs/team.md`](docs/team.md) |
 | Weekly briefs | [`briefs/`](briefs/) |
 
 ![Data Dealer process flow v2](diagrams/pipeline-v2.png)

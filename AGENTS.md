@@ -16,6 +16,7 @@ A marketplace that pays people for real data, verifies it, expands it into synth
 | `.claude/agents/` | Agent definitions: pipeline agents and the six role agents |
 | `skills/` | Repeatable procedures (weekly brief, provenance manifest, handoffs) |
 | `handoffs/` | Task cards for whichever assistant picks them up |
+| `docs/team.md` | Who does what across Claude 1, Claude 2 and Astra |
 | `briefs/` | Weekly briefs |
 | `dashboard/` | Source of the live ops dashboard, published at https://claude.ai/artifact/CzBXnEWyRjq5Tui7o3oRS8 (assignments, audits, go-live gate) |
 
