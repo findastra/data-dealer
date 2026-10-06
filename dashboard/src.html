@@ -172,6 +172,15 @@ td.num{text-align:right}
 .tag{display:inline-block;font:600 .64rem/1 var(--f-mono);letter-spacing:.06em;padding:3px 6px;border-radius:3px;border:1px solid var(--line-2);color:var(--muted);white-space:nowrap}
 .tag.y{color:var(--pass);border-color:color-mix(in srgb,var(--pass) 45%,transparent)}
 .tag.ai{color:var(--agent);border-color:color-mix(in srgb,var(--agent) 45%,transparent)}
+.tag.w-anywhere{color:var(--pass);border-color:color-mix(in srgb,var(--pass) 45%,transparent)}
+.tag.w-home{color:var(--prov);border-color:color-mix(in srgb,var(--prov) 50%,transparent)}
+.step{display:inline-grid;place-items:center;min-width:24px;height:24px;padding:0 6px;margin-right:8px;border-radius:12px;background:var(--panel-2);border:1px solid var(--line-2);font:600 .74rem/1 var(--f-mono);color:var(--audit);vertical-align:1px}
+.fbar{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 10px}
+.fbar button{background:var(--panel-2);border:1px solid var(--line-2);border-radius:999px;padding:6px 12px;cursor:pointer;font:500 .76rem/1 var(--f-mono);color:var(--ink)}
+.fbar button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.pfbar{display:flex;gap:5px;margin:2px 0 6px}
+.pfbar button{flex:1;background:transparent;border:2px solid var(--lcd-ink);border-radius:8px;padding:6px 0;font:700 8.5px/1 var(--f-pixel);letter-spacing:.04em;color:var(--lcd-ink);cursor:pointer}
+.pfbar button[aria-pressed="true"]{background:var(--lcd-ink);color:var(--lcd)}
 
 .files{display:grid;grid-template-columns:260px minmax(0,1fr);gap:14px}
 .flist{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:8px;align-self:start;position:sticky;top:76px}
@@ -293,6 +302,8 @@ td.num{text-align:right}
 .flash{animation:flash 1.8s ease-out}
 /* touch screens (iPad, phone): bigger tap targets, no hover-only cues */
 @media (pointer:coarse){
+  .fbar button{padding:11px 14px;font-size:.84rem}
+  .pfbar button{padding:11px 0;font-size:9.5px}
   nav.tabs a{padding:12px 11px}
   .zoom button{padding:10px 16px;font-size:.9rem}
   .btn{padding:11px 14px;font-size:.84rem}
@@ -902,8 +913,8 @@ function assignHTML(a,compact){
     ctl+=`<div class="as-ctl"><button type="button" class="btn${done?"":" primary"}" data-act="toggle">${done?"Mark not done":"Mark done"}</button>${a.prompt?`<button type="button" class="btn" data-act="copy">Copy prompt</button>`:""}${areaOf(a)?`<button type="button" class="btn" data-act="go">Go to ${esc(areaOf(a).label)} →</button>`:""}</div>`;
     if(a.prompt) ctl+=`<details><summary>Show the prompt</summary><pre>${esc(a.prompt)}</pre></details>`;
   }
-  return `<div class="as${done?" is-done":""}" data-id="${esc(a.id)}"><div class="as-top">${pri}<span class="tag">${esc(a.hat)}</span><span class="tag">${esc(a.kind)}</span></div>
-   <h3>${esc(a.title)}</h3>${compact&&done?"":`<p class="why">${esc(a.why)}</p>`}${ctl}<div class="edit" hidden></div></div>`;
+  return `<div class="as${done?" is-done":""}" data-id="${esc(a.id)}"><div class="as-top">${pri}<span class="tag w-${whereOf(a)}">${WHERE_LABEL[whereOf(a)]}</span><span class="tag">${esc(a.hat)}</span><span class="tag">${esc(a.kind)}</span></div>
+   <h3>${STEPS[a.id]?`<span class="step">${STEPS[a.id]}</span>`:""}${esc(a.title)}</h3>${compact&&done?"":`<p class="why">${esc(a.why)}</p>`}${ctl}<div class="edit" hidden></div></div>`;
 }
 function bindAssign(root){
   root.querySelectorAll(".as").forEach(el=>{
@@ -938,20 +949,23 @@ function sortedAssign(){return [...ASSIGN].sort((a,b)=>(a.status==="done")-(b.st
 function renderAssignNow(){
   const el=$("#assign-now");
   if(assignState!=="ready"){el.innerHTML=`<div class="empty"><b>${assignState==="offline"?"Assignments load when this dashboard is open in Claude.":"Loading your assignments…"}</b> They live here, and Chip and the Monday brief keep them up to date.</div>`;return}
-  const now=sortedAssign().filter(a=>a.priority==="now"&&a.status!=="done");
-  const open=ASSIGN.filter(a=>a.status!=="done").length;
-  el.innerHTML=now.length?now.map(a=>assignHTML(a,true)).join("")+`<p class="note" style="margin:8px 0 0">${open-now.length} more open on the <a href="#assign">Assignments page</a>.</p>`
-    :`<div class="empty"><b>Nothing urgent.</b> ${open} open for later on the <a href="#assign">Assignments page</a>.</div>`;
-  bindAssign(el);
+  computeSteps();
+  const open=sortedAssign().filter(a=>a.status!=="done"&&passes(a)), top=open.slice(0,6);
+  el.innerHTML=filterBar("fbar")+(top.length?top.map(a=>assignHTML(a,true)).join("")+(open.length>top.length?`<p class="note" style="margin:8px 0 0">${open.length-top.length} more in this list on the <a href="#assign">Assignments page</a>.</p>`:"")
+    :`<div class="empty"><b>Nothing here.</b> Try another filter or see the <a href="#assign">Assignments page</a>.</div>`);
+  bindAssign(el);bindFilter(el);
 }
 function renderAssignPage(){
   const v=$("#v-assign");
   const head=`<span class="eyebrow">Your assignments</span><h1>Assignments</h1><p class="lede">Decisions and tasks only you can do. Answer a decision and it becomes that role agent's starting point: the Monday brief reads your answers, updates the agents, and adds new questions here.</p>`;
   if(assignState!=="ready"){v.innerHTML=head+`<div class="pcard empty"><b>${assignState==="offline"?"Assignments load when this dashboard is open in Claude.":"Loading…"}</b></div>`;return}
-  const list=sortedAssign(), groups=[["now","Do now"],["next","Next"],["later","Later"]];
-  v.innerHTML=head+groups.map(([p,l])=>{const xs=list.filter(a=>a.priority===p&&a.status!=="done");return xs.length?`<h2>${l} · ${xs.length}</h2><div class="pcard">${xs.map(a=>assignHTML(a)).join("")}</div>`:""}).join("")+
-    (list.some(a=>a.status==="done")?`<h2>Done · ${list.filter(a=>a.status==="done").length}</h2><div class="pcard">${list.filter(a=>a.status==="done").map(a=>assignHTML(a)).join("")}</div>`:"");
-  bindAssign(v);
+  computeSteps();
+  const list=sortedAssign().filter(passes), groups=[["now","Do now"],["next","Next"],["later","Later"]];
+  const doneL=list.filter(a=>a.status==="done");
+  v.innerHTML=head+filterBar("fbar")+`<p class="note" style="margin:0 0 6px">Numbers are the order to do them in. <b>Anywhere</b> = you can answer from your iPad or phone. <b>At home</b> = needs your desktop, accounts, payments or forms.</p>`+
+    groups.map(([p,l])=>{const xs=list.filter(a=>a.priority===p&&a.status!=="done");return xs.length?`<h2>${l} · ${xs.length}</h2><div class="pcard">${xs.map(a=>assignHTML(a)).join("")}</div>`:""}).join("")+
+    (doneL.length?`<h2>Done · ${doneL.length}</h2><div class="pcard">${doneL.map(a=>assignHTML(a)).join("")}</div>`:"");
+  bindAssign(v);bindFilter(v);
 }
 function onAssign(){
   const open=ASSIGN.filter(a=>a.status!=="done"), now=open.filter(a=>a.priority==="now");
@@ -1102,7 +1116,7 @@ function petRules(){
     design_audits:lastAudit.map(a=>`${a.ok?"PASS":"FAIL"}: ${a.name}`),
     go_live_gate:gateItems().map(g=>`${g.ok?"green":"blocked"}: ${g.name}`),
     revenue:["Dataset sales","Bounties (buyer-funded, escrowed)","Verify & compliance API (subscription)","Exclusive licenses"],
-    assignments:ASSIGN.map(a=>({id:a.id,title:a.title,kind:a.kind,priority:a.priority,status:a.status,answer:a.answer||"",options:a.options||[],applies_to:areaOf(a)?.label||null})),
+    assignments:ASSIGN.map(a=>({id:a.id,title:a.title,kind:a.kind,priority:a.priority,status:a.status,answer:a.answer||"",options:a.options||[],applies_to:areaOf(a)?.label||null,where:WHERE_LABEL[whereOf(a)]})),
     dashboard_pages:Object.keys(VIEWS)
   };
   return `You are Chip, a small pixel pocket assistant who lives on the Data Dealer operations dashboard. You talk with the founder; call them "you".
@@ -1128,7 +1142,7 @@ const PET_TOOLS=[
  {name:"highlight_part",description:"Show one part of the process-flow diagram and its details. Use the part id from DATA.parts. Returns the part's name.",inputSchema:{type:"object",properties:{id:{type:"string"}},required:["id"]},
   execute:({id})=>{const k=String(id);if(!byId[k])throw new Error("unknown part id");location.hash="#flow";setTimeout(()=>select(k),60);return "highlighted "+byId[k].t}},
  {name:"list_assignments",description:"List the founder's assignments (goals) with id, title, kind, priority, status, saved answer and the dashboard area each applies to.",
-  execute:()=>ASSIGN.map(a=>({id:a.id,title:a.title,kind:a.kind,priority:a.priority,status:a.status,answer:a.answer||"",applies_to:areaOf(a)?.label||null}))},
+  execute:()=>ASSIGN.map(a=>({id:a.id,title:a.title,kind:a.kind,priority:a.priority,status:a.status,answer:a.answer||"",applies_to:areaOf(a)?.label||null,where:WHERE_LABEL[whereOf(a)]}))},
  {name:"go_to_goal_area",description:"Take the founder to the dashboard area where an assignment applies (its page, diagram part or section), or to the assignment itself if it has no area. Returns where it went.",inputSchema:{type:"object",properties:{id:{type:"string"}},required:["id"]},
   execute:({id})=>{const a=ASSIGN.find(x=>x.id===String(id));if(!a)throw new Error("unknown assignment id");return "went to "+goArea(areaOf(a),a.id)}},
  {name:"save_answer",description:"Save the founder's answer to a decision assignment and mark it done. Only when the founder clearly states the decision. Returns 'saved'.",inputSchema:{type:"object",properties:{id:{type:"string"},answer:{type:"string"}},required:["id","answer"]},
@@ -1207,6 +1221,19 @@ const AREAS={
  pricing:{page:"money",label:"Money"}
 };
 const areaOf=a=>(a&&a.area&&a.area.page&&VIEWS.hasOwnProperty(a.area.page))?a.area:(a?AREAS[a.id]||null:null);
+const WHERE_HOME=new Set(["share-dashboard","connect-astra","connect-claude2","accounts","dmca","calls","lawyer"]);
+const whereOf=a=>a&&(a.where==="home"||a.where==="anywhere")?a.where:(WHERE_HOME.has(a&&a.id)?"home":"anywhere");
+const WHERE_LABEL={anywhere:"Anywhere",home:"At home"};
+let assignFilter=(()=>{try{const v=localStorage.getItem("dd-filter");if(v==="all"||v==="anywhere"||v==="home")return v}catch(e){}return matchMedia("(pointer:coarse)").matches?"anywhere":"all"})();
+const passes=a=>assignFilter==="all"||whereOf(a)===assignFilter;
+let STEPS={};
+function computeSteps(){STEPS={};sortedAssign().filter(a=>a.status!=="done"&&passes(a)).forEach((a,i)=>{STEPS[a.id]=i+1})}
+function filterBar(cls){
+  const open=ASSIGN.filter(a=>a.status!=="done"), n=f=>f==="all"?open.length:open.filter(a=>whereOf(a)===f).length;
+  return `<div class="${cls}" role="group" aria-label="Show assignments by where you can do them">${[["all","All"],["anywhere","Anywhere"],["home","At home"]].map(([f,l])=>`<button type="button" data-f="${f}" aria-pressed="${assignFilter===f}">${cls==="pfbar"?l.toUpperCase():l} · ${n(f)}</button>`).join("")}</div>`;
+}
+function setFilter(f){assignFilter=f;try{localStorage.setItem("dd-filter",f)}catch(e){}renderAssignNow();renderPetGoals();if(location.hash==="#assign")renderAssignPage()}
+function bindFilter(root){root.querySelectorAll("[data-f]").forEach(b=>b.addEventListener("click",()=>setFilter(b.dataset.f)))}
 let showFile=null;
 function flashEl(el){if(!el)return;el.classList.remove("flash");void el.offsetWidth;el.classList.add("flash")}
 function scrollToEl(el){if(el)el.scrollIntoView({behavior:reduceMotion?"auto":"smooth",block:"center",inline:"center"})}
@@ -1240,8 +1267,8 @@ function petGoalHTML(a){
   const ar=areaOf(a), done=a.status==="done";
   const act=a.kind==="decision"?`<button type="button" data-g="answer">${a.answer?"EDIT ANSWER":"ANSWER"}</button>`:`<button type="button" data-g="toggle">${done?"UNDO":"MARK DONE"}</button>`;
   return `<div class="pg${done?" done":""}" data-id="${esc(a.id)}"><i class="bx" aria-hidden="true"></i><div>
-    <div class="t">${esc(a.title)}</div>
-    <div class="pgm">${esc(a.hat)} · ${esc(a.kind)}${ar?" · applies to "+esc(ar.label):""}</div>
+    <div class="t">${STEPS[a.id]?STEPS[a.id]+". ":""}${esc(a.title)}</div>
+    <div class="pgm">${WHERE_LABEL[whereOf(a)].toLowerCase()} · ${esc(a.hat)} · ${esc(a.kind)}${ar?" · applies to "+esc(ar.label):""}</div>
     ${a.answer?`<div class="pgm">answer: ${esc(a.answer)}</div>`:""}
     <div class="pg-btns">${ar?`<button type="button" data-g="go">GO →</button>`:""}${act}${a.prompt?`<button type="button" data-g="prompt">COPY PROMPT</button>`:""}</div></div></div>`;
 }
@@ -1250,11 +1277,13 @@ function renderPetGoals(){
   const nowOpen=ASSIGN.filter(a=>a.priority==="now"&&a.status!=="done").length;
   $("#pet-goal-n").textContent=assignState==="ready"?String(ASSIGN.filter(a=>a.status!=="done").length):"";
   if(assignState!=="ready"){el.innerHTML=`<div class="pm sys">Your goals load when this dashboard is open in Claude.</div>`;return}
-  const list=sortedAssign(), groups=[["now","DO NOW"],["next","NEXT"],["later","LATER"]];
-  let h=`<div class="pm sys">${nowOpen?`${nowOpen} need you now.`:"Nothing urgent."} Tap GO to jump to where a goal applies.</div>`;
+  computeSteps();
+  const list=sortedAssign().filter(passes), groups=[["now","DO NOW"],["next","NEXT"],["later","LATER"]];
+  let h=filterBar("pfbar")+`<div class="pm sys">${nowOpen?`${nowOpen} need you now.`:"Nothing urgent."} Numbers are the order. Tap GO to jump to where a goal applies.</div>`;
   groups.forEach(([p,l])=>{const xs=list.filter(a=>a.priority===p&&a.status!=="done");if(xs.length)h+=`<div class="pg-h">${l} · ${xs.length}</div>`+xs.map(petGoalHTML).join("")});
   const done=list.filter(a=>a.status==="done"); if(done.length) h+=`<div class="pg-h">DONE · ${done.length}</div>`+done.map(petGoalHTML).join("");
   el.innerHTML=h;
+  bindFilter(el);
   el.querySelectorAll(".pg").forEach(row=>{
     const a=ASSIGN.find(x=>x.id===row.dataset.id); if(!a) return;
     row.querySelectorAll("[data-g]").forEach(b=>b.addEventListener("click",async()=>{

@@ -16,7 +16,7 @@ description: Produce the Data Dealer weekly brief. Use every Monday (scheduled) 
 2. Run the repo audits (below). Each one is a row: `{check, result: pass|warn|fail, detail, stage}`.
 3. For each role in this order — CEO, Engineer, CFO, Counsel, Data Steward, Growth — write:
    - **Pay attention:** at most 3 bullets, each with a source link and one line on why it matters to us.
-   - **Questions for Astra:** the open assignments for that role, plus at most one new question this week raised. Add each new question to the dashboard's `assignments` collection (kind `decision` or `task`, priority `now`/`next`/`later`, status `open`, next `order` number). Never re-ask an answered one.
+   - **Questions for Astra:** the open assignments for that role, plus at most one new question this week raised. Add each new question to the dashboard's `assignments` collection (kind `decision` or `task`, priority `now`/`next`/`later`, status `open`, next `order` number, `where`: `anywhere` if Astra can answer it from an iPad or phone, `home` if it needs her desktop, accounts, payments or forms). Never re-ask an answered one.
 4. Write `briefs/YYYY-MM-DD.md`, commit and push.
 5. Write the brief to the dashboard (`briefs/<YYYY-MM-DD>` doc) and the audit rows (`audits/<YYYY-MM-DD>` doc, rows in an array).
 6. Send Astra a short notification: the top 3 things across all roles, how many audits failed, and the number of open questions.
