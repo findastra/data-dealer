@@ -1,0 +1,493 @@
+<title>Data Dealer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: card-room ledger. Single column of sections, dataset "cards" as the signature object, mono for anything machine-readable. */
+:root{
+  --bg:#f2f4f0; --surface:#ffffff; --ink:#15211b; --muted:#56635c; --line:#d5dcd5;
+  --felt:#1c5a42; --felt-soft:#e3eee8; --brass:#9a7330; --brass-soft:#f3ead8; --red:#b0362c;
+  --code-bg:#14211b; --code-ink:#dfe9e2; --code-key:#9fd3b6; --code-str:#e8c98a;
+  --f-display:"Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --f-body:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1713; --surface:#16211b; --ink:#e4ece6; --muted:#9aaba1; --line:#2a3a31;
+  --felt:#5fbf92; --felt-soft:#1a3328; --brass:#d6ad62; --brass-soft:#2e2717; --red:#e2776d;
+  --code-bg:#0a110d; --code-ink:#dfe9e2; --code-key:#8fd0ad; --code-str:#e8c98a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1713; --surface:#16211b; --ink:#e4ece6; --muted:#9aaba1; --line:#2a3a31;
+  --felt:#5fbf92; --felt-soft:#1a3328; --brass:#d6ad62; --brass-soft:#2e2717; --red:#e2776d;
+  --code-bg:#0a110d; --code-ink:#dfe9e2; --code-key:#8fd0ad; --code-str:#e8c98a; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 var(--f-body);margin:0}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:20px}
+a{color:var(--felt)}
+:focus-visible{outline:2px solid var(--brass);outline-offset:2px;border-radius:4px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1}
+h2{font-size:clamp(1.7rem,3.4vw,2.4rem);font-weight:700;letter-spacing:-.01em}
+h3{font-size:1.15rem;font-weight:700}
+p{margin:0}
+.eyebrow{font:500 .75rem/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--brass)}
+.lede{color:var(--muted);max-width:62ch;font-size:1.05rem}
+code,.mono{font-family:var(--f-mono)}
+
+/* header */
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font:800 1.15rem/1 var(--f-display);text-decoration:none;color:var(--ink)}
+.brand .pip{width:26px;height:34px;border:1.5px solid var(--ink);border-radius:4px;display:grid;place-items:center;font-size:.8rem;color:var(--red);background:var(--surface)}
+nav{display:flex;gap:18px;flex-wrap:wrap;font-size:.92rem}
+nav a{color:var(--muted);text-decoration:none}
+nav a:hover{color:var(--ink)}
+
+/* hero */
+.hero .wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:center;padding-block:64px 56px}
+.hero h1{font-size:clamp(2.4rem,6vw,4.3rem);font-weight:800;letter-spacing:-.025em;margin-block:14px 18px}
+.hero h1 em{font-style:normal;color:var(--felt)}
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border-radius:6px;font:600 .95rem/1 var(--f-body);text-decoration:none;border:1.5px solid var(--ink);color:var(--ink);background:transparent;cursor:pointer}
+.btn.primary{background:var(--felt);border-color:var(--felt);color:var(--bg)}
+.btn:hover{transform:translateY(-1px)}
+
+/* the signature object: a dataset card */
+.deckcard{position:relative;background:var(--surface);border:1.5px solid var(--ink);border-radius:14px;padding:22px 22px 18px;box-shadow:8px 8px 0 var(--felt-soft);font-size:.9rem;max-width:400px;justify-self:center;width:100%}
+.deckcard .corner{position:absolute;font:700 .95rem/1 var(--f-display);color:var(--red);text-align:center}
+.deckcard .corner.tl{top:12px;left:14px}.deckcard .corner.br{bottom:12px;right:14px;transform:rotate(180deg)}
+.deckcard .head{padding-left:26px;display:flex;justify-content:space-between;gap:10px;align-items:start}
+.grade{font:800 1.6rem/1 var(--f-display);color:var(--felt);border:2px solid var(--felt);border-radius:8px;width:44px;height:44px;display:grid;place-items:center;flex:none}
+.deckcard dl{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:18px 0 12px}
+.deckcard dt{color:var(--muted);font-size:.8rem}
+.deckcard dd{margin:0;font-family:var(--f-mono);font-size:.82rem;font-variant-numeric:tabular-nums;min-width:0;overflow-wrap:anywhere}
+.ratio{height:8px;border-radius:4px;background:var(--brass-soft);overflow:hidden;display:flex;margin:4px 0 2px}
+.ratio span{background:var(--brass)}
+.example-tag{display:inline-block;margin-top:10px;font:500 .7rem/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+
+/* audience switch */
+.switch{display:inline-flex;border:1.5px solid var(--ink);border-radius:999px;padding:3px;gap:2px;background:var(--surface)}
+.switch button{border:0;background:transparent;color:var(--ink);font:600 .9rem/1 var(--f-body);padding:9px 16px;border-radius:999px;cursor:pointer}
+.switch button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.audience{border-block:1px solid var(--line);background:var(--surface)}
+.audience .wrap{padding-block:40px;display:grid;gap:22px}
+.aud-panel{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.aud-panel .item{display:grid;gap:6px}
+.aud-panel .item b{font-family:var(--f-display);font-size:1.05rem}
+.aud-panel .item p{color:var(--muted);font-size:.93rem}
+pre.agent-view{margin:0;background:var(--code-bg);color:var(--code-ink);border-radius:10px;padding:20px;font:400 .84rem/1.6 var(--f-mono);overflow-x:auto;white-space:pre}
+
+section.block .wrap{padding-block:72px;display:grid;gap:30px}
+.head-row{display:grid;gap:12px}
+
+/* flow */
+.flow{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;counter-reset:step}
+.flow li{counter-increment:step;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 16px 16px 54px;position:relative;min-width:0}
+.flow li::before{content:counter(step);position:absolute;left:14px;top:14px;width:28px;height:28px;border-radius:50%;border:1.5px solid var(--felt);color:var(--felt);font:600 .85rem/25px var(--f-mono);text-align:center}
+.flow li b{display:block;font-family:var(--f-display);font-size:1.05rem}
+.flow li span{color:var(--muted);font-size:.9rem}
+.flow li.buy{border-color:var(--brass)}
+.flow li.buy::before{border-color:var(--brass);color:var(--brass)}
+
+/* products */
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.prod{border-top:2px solid var(--ink);padding-top:14px;display:grid;gap:6px;align-content:start}
+.prod p{color:var(--muted);font-size:.93rem}
+.prod .who{font:500 .75rem/1.3 var(--f-mono);color:var(--brass);letter-spacing:.04em}
+
+/* verification table */
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:.92rem}
+th,td{text-align:left;padding:12px 16px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:600 .75rem/1.2 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--bg)}
+tr:last-child td{border-bottom:0}
+td:first-child{font-weight:600;white-space:nowrap}
+.grades{display:flex;gap:14px;flex-wrap:wrap}
+.gchip{display:flex;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 16px;flex:1 1 220px}
+.gchip .grade{width:38px;height:38px;font-size:1.3rem}
+.gchip.b .grade{color:var(--brass);border-color:var(--brass)}
+.gchip.c .grade{color:var(--muted);border-color:var(--muted)}
+.gchip p{font-size:.88rem;color:var(--muted)}
+
+/* story */
+.story{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;align-items:start}
+.timeline{list-style:none;margin:0;padding:0;border-left:2px solid var(--line);display:grid;gap:18px}
+.timeline li{position:relative;padding-left:22px}
+.timeline li::before{content:"";position:absolute;left:-7px;top:7px;width:12px;height:12px;border-radius:50%;background:var(--bg);border:2px solid var(--felt)}
+.timeline .t{font:500 .75rem/1 var(--f-mono);color:var(--brass);letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:4px}
+.timeline p{font-size:.95rem}
+.note{font-size:.85rem;color:var(--muted)}
+
+/* agents */
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:36px;align-items:start}
+.code{background:var(--code-bg);color:var(--code-ink);border-radius:10px;padding:20px;font:400 .82rem/1.65 var(--f-mono);overflow-x:auto;white-space:pre;margin:0}
+.code .k{color:var(--code-key)}.code .s{color:var(--code-str)}.code .c{color:#7d8f85}
+.rails{display:grid;gap:10px;margin-top:6px}
+.rail{display:grid;grid-template-columns:150px minmax(0,1fr);gap:12px;padding:12px 0;border-bottom:1px solid var(--line);font-size:.93rem}
+.rail b{font-family:var(--f-display)}
+.rail span{color:var(--muted)}
+
+/* plans */
+.plans{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.plan{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px;display:grid;gap:10px;align-content:start}
+.plan.feature{border:1.5px solid var(--felt)}
+.plan ul{margin:0;padding-left:18px;color:var(--muted);font-size:.9rem;display:grid;gap:4px}
+.plan .tag{font:500 .72rem/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--brass)}
+
+/* verify */
+.verify{background:var(--felt);color:var(--bg)}
+.verify .wrap{padding-block:64px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;align-items:center}
+.verify .eyebrow{color:var(--brass-soft)}
+.verify .lede{color:color-mix(in srgb,var(--bg) 82%,transparent)}
+.verify form{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+.verify input{flex:1 1 240px;min-width:0;padding:11px 14px;border-radius:6px;border:1.5px solid var(--bg);background:transparent;color:var(--bg);font:400 .88rem var(--f-mono)}
+.verify input::placeholder{color:color-mix(in srgb,var(--bg) 60%,transparent)}
+.verify .btn{border-color:var(--bg);color:var(--felt);background:var(--bg)}
+.result{background:var(--code-bg);color:var(--code-ink);border-radius:10px;padding:18px;font:400 .8rem/1.6 var(--f-mono);white-space:pre-wrap;overflow-wrap:anywhere;min-height:200px}
+.badge{display:inline-flex;align-items:center;gap:8px;border:1.5px solid var(--bg);border-radius:999px;padding:6px 14px;font:600 .82rem/1 var(--f-mono);margin-top:18px}
+
+/* contributors */
+.payouts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.payout{border:1px solid var(--line);border-radius:10px;padding:16px;background:var(--surface);display:grid;gap:4px}
+.payout b{font-family:var(--f-display)}
+.payout span{color:var(--muted);font-size:.88rem}
+.rules{display:flex;flex-wrap:wrap;gap:8px}
+.rules span{font:500 .78rem/1 var(--f-mono);border:1px solid var(--line);border-radius:999px;padding:8px 12px;background:var(--surface)}
+.rules span.no{color:var(--red);border-color:color-mix(in srgb,var(--red) 40%,transparent)}
+
+/* faq */
+details{border-bottom:1px solid var(--line);padding-block:16px}
+summary{cursor:pointer;font:700 1.05rem/1.3 var(--f-display);list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::after{content:"+";color:var(--brass);font-family:var(--f-mono)}
+details[open] summary::after{content:"−"}
+details p{color:var(--muted);margin-top:10px;max-width:70ch}
+
+footer{border-top:1px solid var(--line)}
+footer .wrap{padding-block:28px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:.85rem;color:var(--muted)}
+
+@media (max-width:860px){
+  .hero .wrap,.story,.split,.verify .wrap{grid-template-columns:1fr}
+  .flow,.grid3,.aud-panel{grid-template-columns:1fr 1fr}
+  .plans,.payouts{grid-template-columns:1fr 1fr}
+}
+@media (max-width:560px){
+  .flow,.grid3,.aud-panel,.plans,.payouts{grid-template-columns:1fr}
+  nav{display:none}
+  .rail{grid-template-columns:1fr;gap:2px}
+  .hero .wrap{padding-block:40px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}.btn:hover{transform:none}}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top"><span class="pip" aria-hidden="true">♦</span>Data Dealer</a>
+    <nav aria-label="Sections">
+      <a href="#how">How it works</a>
+      <a href="#verify-layers">Verification</a>
+      <a href="#agents">For agents</a>
+      <a href="#plans">Plans</a>
+      <a href="#contribute">Get paid</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <span class="eyebrow">Verified training data for AI agents</span>
+        <h1>The only dealer that's <em>fully legit.</em></h1>
+        <p class="lede">Data Dealer pays real people for real data, checks every record, grows it into larger synthetic sets, and sells it with a signed record of where every row came from. Agents can search, order and buy on their own, any time of day.</p>
+        <div class="cta">
+          <a class="btn primary" href="#agents">Connect your agent</a>
+          <a class="btn" href="#how">See how it works</a>
+        </div>
+      </div>
+      <article class="deckcard" aria-label="Example dataset card">
+        <span class="corner tl" aria-hidden="true">A<br>♦</span>
+        <span class="corner br" aria-hidden="true">A<br>♦</span>
+        <div class="head">
+          <div>
+            <span class="eyebrow">Deck · industrial maintenance</span>
+            <h3 style="margin-top:8px">Centrifugal Pump Diagnostics</h3>
+          </div>
+          <span class="grade" title="Verification grade A">A</span>
+        </div>
+        <dl>
+          <dt>Records</dt><dd>5,000 Q&amp;A pairs</dd>
+          <dt>Origin</dt><dd>300 expert-written seeds<div class="ratio" aria-hidden="true"><span style="width:6%"></span></div>6% real · 94% synthetic</dd>
+          <dt>Prompts</dt><dd>logged per record</dd>
+          <dt>License</dt><dd>commercial, non-exclusive</dd>
+          <dt>Format</dt><dd>parquet · croissant.json</dd>
+          <dt>Manifest</dt><dd>sha256:9f3c…a71e ✓ signed</dd>
+        </dl>
+        <span class="example-tag">Example Deck · illustrative</span>
+      </article>
+    </div>
+  </section>
+
+  <section class="audience" aria-labelledby="aud-h">
+    <div class="wrap">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap">
+        <h2 id="aud-h" style="font-size:1.5rem">One store, two front doors</h2>
+        <div class="switch" role="group" aria-label="Choose audience">
+          <button type="button" id="aud-humans" aria-pressed="true">For the people funding agents</button>
+          <button type="button" id="aud-agents" aria-pressed="false">For agents</button>
+        </div>
+      </div>
+      <div id="panel-humans" class="aud-panel">
+        <div class="item"><b>Set the rules once</b><p>Pick a monthly budget and a per-purchase limit when you sign up. Your agent buys inside those limits and nothing outside them.</p></div>
+        <div class="item"><b>Legal standing you can show</b><p>Every Deck ships with its license, contributor consents and a signed manifest. Export the full trail for your lawyers or regulators.</p></div>
+        <div class="item"><b>See what was bought, and why</b><p>A dashboard lists each purchase, the request that triggered it, its cost and its provenance grade.</p></div>
+      </div>
+      <pre id="panel-agents" class="agent-view" hidden># datadealer.ai/llms.txt
+> Verified, provenance-signed datasets. Buy via API or MCP.
+
+## Endpoints
+- MCP server: mcp.datadealer.ai  (tools: search_decks, get_manifest,
+  get_sample, purchase_deck, request_dataset, ticket_status)
+- REST: api.datadealer.ai/v1  (OpenAPI at /v1/openapi.json)
+
+## Rules
+- Samples and manifests are free.
+- Prices are fixed and returned in every response.
+- Purchases within your account's budget cap complete instantly.
+- Every record carries: origin (real | synthetic), source or prompt, license.</pre>
+    </div>
+  </section>
+
+  <section class="block" id="how" aria-labelledby="how-h">
+    <div class="wrap">
+      <div class="head-row">
+        <span class="eyebrow">How it works</span>
+        <h2 id="how-h">From a contributor's upload to an agent's training run</h2>
+        <p class="lede">Every step is automated. People supply the data; software checks it, grows it, signs it and delivers it.</p>
+      </div>
+      <ol class="flow">
+        <li><b>The Source</b><span>Contributors pass an ID check, sign an ownership agreement and upload.</span></li>
+        <li><b>The Assay</b><span>Eight layers of checks: origin, file forensics, personal-data scrub, quality.</span></li>
+        <li><b>The Forge</b><span>Verified seeds are expanded into synthetic records. Every prompt is logged.</span></li>
+        <li><b>Pit Boss</b><span>Three independent AI judges audit a random sample. Over 5% errors and the batch is regenerated.</span></li>
+        <li><b>The Ledger</b><span>A manifest of sources, consents, licenses, prompts and hashes is signed and published.</span></li>
+        <li><b>The Deck</b><span>Packaged, graded and listed in the catalog with a free sample.</span></li>
+        <li class="buy"><b>The Table</b><span>Agents search, read manifests, order custom sets and buy through the API or MCP.</span></li>
+        <li class="buy"><b>The Cage</b><span>Checks the budget cap, charges the account and pays contributor royalties.</span></li>
+        <li class="buy"><b>The Shoe</b><span>Delivers a signed download or a direct share to S3, Snowflake or Hugging Face.</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="offer-h" style="background:var(--surface);border-block:1px solid var(--line)">
+    <div class="wrap">
+      <div class="head-row">
+        <span class="eyebrow">What we provide</span>
+        <h2 id="offer-h">Six ways to get clean data</h2>
+      </div>
+      <div class="grid3">
+        <div class="prod"><span class="who">Fine-tuners · RAG builders</span><h3>Catalog Decks</h3><p>Ready-made verified datasets. Preview free, buy, download.</p></div>
+        <div class="prod"><span class="who">Agent builders · niche startups</span><h3>Custom orders</h3><p>Send a spec and a budget. Get a quote in minutes and a verified set when it's done.</p></div>
+        <div class="prod"><span class="who">Teams training on a schedule</span><h3>Streams</h3><p>A Deck that refreshes every month on a subscription.</p></div>
+        <div class="prod"><span class="who">Evaluators · safety teams</span><h3>Private eval sets</h3><p>Test sets never published online, so no model has seen them in training.</p></div>
+        <div class="prod"><span class="who">Legal · compliance</span><h3>Provenance certificates</h3><p>A signed manifest plus an audit report for any Deck you bought.</p></div>
+        <div class="prod"><span class="who">Companies with their own data</span><h3>Verification service</h3><p>We run your dataset through the Assay and certify it.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="verify-layers" aria-labelledby="ver-h">
+    <div class="wrap">
+      <div class="head-row">
+        <span class="eyebrow">Verification, plainly</span>
+        <h2 id="ver-h">What we check, and what we can't promise</h2>
+        <p class="lede">No one can prove with certainty that an uploader owns their data. We stack checks that catch most problems, put legal responsibility on the contributor, and grade every Deck by how much was checked.</p>
+      </div>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Layer</th><th>What happens</th><th>Catches</th></tr></thead>
+          <tbody>
+            <tr><td>1 · Identity</td><td>ID check and 18+ verification before any payout</td><td>Fake accounts, minors, repeat offenders</td></tr>
+            <tr><td>2 · Attestation</td><td>Contributor signs that they own the data, with an indemnity clause</td><td>Shifts liability, deters casual theft</td></tr>
+            <tr><td>3 · Origin</td><td>Text compared against web crawls; images reverse-searched; code license-scanned</td><td>Copied web content, stolen images, restricted code</td></tr>
+            <tr><td>4 · File forensics</td><td>Export files checked for genuine structure and metadata</td><td>Fabricated "personal" data dumps</td></tr>
+            <tr><td>5 · Personal data</td><td>Names, emails, phone numbers, addresses and IDs detected and removed</td><td>Privacy violations</td></tr>
+            <tr><td>6 · Quality</td><td>Schema rules, deduplication and an AI accuracy check</td><td>Junk, spam, low-effort uploads</td></tr>
+            <tr><td>7 · Judge panel</td><td>Three independent models audit a random sample; batches over 5% errors fail</td><td>What any single check missed</td></tr>
+            <tr><td>8 · After sale</td><td>Takedowns, contributor clawbacks, removal from future sales</td><td>Problems found later</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="grades">
+        <div class="gchip"><span class="grade">A</span><p>All eight layers, audited by the judge panel</p></div>
+        <div class="gchip b"><span class="grade">B</span><p>Automated layers only</p></div>
+        <div class="gchip c"><span class="grade">C</span><p>Public-source data, license-checked</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="story-h" style="background:var(--surface);border-block:1px solid var(--line)">
+    <div class="wrap story">
+      <div class="head-row">
+        <span class="eyebrow">A real-world order</span>
+        <h2 id="story-h">How a pump-repair AI got its training data</h2>
+        <p class="lede">A startup builds an agent that helps factory technicians diagnose pump failures. It needs 5,000 troubleshooting Q&amp;As and can't legally scrape forums.</p>
+        <p class="note">Illustrative example. Numbers show how an order would flow, not a real customer.</p>
+      </div>
+      <ol class="timeline">
+        <li><span class="t">Request</span><p>The agent finds no matching Deck and calls <code>request_dataset</code> with its spec and a $2,000 budget.</p></li>
+        <li><span class="t">Quote</span><p>A $1,800 quote comes back. It's inside the account's spending rules, so the order starts automatically.</p></li>
+        <li><span class="t">Seeds</span><p>A bounty goes out to 25 vetted technicians, who write 300 Q&amp;As from experience at $3 per accepted item.</p></li>
+        <li><span class="t">Forge</span><p>Seeds pass the Assay and are expanded to 5,000 records, each with its generating prompt.</p></li>
+        <li><span class="t">Audit</span><p>Filters drop 400 weak records. The judge panel audits 200 at random, and the batch passes.</p></li>
+        <li><span class="t">Delivery</span><p>Parquet files, a datasheet and a signed manifest land in the buyer's S3 bucket.</p></li>
+        <li><span class="t">Royalties</span><p>The Deck joins the catalog. Every resale pays the 25 contributors again.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="block" id="agents" aria-labelledby="agents-h">
+    <div class="wrap split">
+      <div class="head-row">
+        <span class="eyebrow">For agents</span>
+        <h2 id="agents-h">Order a dataset with one tool call</h2>
+        <p class="lede">Connect to our MCP server or REST API. Search, read manifests, pull free samples, buy, or file a custom order. Prices are fixed and come back in every response.</p>
+        <div class="rails">
+          <div class="rail"><b>Prepaid credits</b><span>The account tops up by card; the agent spends within its cap.</span></div>
+          <div class="rail"><b>Invoices</b><span>Monthly billing for companies.</span></div>
+          <div class="rail"><b>Cloud billing</b><span>Buy through AWS, Azure or Google Cloud marketplaces.</span></div>
+          <div class="rail"><b>x402</b><span>Pay-per-call micropayments for fully autonomous agents. Samples and small sets first.</span></div>
+        </div>
+      </div>
+      <pre class="code" aria-label="Example custom order request"><span class="c">// MCP tool call: request_dataset</span>
+{
+  <span class="k">"domain"</span>: <span class="s">"industrial maintenance / centrifugal pumps"</span>,
+  <span class="k">"task"</span>: <span class="s">"diagnostic Q&amp;A"</span>,
+  <span class="k">"records"</span>: 5000,
+  <span class="k">"format"</span>: <span class="s">"parquet"</span>,
+  <span class="k">"license"</span>: <span class="s">"commercial"</span>,
+  <span class="k">"real_ratio_min"</span>: 0.05,
+  <span class="k">"budget_usd"</span>: 2000,
+  <span class="k">"deadline"</span>: <span class="s">"2026-11-01"</span>
+}
+
+<span class="c">// response</span>
+{
+  <span class="k">"ticket"</span>: <span class="s">"tk_8H2q"</span>,
+  <span class="k">"quote_usd"</span>: 1800,
+  <span class="k">"status"</span>: <span class="s">"accepted"</span>,
+  <span class="k">"sample"</span>: <span class="s">"api.datadealer.ai/v1/tickets/tk_8H2q/sample"</span>,
+  <span class="k">"stages"</span>: [<span class="s">"sourcing"</span>, <span class="s">"generating"</span>, <span class="s">"auditing"</span>, <span class="s">"delivered"</span>]
+}</pre>
+    </div>
+  </section>
+
+  <section class="block" id="plans" aria-labelledby="plans-h" style="background:var(--surface);border-block:1px solid var(--line)">
+    <div class="wrap">
+      <div class="head-row">
+        <span class="eyebrow">Plans</span>
+        <h2 id="plans-h">Start free. Pay when your agent buys.</h2>
+        <p class="lede">Pricing is being set with our first customers.</p>
+      </div>
+      <div class="plans">
+        <div class="plan"><span class="tag">Free</span><h3>Table access</h3><ul><li>Search the catalog</li><li>Free samples</li><li>Manifest verification</li></ul></div>
+        <div class="plan feature"><span class="tag">Most agents</span><h3>Credits</h3><ul><li>Monthly credit bundle at a discount</li><li>Budget caps and limits</li><li>Custom orders</li></ul></div>
+        <div class="plan"><span class="tag">Ongoing</span><h3>Streams</h3><ul><li>Decks refreshed monthly</li><li>Standing orders</li><li>Version history</li></ul></div>
+        <div class="plan"><span class="tag">Companies</span><h3>Enterprise</h3><ul><li>Audit Vault exports</li><li>Legal indemnity</li><li>Cloud marketplace billing</li></ul></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="verify" aria-labelledby="verify-h">
+    <div class="wrap">
+      <div>
+        <span class="eyebrow">Provenance you can check</span>
+        <h2 id="verify-h" style="margin-top:10px">Paste a hash. See where every row came from.</h2>
+        <p class="lede" style="margin-top:12px">Every Deck's manifest is signed and published. Anyone can check one, whether they bought it or not.</p>
+        <form id="verify-form">
+          <label for="hash" class="sr" style="position:absolute;left:-9999px">Dataset hash</label>
+          <input id="hash" name="hash" value="sha256:9f3c…a71e" autocomplete="off" spellcheck="false">
+          <button class="btn" type="submit">Verify</button>
+        </form>
+        <span class="badge">♦ Dealt Clean · Grade A</span>
+        <p class="note" style="color:inherit;opacity:.8;margin-top:10px">Buyers can put this badge on their model cards.</p>
+      </div>
+      <div class="result" id="verify-result" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section class="block" id="contribute" aria-labelledby="contrib-h">
+    <div class="wrap">
+      <div class="head-row">
+        <span class="eyebrow">Get paid for your data</span>
+        <h2 id="contrib-h">Your knowledge is worth something. Get paid every time it sells.</h2>
+        <p class="lede">Answer bounties in your field, license your own writing or work, or sell exports of data you created. You get paid when it's accepted, and again whenever it's resold.</p>
+      </div>
+      <div class="payouts">
+        <div class="payout"><b>Flat bounty</b><span>A fixed amount per accepted item</span></div>
+        <div class="payout"><b>Royalty</b><span>A share of every sale that uses your data</span></div>
+        <div class="payout"><b>Hybrid</b><span>A small upfront payment plus royalties</span></div>
+        <div class="payout"><b>Founding pool</b><span>Early contributors share a bonus pool</span></div>
+      </div>
+      <div class="rules" aria-label="Contributor rules">
+        <span>18+ with ID check</span><span>Only data you own</span><span>You can delete it from future sales</span><span class="no">No employer or work data</span><span class="no">No other people's private info</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="faq-h" style="background:var(--surface);border-top:1px solid var(--line)">
+    <div class="wrap">
+      <h2 id="faq-h">Questions</h2>
+      <div>
+        <details><summary>Is anyone reviewing data by hand?</summary><p>No. Verification, auditing, pricing, purchasing and delivery are fully automated. People are involved only as contributors who supply the original data.</p></details>
+        <details><summary>Is Data Dealer a RAG system?</summary><p>No. RAG is a way for an AI to look things up while it answers. Data Dealer is a marketplace and data supply chain. Many buyers use our Decks to build their own RAG systems.</p></details>
+        <details><summary>Why sell synthetic data at all?</summary><p>Real expert data is scarce and expensive. Synthetic data grown from verified real seeds gives buyers scale, and every synthetic record is labeled with the prompt that made it so they can decide how to use it.</p></details>
+        <details><summary>What happens if bad data gets through?</summary><p>Every Deck can be taken down, the contributor's payout clawed back, and buyers notified with a corrected version.</p></details>
+        <details><summary>Can my agent buy without me?</summary><p>Yes, within the budget cap and per-purchase limit you set when you create the account.</p></details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Data Dealer · datadealer.ai</span>
+    <span>Built by Astra · Concept site, not yet launched</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var h=document.getElementById('aud-humans'), a=document.getElementById('aud-agents');
+  var ph=document.getElementById('panel-humans'), pa=document.getElementById('panel-agents');
+  function set(agents){
+    h.setAttribute('aria-pressed', String(!agents)); a.setAttribute('aria-pressed', String(agents));
+    ph.hidden=agents; pa.hidden=!agents;
+    try{localStorage.setItem('dd-aud', agents?'agents':'humans')}catch(e){}
+  }
+  h.addEventListener('click',function(){set(false)}); a.addEventListener('click',function(){set(true)});
+  try{ if(localStorage.getItem('dd-aud')==='agents') set(true); }catch(e){}
+
+  var out=document.getElementById('verify-result');
+  var sample=[
+    'Deck      Centrifugal Pump Diagnostics  (example)',
+    'Hash      sha256:9f3c…a71e',
+    'Signature valid · Ed25519 · Data Dealer Ledger key',
+    'Grade     A · all 8 layers · judge panel passed (1.5% errors)',
+    '',
+    'Records   5,000',
+    '  real        300  · 25 contributors · consents on file',
+    '  synthetic 4,700  · prompts logged · open-weight generator',
+    'License   commercial, non-exclusive',
+    'Removed   400 records (duplicates, failed fact checks)',
+    'Issued    2026-11-01'
+  ].join('\n');
+  function show(v){
+    v=(v||'').trim();
+    if(!v){out.textContent='Enter a dataset hash to check it.';return}
+    if(v.indexOf('9f3c')!==-1){out.textContent=sample;return}
+    out.textContent='No Deck found for '+v+'\nCheck the hash and try again. In this concept site only the example hash resolves.';
+  }
+  document.getElementById('verify-form').addEventListener('submit',function(e){e.preventDefault();show(document.getElementById('hash').value)});
+  show(document.getElementById('hash').value);
+})();
+</script>
