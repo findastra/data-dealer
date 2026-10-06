@@ -17,7 +17,7 @@ A marketplace that pays people for real data, verifies it, expands it into synth
 | `skills/` | Repeatable procedures (weekly brief, provenance manifest, handoffs) |
 | `handoffs/` | Task cards for whichever assistant picks them up |
 | `briefs/` | Weekly briefs |
-| `dashboard/` | Source of the live process-flow dashboard |
+| `dashboard/` | Source of the live ops dashboard, published at https://claude.ai/artifact/CzBXnEWyRjq5Tui7o3oRS8 (assignments, audits, go-live gate) |
 
 ## Rules for every assistant
 1. Read `docs/guardrails.md` before changing anything that touches money, keys, personal data or contributor agreements.

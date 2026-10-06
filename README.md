@@ -6,6 +6,10 @@
 
 ## Start here (v2, Oct 2026)
 
+**Live ops dashboard (assignments, go-live gate, audits, Chip):** https://claude.ai/artifact/CzBXnEWyRjq5Tui7o3oRS8
+
+Private: open it signed in to Astra's Claude account. The link never changes; every update is published to the same address. The source is in [`dashboard/`](dashboard/).
+
 | What | Where |
 | --- | --- |
 | Plan v2: the flow, every change from v1, phases | [`docs/PLAN-v2.md`](docs/PLAN-v2.md) |
