@@ -19,7 +19,7 @@ $1.56B in 2023 growing to $7.56B by 2031, 21.9% CAGR (Verified Market Research).
 | --- | --- | --- | --- |
 | Real data from paid people | Yes | No | Yes |
 | Synthetic expansion | Rarely | Yes | Yes, from verified seeds |
-| Signed, public provenance per Deck | Varies | Rarely | Core product |
+| Signed, public provenance per dataset | Varies | Rarely | Core product |
 | Every AI model recorded | No | No | Yes |
 | Disclosure exports (AB 2013, EU) | Rarely | No | Yes, as an API |
 | Agent buyers (MCP, x402) | Rarely | No | Yes |

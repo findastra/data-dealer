@@ -5,24 +5,24 @@
 ## Where cash comes from (green on the dashboard)
 | Stream | Who pays | Timing | Character |
 | --- | --- | --- | --- |
-| Deck sales | Buyer | At order | Transactional, high margin on repeats |
+| Dataset sales | Buyer | At order | Transactional, high margin on repeats |
 | Bounties | Buyer, escrowed up front | Before work starts | Funds its own supply |
 | Verify & compliance API | Buyers and their auditors | Monthly | Recurring |
 | Exclusive licenses | One buyer | At signing | Lumpy, premium |
 
 ## Where cash goes
-Contributor royalties (after a 30-day hold), payment fees, compute (Forge + judges), model APIs, cloud, legal, team.
+Contributor royalties (after a 30-day hold), payment fees, compute (Synthesis + judges), model APIs, cloud, legal, team.
 
-## One $10,000 Deck sale (illustrative)
+## One $10,000 dataset sale (illustrative)
 | Line | Assumption | Amount |
 | --- | --- | --- |
 | Buyer pays | Standard tier, grade B | $10,000 |
 | Contributor royalty pool | 30% | −$3,000 |
 | Payment processing | ~3% card | −$300 |
-| Forge + judges compute | First build of this Deck | −$800 |
+| Synthesis + judges compute | First build of this dataset | −$800 |
 | **Gross profit** | **59%** | **$5,900** |
 
-Second sale of the same Deck: no compute line → about 67% gross margin.
+Second sale of the same dataset: no compute line → about 67% gross margin.
 
 ## Self-funding rules
 1. Royalties are paid only from collected cash, after the holdback.
@@ -31,7 +31,7 @@ Second sale of the same Deck: no compute line → about 67% gross margin.
 4. Under 6 months of runway, new bounties pause.
 
 ## Growth loop
-Buyer ticket → bounty → contributors paid → verified seeds → Deck sold → repeat sales → more catalog → more buyers find a fit without a ticket (faster match, higher margin).
+Buyer ticket → bounty → contributors paid → verified seeds → dataset sold → repeat sales → more catalog → more buyers find a fit without a ticket (faster match, higher margin).
 
 ## Limits
-See `docs/guardrails.md`. The system grows only inside those caps; the Shift Manager desk can stop anything.
+See `docs/guardrails.md`. The system grows only inside those caps; the Review desk can stop anything.

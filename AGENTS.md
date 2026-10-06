@@ -13,7 +13,7 @@ A marketplace that pays people for real data, verifies it, expands it into synth
 | `docs/models.md` | Every AI model in the system, its job, and what data it touches |
 | `docs/research/` | Research notes with sources |
 | `docs/pitch/` | Pitch narrative (mini deck → technical deck) |
-| `.claude/agents/` | Agent definitions: pipeline agents and the six exec hats |
+| `.claude/agents/` | Agent definitions: pipeline agents and the six role agents |
 | `skills/` | Repeatable procedures (weekly brief, provenance manifest, handoffs) |
 | `handoffs/` | Task cards for whichever assistant picks them up |
 | `briefs/` | Weekly briefs |

@@ -20,7 +20,7 @@ FILES = (
     + sorted(p for p in (ROOT / "handoffs").glob("[0-9]*.md"))
 )
 
-PIPELINE_FIRST = ["dealer.md", "assayer.md", "pit-boss-judge.md"]
+PIPELINE_FIRST = ["sourcing-agent.md", "verifier.md", "eval-judge.md"]
 
 
 def order(p: pathlib.Path) -> tuple:

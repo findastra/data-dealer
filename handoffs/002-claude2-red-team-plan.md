@@ -9,4 +9,4 @@ Red-team Plan v2. Find the five most likely ways the system could (a) lose money
 `handoffs/results/002-red-team.md` lists the five failure paths, ranked, with a proposed fix for any guardrail that doesn't hold. Note which model and version did the review.
 
 ## Return
-Commit and set `status: done`. The Engineer and Counsel hats will pick it up in the next weekly brief.
+Commit and set `status: done`. The Engineer and Counsel role agents will pick it up in the next weekly brief.

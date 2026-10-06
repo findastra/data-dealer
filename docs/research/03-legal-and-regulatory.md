@@ -23,13 +23,13 @@ Case statuses from a public tracker: [you.com](https://for.you.com/posts/ai-copy
 **Lesson:** courts have been more forgiving about *training* than about *how the data was obtained*. A provable acquisition chain is the product.
 
 ## Duties from hosting uploads
-- **Child safety (REPORT Act, signed 7 May 2024):** providers with actual knowledge of apparent CSAM must report to NCMEC's CyberTipline, preserve the material for one year, and secure it per the NIST framework. First-violation fines up to $600K (≤100M monthly users). Hash-match scanning at Intake (Thorn Safer or PhotoDNA) before any person or model sees a file. [Wilson Sonsini](https://wsgr.com/en/insights/new-minor-safety-obligations-for-online-services-report-act-expands-child-sexual-exploitation-reporting-requirements.html)
+- **Child safety (REPORT Act, signed 7 May 2024):** providers with actual knowledge of apparent CSAM must report to NCMEC's CyberTipline, preserve the material for one year, and secure it per the NIST framework. First-violation fines up to $600K (≤100M monthly users). Hash-match scanning at Quarantine (Thorn Safer or PhotoDNA) before any person or model sees a file. [Wilson Sonsini](https://wsgr.com/en/insights/new-minor-safety-obligations-for-online-services-report-act-expands-child-sexual-exploitation-reporting-requirements.html)
 - **Personal data (GDPR, CCPA):** right to erasure. Lock only scrubbed data; crypto-shred raw files. [Impossible Cloud](https://www.impossiblecloud.com/magazine/s3-object-lock-and-gdpr-navigating-compliance-in-2026-new)
-- **DMCA:** register a designated agent; run takedowns through the Shift Manager desk.
+- **DMCA:** register a designated agent; run takedowns through the Review desk.
 
 ## Contracts to have drafted
 1. **Contributor agreement:** ownership attestation, license grant (including synthetic derivatives), consent scope, indemnity, royalty terms, holdback, termination and recall.
-2. **Deck license:** permitted uses (ODRL terms mirror it), no resale, tier rules, audit rights, canary-row notice.
+2. **Dataset license:** permitted uses (ODRL terms mirror it), no resale, tier rules, audit rights, canary-row notice.
 3. **Terms for agent buyers:** who is bound when an agent buys (the account owner), spending-policy responsibility.
 4. **Founder agreement:** equity, vesting (4 years, 1-year cliff), IP assignment to the company, roles, decision rights, departure terms. Each founder should check their employer's invention-assignment and outside-activity policies first.
 

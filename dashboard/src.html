@@ -289,7 +289,7 @@ td.num{text-align:right}
       <b>Data Dealer</b><span>Ops</span>
     </a>
     <nav class="tabs" aria-label="Pages">
-      <a href="#flow">Flow</a><a href="#assign">Assignments</a><a href="#agents">Agents &amp; skills</a><a href="#models">Models</a><a href="#money">Money</a><a href="#names">Names</a><a href="#research">Research</a><a href="#brief">Weekly brief</a><a href="#plan">Plan v2</a>
+      <a href="#flow">Flow</a><a href="#assign">Assignments</a><a href="#agents">Agents &amp; skills</a><a href="#models">Models</a><a href="#money">Money</a><a href="#naming">Naming</a><a href="#research">Research</a><a href="#brief">Weekly brief</a><a href="#plan">Plan v2</a>
     </nav>
     <div class="status">
       <span class="chip" id="chip-living"><i class="dot" id="living-dot"></i>Living layer <b id="living-txt">checking…</b></span>
@@ -307,7 +307,7 @@ td.num{text-align:right}
       <div class="canvasbox">
         <div class="canvashead">
           <h1>Process flow</h1>
-          <p>Click any part for what it does, its software, model and harness. Hover to trace its flows.</p>
+          <p>Data plane on top, control plane below. Click any part for what it does, its software, model and harness; hover to trace its flows.</p>
           <div class="zoom" role="group" aria-label="Zoom">
             <button type="button" data-z="-">−</button><button type="button" data-z="fit">Fit</button><button type="button" data-z="+">+</button>
           </div>
@@ -334,7 +334,7 @@ td.num{text-align:right}
   <section id="v-agents" class="view page" hidden></section>
   <section id="v-models" class="view page" hidden></section>
   <section id="v-money" class="view page" hidden></section>
-  <section id="v-names" class="view page" hidden></section>
+  <section id="v-naming" class="view page" hidden></section>
   <section id="v-research" class="view page" hidden></section>
   <section id="v-brief" class="view page" hidden></section>
   <section id="v-plan" class="view page" hidden></section>
@@ -345,7 +345,7 @@ td.num{text-align:right}
   <div class="pet-head"><b>CHIP</b><span>data dealer<br>pocket pet</span><button type="button" class="pet-x" id="pet-close" aria-label="Close Chip">×</button></div>
   <div class="lcd pet-screen"><canvas id="pet-big" width="32" height="24"></canvas><div class="pet-stats"><div>MOOD<span id="st-mood"></span></div><div>FED&nbsp;&nbsp;<span id="st-fed"></span></div><div id="st-state">ready</div></div></div>
   <div class="lcd pet-log" id="pet-log" aria-live="polite"></div>
-  <div class="pet-quick"><button type="button" data-q="explain">EXPLAIN IT SIMPLY</button><button type="button" data-q="dealer">WHO'S THE DEALER?</button><button type="button" data-q="tasks">MY ASSIGNMENTS</button><button type="button" data-q="audits">AUDITS</button></div>
+  <div class="pet-quick"><button type="button" data-q="explain">EXPLAIN IT SIMPLY</button><button type="button" data-q="planes">DATA VS CONTROL PLANE</button><button type="button" data-q="tasks">MY ASSIGNMENTS</button><button type="button" data-q="audits">AUDITS</button></div>
   <form class="pet-in" id="pet-form"><input id="pet-text" autocomplete="off" placeholder="Ask Chip anything…" aria-label="Message Chip"><button type="submit" id="pet-send">SEND</button></form>
 </section>
 
@@ -360,136 +360,137 @@ const Y={r0:75,rD:215,r1:365,r2:570};
 const NODES=[
  {id:"buyers",t:"Buyers",s:"agents (MCP) · AI teams",x:"external · paying side",k:"external",c:0,r:"r0",
   what:"Two kinds of customer: autonomous AI agents with a preset budget, and human AI/ML teams. Early revenue comes from human teams; agents buying on their own is still a thin market.",
-  meta:"Not a metaphor. These are the people and agents who pay."},
- {id:"table",t:"The Table",s:"API + MCP server",x:"FastAPI · MCP",k:"service",c:1,r:"r0",
-  what:"Front door for every buyer. Search the catalog, read manifests, file a ticket, place an order. Agents use the MCP server; teams use the web console. A buyer's first purchase needs business verification, a sanctions check and acceptance of the acceptable-use policy.",
-  sw:["FastAPI","MCP Python SDK","Postgres","Cloudflare WAF","KYB + sanctions screening"],kyb:true,
-  meta:"Casino table: where players and the house do business. Accurate."},
- {id:"dealer",t:"Dealer",s:"quotes · bounties",x:"Claude Opus",k:"agent",c:1,r:"rD",llm:true,
+  meta:"Plain name."},
+ {id:"gateway",t:"Gateway",s:"API + MCP server",x:"FastAPI · MCP",k:"service",c:1,r:"r0",kyb:true,
+  what:"Single entry point for every buyer: search the catalog, read manifests, file a request, place an order. Agents connect through the MCP server; teams use the web console. A buyer's first purchase needs business verification, a sanctions check and acceptance of the acceptable-use policy.",
+  sw:["FastAPI","MCP Python SDK","Postgres","Cloudflare WAF","KYB + sanctions screening"],
+  meta:"Standard term: an API gateway is the one front door that authenticates, rate-limits and routes requests."},
+ {id:"sourcing",t:"Sourcing agent",s:"spec · quote · bounty",x:"Claude Opus",k:"agent",c:1,r:"rD",llm:true,
   model:"claude-opus-5-5",harness:"h1",
-  what:"Turns a request into a priced ticket: quotes a range and attaches a preview labeled SYNTHETIC PREVIEW. When the buyer accepts, the Cage checks their spending policy in code and holds the money; only then does this agent post the bounty. It never decides or moves money.",
-  sw:["Claude Managed Agents (beta)","Claude API","Postgres (tickets)"],
-  meta:"Partly accurate. A casino dealer runs a table for the house but also handles chips and payouts; this agent never touches money. Proposed rename: Host (a casino host looks after players' requests and doesn't handle chips). Data Dealer, the company, is the house."},
- {id:"cage",t:"The Cage",s:"payments · escrow",x:"no LLM · OPA policy",k:"service",c:2,r:"r0",holdsKeys:true,
-  what:"Takes payment, checks each buyer's spending policy in code, holds bounty money before any bounty goes out, holds royalties for 30 days, then pays contributors and moves the platform share to the treasury.",
+  what:"Turns a buyer's request into a spec and a quoted price range, with a preview labeled SYNTHETIC PREVIEW. When the buyer accepts, Settlement checks their spending policy in code and holds the money; only then does this agent post the bounty to contributors. It never decides or moves money.",
+  sw:["Claude Managed Agents (beta)","Claude API","Postgres (requests)"],
+  meta:"Procurement term: sourcing turns a requirement into a specification and finds suppliers to fill it."},
+ {id:"settlement",t:"Settlement",s:"payments · escrow",x:"no LLM · OPA policy",k:"service",c:2,r:"r0",holdsKeys:true,
+  what:"Takes payment, checks each buyer's spending policy in code, holds bounty money in escrow before any bounty goes out, holds royalties for 30 days, then pays contributors and moves the platform share to the treasury.",
   sw:["Stripe Billing + Invoicing","AWS Marketplace","x402 (USDC)","Open Policy Agent"],
-  meta:"Casino cage is the cashier. Accurate."},
- {id:"shoe",t:"The Shoe",s:"delivery + canaries",x:"signed URLs",k:"service",c:3,r:"r0",
-  what:"Delivers the paid Deck as a signed download or cloud share. Each buyer's copy carries unique canary rows so a leak can be traced to the buyer.",
+  meta:"Finance term: settlement is completing a payment and paying out each party."},
+ {id:"fulfillment",t:"Fulfillment",s:"delivery + canaries",x:"signed URLs",k:"service",c:3,r:"r0",
+  what:"Delivers a paid dataset as a signed download or a cloud share. Each buyer's copy carries unique canary rows so a leak can be traced to the buyer.",
   sw:["S3 presigned URLs","Snowflake Secure Data Sharing","Hugging Face private repos","Canary-row generator"],
-  meta:"A dealing shoe holds the cards and deals them out. Accurate."},
+  meta:"Supply-chain term: fulfillment is delivering a paid order."},
  {id:"treasury",t:"Treasury",s:"platform share → opex",x:"≥ 6-month runway rule",k:"store",c:4,r:"r0",
   what:"Where the platform's share lands. Pays for compute, model APIs, cloud and team. Spending rules keep the system self-funding (see Money).",
   sw:["Business bank account","Stripe balance","QuickBooks or Xero"],
-  meta:"Not a casino term; plain name used."},
- {id:"verify",t:"Transparency log",s:"public verify page",x:"Rekor v2 · append-only",k:"store",c:5,r:"r0",immutable:true,
-  what:"Append-only public log of every Deck's Merkle root and signature, plus revocations. Anyone can check a Deck without trusting us.",
+  meta:"Plain finance term."},
+ {id:"tlog",t:"Transparency log",s:"public verify page",x:"Rekor v2 · append-only",k:"store",c:5,r:"r0",immutable:true,
+  what:"Append-only public log of every dataset's Merkle root and signature, plus revocations. Anyone can check a dataset without trusting us.",
   sw:["Sigstore Rekor v2 (or self-hosted tile log)","datadealer.ai/verify"],
-  meta:"Plain name used."},
- {id:"floor",t:"Shift Manager",s:"escalations · recalls",x:"humans decide",k:"human",c:6,r:"r0",
-  what:"The one human lane. Takedowns, disputes, judge splits, third Forge failures, grade A spot-checks, Exclusive deals and large refunds. Can revoke a Deck, notify its buyers and freeze its royalties.",
+  meta:"Security term: an append-only, publicly auditable record of signatures."},
+ {id:"review",t:"Review desk",s:"escalations · recalls",x:"humans decide",k:"human",c:6,r:"r0",
+  what:"The human-in-the-loop lane. Takedowns, disputes, judge splits, third synthesis failures, grade A spot-checks, Exclusive deals and large refunds. Can revoke a dataset, notify its buyers and freeze its royalties.",
   sw:["GitHub Issues (queue)","Registered DMCA agent","Email"],
-  meta:"Accurate. In a casino the shift manager sits above the pit boss and makes the calls the pit boss can't. (This was 'Floor desk', which had it backwards: floorpersons report to the pit boss.)"},
+  meta:"Agentic-systems term: human-in-the-loop review, where people approve what the system must not decide alone."},
 
  {id:"contributors",t:"Contributors",s:"ID-verified people",x:"external · supply side",k:"external",c:0,r:"r1",
-  what:"People paid for data they own. They answer bounties or upload data dumps, and earn royalties when Decks built from their seeds sell.",
-  meta:"Not a metaphor."},
- {id:"source",t:"The Source",s:"ID · 18+ · agreement",x:"Stripe Identity",k:"service",c:1,r:"r1",
-  what:"Verifies identity and age, collects the e-signed contributor agreement (ownership attestation, license grant, indemnity), and sets up the payout account.",
+  what:"People paid for data they own. They answer bounties or upload data dumps, and earn royalties when datasets built from their seeds sell.",
+  meta:"Plain name."},
+ {id:"onboarding",t:"Onboarding",s:"ID · 18+ · agreement",x:"Stripe Identity",k:"service",c:1,r:"r1",
+  what:"Verifies identity and age, collects the e-signed contributor agreement (ownership attestation, license grant, third-party consent, indemnity), and sets up the payout account.",
   sw:["Stripe Identity","Dropbox Sign (e-sign)","Stripe Connect (payouts, 1099s)"],
-  meta:"Plain name used."},
- {id:"intake",t:"Intake",s:"encrypt · hash · scan",x:"per-upload key",k:"service",c:2,r:"r1",handlesRaw:true,env:"self-hosted",
-  what:"Quarantine. Every upload is encrypted with its own key, hashed on arrival, and scanned for malware and known child-abuse imagery before any model sees it. Deleting the key erases the file (crypto-shredding).",
+  meta:"Standard term for identity checks (KYC) and agreements before someone can supply."},
+ {id:"quarantine",t:"Quarantine",s:"encrypt · hash · scan",x:"per-upload key",k:"service",c:2,r:"r1",handlesRaw:true,env:"self-hosted",
+  what:"Every upload is isolated, encrypted with its own key, hashed on arrival, and scanned for malware and known child-abuse imagery before any model or person sees it. Destroying the key erases the file (crypto-shredding).",
   sw:["S3 + KMS envelope keys","SHA-256","ClamAV","Thorn Safer / PhotoDNA (hash match)"],
-  meta:"Plain name used."},
- {id:"assay",t:"The Assay",s:"origin · PII · quality",x:"Claude Sonnet",k:"agent",c:3,r:"r1",llm:true,scrubs:true,env:"self-hosted",
+  meta:"Security and receiving term: hold incoming material apart until it passes inspection."},
+ {id:"verification",t:"Verification",s:"origin · PII · quality",x:"Verifier · Claude Sonnet",k:"agent",c:3,r:"r1",llm:true,scrubs:true,env:"self-hosted",
   model:"claude-sonnet-5-5",harness:"h2",
-  what:"Tests every upload before it is accepted: origin (near-duplicates, reverse image, license), file forensics, personal-data scrub, quality. Tools run on our servers; the model reads their reports and scrubbed samples, never raw files. Other people's personal data inside an upload (customer names in a chat log) gets scrubbed, or the upload is rejected. Grades A or B (A after a human spot-check), or rejects with a reason.",
+  what:"Checks every upload before it is accepted: origin (near-duplicates, reverse image, license), file forensics, personal-data scrub, quality. Tools run on our servers; the Verifier agent reads their reports and scrubbed samples, never raw files. Other people's personal data inside an upload gets scrubbed, or the upload is rejected. Grades A or B (A after a human spot-check), or rejects with a reason.",
   sw:["Presidio + spaCy","datasketch (MinHash)","PDQ perceptual hash","ScanCode Toolkit","c2pa-python","exiftool","pandera"],
-  meta:"An assay tests ore for purity before anyone pays. Accurate."},
- {id:"seedvault",t:"Seed vault",s:"scrubbed · locked",x:"S3 Object Lock",k:"store",c:4,r:"r1",immutable:true,
-  what:"Accepted seeds, already scrubbed, stored write-once with their hashes. Only scrubbed data is ever locked, so erasure requests stay possible upstream. Grade A/B seeds can go straight to the Ledger as a real-data Deck.",
+  meta:"Literal: verification confirms a claim (origin, ownership, quality) against evidence."},
+ {id:"seedstore",t:"Seed store",s:"scrubbed · write-once",x:"S3 Object Lock",k:"store",c:4,r:"r1",immutable:true,
+  what:"Accepted seed rows, already scrubbed, stored write-once with their hashes. Only scrubbed data is ever locked, so erasure requests stay possible upstream. Grade A/B seeds can go straight to Attestation and be sold as real data.",
   sw:["S3 Object Lock (governance mode)","Parquet"],
-  meta:"Accurate: keeps originals safe like a seed bank, and 'seed data' is the industry term. In code say 'seed rows' so nobody confuses it with a random seed."},
- {id:"forge",t:"The Forge",s:"seed → synthetic",x:"Qwen · Apache-2.0",k:"aijob",c:5,r:"r1",llm:true,
+  meta:"Term of art: seed data is the real data that synthetic data is generated from. In code say 'seed rows' so nobody confuses it with a random seed."},
+ {id:"synthesis",t:"Synthesis",s:"seed → synthetic",x:"Qwen · Apache-2.0",k:"aijob",c:5,r:"r1",llm:true,
   model:"qwen-apache",harness:"h3",
-  what:"Profiles the seeds, generates variations with a permissively licensed open-weight model, filters copies and personal data, and scores fidelity, diversity, privacy and usefulness. Synthetic rows are always mixed with real seeds, never replace them.",
+  what:"Profiles the seeds, generates variations with a permissively licensed open-weight model, filters copies and personal data, and scores fidelity, diversity, privacy and usefulness. Synthetic rows are mixed with real seeds, never replace them.",
   sw:["vLLM","Apache-2.0 open-weight model","ydata-profiling","SDV + SDMetrics","Dagster"],
-  meta:"Half right. A forge shapes raw metal into goods, but 'forge' also means to fake (forgery): a risky name for a company that sells authenticity. Proposed rename: Greenhouse (grows new plants from seeds; every plant traces to its seed)."},
- {id:"pitboss",t:"Pit Boss",s:"3 judges · 95% bound",x:"Claude · Astra · Mistral",k:"aipanel",c:6,r:"r1",llm:true,
+  meta:"Literal: data synthesis is generating new records from a model of real ones."},
+ {id:"evalpanel",t:"Eval panel",s:"3 judges · 95% bound",x:"Claude · Astra · Mistral",k:"aipanel",c:6,r:"r1",llm:true,
   models:["claude-haiku-4-5","astra-openai","mistral-apache"],harness:"h4",
-  what:"Three judges from three model families score a random sample. Passes only if the 95% upper bound on error rate is under 5%. Fails go back to the Forge (max 3); splits and third fails go to the Shift Manager.",
+  what:"Three judge models from three families score a random sample. Passes only if the 95% upper bound on error rate is under 5%. Fails go back to Synthesis (max 3); splits and third fails go to the Review desk.",
   sw:["Inspect AI","Claude API","OpenAI API (Astra)","vLLM (judge 3)","SciPy (confidence bounds)"],
-  meta:"Accurate. A pit boss supervises the tables, catches errors and cheating, and can stop play. Real pit bosses settle serious disputes themselves; ours escalates to the Shift Manager."},
+  meta:"Agentic-systems term: evals score model output; a panel of LLM judges used as a pass/fail step is an eval gate."},
 
- {id:"reject",t:"Rejected",s:"reason · no payout",x:"key shredded later",k:"service",c:3,r:"r2",
+ {id:"rejected",t:"Rejected",s:"reason · no payout",x:"key shredded later",k:"service",c:3,r:"r2",
   what:"Failed uploads. The contributor gets the reason. After the dispute window the quarantine key is destroyed.",
-  sw:["Postgres (reasons)","KMS key deletion"],meta:"Plain name used."},
- {id:"deck",t:"The Deck",s:"package · grade · tier",x:"Parquet + Croissant",k:"store",c:5,r:"r2",
-  what:"The product. Parquet data, croissant.json (with PROV lineage and ODRL usage terms), signed manifest.json, DATASHEET, LICENSE, sample. Graded A/B/C, tiered Standard/Limited/Exclusive.",
-  sw:["Parquet (pyarrow)","mlcroissant","DATASHEET + LICENSE templates","Postgres catalog"],
-  meta:"Fair: a packaged set of cards. Keep 'deck' from also meaning the pitch deck (call those the teaser and diligence slides)."},
- {id:"ledger",t:"The Ledger",s:"hash · sign · log",x:"no LLM · KMS Ed25519",k:"service",c:6,r:"r2",holdsKeys:true,
+  sw:["Postgres (reasons)","KMS key deletion"],meta:"Plain name."},
+ {id:"catalog",t:"Catalog",s:"datasets · grade · tier",x:"Parquet + Croissant",k:"store",c:5,r:"r2",
+  what:"The product shelf. Each dataset is a versioned package: Parquet data, croissant.json (with PROV lineage and ODRL usage terms), the signed manifest, a datasheet, a license and a sample. Graded A/B/C, tiered Standard/Limited/Exclusive.",
+  sw:["Parquet (pyarrow)","mlcroissant","Datasheet + license templates","Postgres catalog"],
+  meta:"Plain name: the list of datasets buyers can license."},
+ {id:"attestation",t:"Attestation",s:"hash · sign · log",x:"no LLM · KMS Ed25519",k:"service",c:6,r:"r2",holdsKeys:true,
   what:"Builds the manifest (rights, hashes, lineage, every AI model that touched the data), signs it with an Ed25519 key in AWS KMS, and appends it to the transparency log. Deterministic code only.",
   sw:["AWS KMS (Ed25519)","Merkle tree (Python)","W3C PROV + Croissant 1.1","RFC 8785 canonical JSON"],
-  meta:"Accurate: the book of record. Many people hear 'ledger' and think blockchain; ours isn't one, so say so."}
+  meta:"Software supply-chain term (in-toto, SLSA): an attestation is a signed statement of how an artifact was produced."}
 ];
 
 /* edges: f=from t=to ty=money|info|audit|prov|human p=points lb=label at=[x,y] */
 const EDGES=[
- {f:"buyers",t:"table",ty:"info",p:[[175,62],[245,62]],lb:"search\nticket\norder",at:[210,62]},
- {f:"table",t:"dealer",ty:"info",p:[[325,113],[325,177]],lb:"spec +\nbudget",at:[325,134]},
- {f:"dealer",t:"contributors",ty:"info",p:[[245,215],[95,215],[95,327]],lb:"bounty post",at:[160,215]},
- {f:"contributors",t:"source",ty:"info",p:[[175,365],[245,365]],lb:"sign-up\n+ ID"},
- {f:"source",t:"intake",ty:"info",p:[[405,365],[475,365]],lb:"upload\nencrypted"},
- {f:"intake",t:"assay",ty:"info",p:[[635,365],[705,365]],lb:"hashed\nfile"},
- {f:"assay",t:"seedvault",ty:"info",p:[[865,365],[935,365]],lb:"scrubbed\nseed A/B"},
- {f:"seedvault",t:"forge",ty:"info",p:[[1095,365],[1165,365]],lb:"seed\nprofile"},
- {f:"forge",t:"pitboss",ty:"info",p:[[1325,365],[1395,365]],lb:"batch\n+ prompts"},
- {f:"pitboss",t:"forge",ty:"audit",p:[[1440,327],[1440,298],[1280,298],[1280,327]],lb:"fail → redo (max 3)",at:[1360,298],cap:3},
- {f:"pitboss",t:"floor",ty:"audit",p:[[1515,327],[1515,113]],lb:"escalate:\n3 fails / split",at:[1515,215]},
- {f:"assay",t:"reject",ty:"audit",p:[[785,403],[785,532]],lb:"fail + reason",at:[785,468]},
- {f:"pitboss",t:"ledger",ty:"audit",p:[[1475,403],[1475,532]],lb:"pass: error\n< 5% (95% UCB)",at:[1475,468]},
- {f:"ledger",t:"deck",ty:"prov",p:[[1395,570],[1325,570]],lb:"signed\nmanifest"},
- {f:"ledger",t:"verify",ty:"prov",p:[[1395,548],[1360,548],[1360,75],[1325,75]],lb:"Merkle root\n+ signature",at:[1360,180],pd:false},
- {f:"deck",t:"table",ty:"info",p:[[1245,608],[1245,642],[210,642],[210,92],[245,92]],lb:"catalog index (new Decks)",at:[700,642]},
- {f:"deck",t:"shoe",ty:"info",p:[[1165,585],[1130,585],[1130,268],[800,268],[800,113]],lb:"Deck files",at:[960,268]},
- {f:"table",t:"cage",ty:"info",p:[[405,62],[475,62]],lb:"order"},
- {f:"cage",t:"shoe",ty:"info",p:[[635,62],[705,62]],lb:"paid →\nrelease"},
- {f:"shoe",t:"buyers",ty:"info",p:[[785,37],[785,16],[95,16],[95,37]],lb:"Deck + manifest + canaries",at:[440,16]},
- {f:"buyers",t:"cage",ty:"money",p:[[60,113],[60,160],[520,160],[520,113]],lb:"$ purchase + escrow",at:[132,160]},
- {f:"cage",t:"dealer",ty:"audit",p:[[475,95],[445,95],[445,200],[405,200]],lb:"escrow held",at:[445,138]},
- {f:"seedvault",t:"ledger",ty:"info",p:[[1015,403],[1015,505],[1430,505],[1430,532]],lb:"real-data Deck (A/B)",at:[1250,505]},
- {f:"cage",t:"treasury",ty:"money",p:[[600,113],[600,134],[1000,134],[1000,113]],lb:"platform share",at:[700,134]},
- {f:"cage",t:"contributors",ty:"money",p:[[500,113],[500,292],[40,292],[40,327]],lb:"royalties after 30-day hold",at:[330,292]},
- {f:"treasury",t:"forge",ty:"audit",p:[[1030,113],[1030,200],[1200,200],[1200,327]],lb:"compute cap (≤25% rev)",at:[1115,200]},
+ {f:"buyers",t:"gateway",ty:"info",p:[[175,62],[245,62]],lb:"search\nrequest\norder",at:[210,62]},
+ {f:"gateway",t:"sourcing",ty:"info",p:[[325,113],[325,177]],lb:"spec +\nbudget",at:[325,134]},
+ {f:"sourcing",t:"contributors",ty:"info",p:[[245,215],[95,215],[95,327]],lb:"bounty post",at:[160,215]},
+ {f:"contributors",t:"onboarding",ty:"info",p:[[175,365],[245,365]],lb:"sign-up\n+ ID"},
+ {f:"onboarding",t:"quarantine",ty:"info",p:[[405,365],[475,365]],lb:"upload\nencrypted"},
+ {f:"quarantine",t:"verification",ty:"info",p:[[635,365],[705,365]],lb:"hashed\nfile"},
+ {f:"verification",t:"seedstore",ty:"info",p:[[865,365],[935,365]],lb:"scrubbed\nseed A/B"},
+ {f:"seedstore",t:"synthesis",ty:"info",p:[[1095,365],[1165,365]],lb:"seed\nprofile"},
+ {f:"synthesis",t:"evalpanel",ty:"info",p:[[1325,365],[1395,365]],lb:"batch\n+ prompts"},
+ {f:"evalpanel",t:"synthesis",ty:"audit",p:[[1440,327],[1440,298],[1280,298],[1280,327]],lb:"fail → redo (max 3)",at:[1360,298],cap:3},
+ {f:"evalpanel",t:"review",ty:"audit",p:[[1515,327],[1515,113]],lb:"escalate:\n3 fails / split",at:[1515,215]},
+ {f:"verification",t:"rejected",ty:"audit",p:[[785,403],[785,532]],lb:"fail + reason",at:[785,468]},
+ {f:"evalpanel",t:"attestation",ty:"audit",p:[[1475,403],[1475,532]],lb:"pass: error\n< 5% (95% UCB)",at:[1475,468]},
+ {f:"attestation",t:"catalog",ty:"prov",p:[[1395,570],[1325,570]],lb:"signed\nmanifest"},
+ {f:"attestation",t:"tlog",ty:"prov",p:[[1395,548],[1360,548],[1360,75],[1325,75]],lb:"Merkle root\n+ signature",at:[1360,180],pd:false},
+ {f:"catalog",t:"gateway",ty:"info",p:[[1245,608],[1245,642],[210,642],[210,92],[245,92]],lb:"catalog index (new datasets)",at:[700,642]},
+ {f:"catalog",t:"fulfillment",ty:"info",p:[[1165,585],[1130,585],[1130,268],[800,268],[800,113]],lb:"dataset files",at:[960,268]},
+ {f:"gateway",t:"settlement",ty:"info",p:[[405,62],[475,62]],lb:"order"},
+ {f:"settlement",t:"fulfillment",ty:"info",p:[[635,62],[705,62]],lb:"paid →\nrelease"},
+ {f:"fulfillment",t:"buyers",ty:"info",p:[[785,37],[785,16],[95,16],[95,37]],lb:"dataset + manifest + canaries",at:[440,16]},
+ {f:"buyers",t:"settlement",ty:"money",p:[[60,113],[60,160],[520,160],[520,113]],lb:"$ purchase + escrow",at:[132,160]},
+ {f:"settlement",t:"sourcing",ty:"audit",p:[[475,95],[445,95],[445,200],[405,200]],lb:"escrow held",at:[445,138]},
+ {f:"seedstore",t:"attestation",ty:"info",p:[[1015,403],[1015,505],[1430,505],[1430,532]],lb:"real data (A/B)",at:[1250,505]},
+ {f:"settlement",t:"treasury",ty:"money",p:[[600,113],[600,134],[1000,134],[1000,113]],lb:"platform share",at:[700,134]},
+ {f:"settlement",t:"contributors",ty:"money",p:[[500,113],[500,292],[40,292],[40,327]],lb:"royalties after 30-day hold",at:[330,292]},
+ {f:"treasury",t:"synthesis",ty:"audit",p:[[1030,113],[1030,200],[1200,200],[1200,327]],lb:"compute cap (≤25% rev)",at:[1115,200]},
  {f:"treasury",t:"_opex",ty:"money",p:[[1015,37],[1015,6]],lb:"opex: cloud · model APIs · team",at:[1007,14],anchor:"end"},
- {f:"floor",t:"ledger",ty:"human",p:[[1555,90],[1584,90],[1584,570],[1555,570]],lb:"revoke · notify buyers · freeze royalties",at:[1584,330],rot:-90},
- {f:"_rights",t:"floor",ty:"human",p:[[1440,4],[1440,37]],lb:"rights holders: takedown · dispute",at:[1430,14],anchor:"end"}
+ {f:"review",t:"attestation",ty:"human",p:[[1555,90],[1584,90],[1584,570],[1555,570]],lb:"revoke · notify buyers · freeze royalties",at:[1584,330],rot:-90},
+ {f:"_rights",t:"review",ty:"human",p:[[1440,4],[1440,37]],lb:"rights holders: takedown · dispute",at:[1430,14],anchor:"end"}
 ];
 
 const HARNESS=[
- {id:"h1",x:15,w:300,t:"CLAUDE MANAGED AGENTS · CLOUD",n:"Permission policy + session budget per request",chips:[{l:"Dealer · Claude Opus",n:"dealer"}]},
- {id:"h2",x:330,w:300,t:"MANAGED AGENTS · SELF-HOSTED",n:"Tools run in your VPC; model sees reports, not raw files",chips:[{l:"Assayer · Claude Sonnet",n:"assay"}]},
- {id:"h3",x:645,w:300,t:"GPU BATCH · DAGSTER + vLLM",n:"Prompts, seeds and model hash logged per batch",chips:[{l:"Forge · Qwen (Apache-2.0)",n:"forge"}]},
- {id:"h4",x:960,w:300,t:"EVAL RUNNER · INSPECT AI",n:"Three families; none shares the generator's",chips:[{l:"Judge 1 · Claude Haiku",n:"pitboss"},{l:"Judge 2 · Astra (OpenAI)",n:"pitboss"},{l:"Judge 3 · Mistral (Apache-2.0)",n:"pitboss"}]},
- {id:"h5",x:1275,w:310,t:"DETERMINISTIC CODE · NO LLM",n:"Holds every key; moves every dollar",chips:[{l:"Ledger signer",n:"ledger",det:1},{l:"Cage policy (OPA)",n:"cage",det:1},{l:"Shoe",n:"shoe",det:1},{l:"Audit log (append-only)",n:null,det:1}]}
+ {id:"h1",x:15,w:300,t:"CLAUDE MANAGED AGENTS · CLOUD",n:"Permission policy + session budget per request",chips:[{l:"Sourcing agent · Claude Opus",n:"sourcing"}]},
+ {id:"h2",x:330,w:300,t:"MANAGED AGENTS · SELF-HOSTED",n:"Tools run in your VPC; model sees reports, not raw files",chips:[{l:"Verifier · Claude Sonnet",n:"verification"}]},
+ {id:"h3",x:645,w:300,t:"GPU BATCH · DAGSTER + vLLM",n:"Prompts, seeds and model hash logged per batch",chips:[{l:"Synthesis · Qwen (Apache-2.0)",n:"synthesis"}]},
+ {id:"h4",x:960,w:300,t:"EVAL RUNNER · INSPECT AI",n:"Three families; none shares the generator's",chips:[{l:"Judge 1 · Claude Haiku",n:"evalpanel"},{l:"Judge 2 · Astra (OpenAI)",n:"evalpanel"},{l:"Judge 3 · Mistral (Apache-2.0)",n:"evalpanel"}]},
+ {id:"h5",x:1275,w:310,t:"DETERMINISTIC SERVICES · NO LLM",n:"Hold every key; move every dollar",chips:[{l:"Attestation signer",n:"attestation",det:1},{l:"Settlement policy (OPA)",n:"settlement",det:1},{l:"Fulfillment",n:"fulfillment",det:1},{l:"Audit log (append-only)",n:null,det:1}]}
 ];
+
 const HATS=["CEO","Engineer","CFO","Counsel","Data Steward","Growth"];
 
 /* every AI model in the system */
 const ROSTER=[
- {id:"claude-opus-5-5",name:"Claude Opus 5.5",prov:"Anthropic API",fam:"claude",lic:"Anthropic commercial terms",job:"Dealer; CEO, Engineer, Counsel hats; built this panel",sees:"Buyer specs, catalog metadata, repo, news",data:false},
- {id:"claude-sonnet-5-5",name:"Claude Sonnet 5.5",prov:"Anthropic API via self-hosted sandbox",fam:"claude",lic:"Anthropic commercial terms",job:"Assayer; CFO, Data Steward, Growth hats",sees:"Tool reports and scrubbed samples (never raw files)",data:true,man:true},
+ {id:"claude-opus-5-5",name:"Claude Opus 5.5",prov:"Anthropic API",fam:"claude",lic:"Anthropic commercial terms",job:"Sourcing agent; CEO, Engineer, Counsel role agents; built this panel",sees:"Buyer specs, catalog metadata, repo, news",data:false},
+ {id:"claude-sonnet-5-5",name:"Claude Sonnet 5.5",prov:"Anthropic API via self-hosted sandbox",fam:"claude",lic:"Anthropic commercial terms",job:"Verifier; CFO, Data Steward, Growth role agents",sees:"Tool reports and scrubbed samples (never raw files)",data:true,man:true},
  {id:"spacy-lg",name:"spaCy en_core_web_lg (in Presidio)",prov:"Self-hosted",fam:"spacy",lic:"MIT",job:"Finds names, addresses and other personal data",sees:"Raw uploads, on our servers only",data:true,man:true},
  {id:"minilm",name:"all-MiniLM-L6-v2 embeddings",prov:"Self-hosted",fam:"sentence-transformers",lic:"Apache-2.0",job:"Near-duplicate and origin search",sees:"Scrubbed text",data:true,man:true},
- {id:"qwen-apache",name:"Qwen (Apache-2.0 release; confirm per model card)",prov:"Self-hosted vLLM",fam:"qwen",lic:"Apache-2.0",job:"Forge generator",sees:"Scrubbed seeds",data:true,man:true,gen:true},
- {id:"claude-haiku-4-5",name:"Claude Haiku 4.5",prov:"Anthropic API",fam:"claude",lic:"Anthropic commercial terms",job:"Pit Boss judge 1",sees:"Sampled synthetic rows + seed spec",data:true,man:true,judge:true},
- {id:"astra-openai",name:"Astra (OpenAI GPT; GPT-6 per Astra's setup)",prov:"OpenAI API",fam:"openai",lic:"OpenAI terms (verdicts only, never training rows)",job:"Pit Boss judge 2; second opinion on the weekly brief",sees:"Sampled synthetic rows + seed spec",data:true,man:true,judge:true},
- {id:"mistral-apache",name:"Mistral (Apache-2.0 release)",prov:"Self-hosted vLLM",fam:"mistral",lic:"Apache-2.0",job:"Pit Boss judge 3",sees:"Sampled synthetic rows + seed spec",data:true,man:true,judge:true},
+ {id:"qwen-apache",name:"Qwen (Apache-2.0 release; confirm per model card)",prov:"Self-hosted vLLM",fam:"qwen",lic:"Apache-2.0",job:"Synthesis generator",sees:"Scrubbed seeds",data:true,man:true,gen:true},
+ {id:"claude-haiku-4-5",name:"Claude Haiku 4.5",prov:"Anthropic API",fam:"claude",lic:"Anthropic commercial terms",job:"Eval panel judge 1",sees:"Sampled synthetic rows + seed spec",data:true,man:true,judge:true},
+ {id:"astra-openai",name:"Astra (OpenAI GPT; GPT-6 per Astra's setup)",prov:"OpenAI API",fam:"openai",lic:"OpenAI terms (verdicts only, never training rows)",job:"Eval panel judge 2; second opinion on the weekly brief",sees:"Sampled synthetic rows + seed spec",data:true,man:true,judge:true},
+ {id:"mistral-apache",name:"Mistral (Apache-2.0 release)",prov:"Self-hosted vLLM",fam:"mistral",lic:"Apache-2.0",job:"Eval panel judge 3",sees:"Sampled synthetic rows + seed spec",data:true,man:true,judge:true},
  {id:"claude-2",name:"Claude on Astra's second account",prov:"Claude app (human-driven)",fam:"claude",lic:"Consumer subscription",job:"Red-team reviews from handoff cards",sees:"Repo docs only",data:false}
 ];
-const PARAMS={holdbackDays:30,errorUCB:0.05,forgeRetryCap:3,agentBudgetCaps:true,runwayFloorMonths:6};
+const PARAMS={holdbackDays:30,errorUCB:0.05,synthRetryCap:3,agentBudgetCaps:true,runwayFloorMonths:6};
 
 /* ===== helpers ===== */
 const $=s=>document.querySelector(s);
@@ -534,8 +535,8 @@ function edgeSVG(e,i){
 }
 function bandsSVG(){
   let s=`<rect class="band" x="8" y="690" width="1584" height="186" rx="6"/>
-  <text class="band-title" x="22" y="712">LIVING LAYER — AGENTS AND THEIR HARNESS</text>
-  <text class="band-note" x="400" y="712">Hover a chip to find its agent above. Blue = AI. Grey = deterministic code.</text>`;
+  <text class="band-title" x="22" y="712">CONTROL PLANE (LIVING LAYER) — AGENTS AND THEIR HARNESS</text>
+  <text class="band-note" x="520" y="712">Hover a box to find its part above. Blue = AI. Grey = deterministic services.</text>`;
   for(const h of HARNESS){
     s+=`<g class="hbox-g" data-h="${h.id}"><rect class="hbox" x="${h.x}" y="724" width="${h.w}" height="142" rx="5"/>
     <text class="hbox-t" x="${h.x+12}" y="745">${esc(h.t)}</text>
@@ -545,8 +546,8 @@ function bandsSVG(){
     s+=`</g>`;
   }
   s+=`<rect class="band" x="8" y="886" width="1584" height="116" rx="6"/>
-  <text class="band-title" x="22" y="908">EXEC LAYER — SIX HATS, RUN WEEKLY</text>
-  <text class="band-note" x="22" y="926">Each hat is an agent premised on your weekly questions. Claude runs them every Monday; Astra gives the second opinion.</text>`;
+  <text class="band-title" x="22" y="908">ROLE AGENTS — SIX JOBS, RUN WEEKLY</text>
+  <text class="band-note" x="22" y="926">Each role agent works from your answers to its questions. Claude runs them every Monday; Astra gives the second opinion.</text>`;
   HATS.forEach((h,k)=>{const x=22+k*150;s+=`<g class="hchip" data-n=""><rect x="${x}" y="944" width="138" height="24" rx="12"/><text x="${x+69}" y="960" text-anchor="middle">${h}</text></g>`});
   s+=`<path d="M940,956 L1010,956" stroke="var(--audit)" stroke-width="1.8" marker-end="url(#ah-audit)" fill="none"/>
   <text class="legend-t" x="975" y="947" text-anchor="middle">brief + audits</text>
@@ -567,7 +568,7 @@ function legendSVG(){
 }
 function drawPFD(){
   const marks=Object.entries(TYPE).map(([k,v])=>`<marker id="ah-${k}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="${v.c}"/></marker>`).join("");
-  const zones=`<text class="zone-label" x="18" y="262">DEMAND · MONEY</text>  <text class="zone-label" x="250" y="318">SUPPLY → VERIFY → REFINE</text><text class="zone-label" x="935" y="528">PROVE → PACKAGE</text>`;
+  const zones=`<text class="zone-label" x="250" y="270">DEMAND · MONEY</text>  <text class="zone-label" x="250" y="318">DATA PLANE: SUPPLY → VERIFY → SYNTHESIZE</text><text class="zone-label" x="872" y="528">EVALUATE → ATTEST → CATALOG</text>`;
   $("#pfd").innerHTML=`<defs>${marks}</defs>${zones}${legendSVG()}${EDGES.map(edgeSVG).join("")}${NODES.map(nodeSVG).join("")}${bandsSVG()}`;
 }
 
@@ -610,11 +611,11 @@ function select(id){
 }
 
 /* ===== right rail ===== */
-const ORDER=["buyers","table","dealer","contributors","source","intake","assay","seedvault","reject","forge","pitboss","ledger","verify","deck","cage","shoe","treasury","floor"];
+const ORDER=["buyers","gateway","sourcing","contributors","onboarding","quarantine","verification","seedstore","rejected","synthesis","evalpanel","attestation","tlog","catalog","settlement","fulfillment","treasury","review"];
 const LIVING_SW=[
- ["Living layer","Claude Managed Agents (beta), Claude Agent SDK, Dagster, Inspect AI, Langfuse (LLM traces), OpenTelemetry"],
- ["Exec layer","Scheduled Claude sessions, GitHub (findastra/data-dealer), this panel's data store"],
- ["This panel","Claude artifact + db capability, hand-built SVG, no other libraries"]
+ ["Control plane","Claude Managed Agents (beta), Claude Agent SDK, Dagster, Inspect AI, Langfuse (LLM traces), OpenTelemetry"],
+ ["Role agents","Scheduled Claude sessions, GitHub (findastra/data-dealer), this panel's data store"],
+ ["This panel","Claude artifact with data store and Claude access, hand-built SVG, no other libraries"]
 ];
 function renderRail(){
   const body=$("#rail-body");
@@ -641,7 +642,7 @@ function renderRail(){
    <h4>Flows out</h4><div class="io">${io(outs,"out")}</div>
    ${n.sw?`<h4>Software</h4><ul>${n.sw.map(s=>`<li>${esc(s)}</li>`).join("")}</ul>`:""}
    ${audits.length?`<h4>Audits on this part</h4><ul>${audits.map(a=>`<li>${a.ok?"PASS":"FAIL"} · ${esc(a.name)}</li>`).join("")}</ul>`:""}
-   <h4>Metaphor check</h4><div class="meta">${esc(n.meta)}</div></div>`;
+   <h4>Why this name</h4><div class="meta">${esc(n.meta)}</div></div>`;
 }
 
 /* ===== design audits (computed live from the model above) ===== */
@@ -650,20 +651,20 @@ function runAudits(){
   const llm=id=>!!byId[id]?.llm;
   const gen=ROSTER.find(r=>r.gen), judges=ROSTER.filter(r=>r.judge);
   const A=[
-   {name:"Money only moves through code, never a model",nodes:["cage","treasury"],ok:EDGES.filter(e=>e.ty==="money").every(e=>!llm(e.f)&&!llm(e.t)),why:"Every green flow starts and ends at a non-AI part."},
-   {name:"Signing and payment keys held only by code",nodes:["ledger","cage"],ok:NODES.filter(n=>n.holdsKeys).every(n=>!n.llm),why:"Ledger and Cage hold keys; neither is an AI."},
-   {name:"Personal data scrubbed before anything is locked",nodes:["assay","seedvault","verify"],ok:NODES.filter(n=>n.immutable).every(n=>EDGES.filter(e=>e.t===n.id&&e.pd!==false).every(e=>byId[e.f]?.scrubs)),why:"Seed vault is fed only by the Assay's scrubbed output; the log holds hashes only."},
-   {name:"Raw uploads stay in your own cloud",nodes:["intake","assay"],ok:NODES.filter(n=>n.handlesRaw||n.scrubs).every(n=>n.env==="self-hosted"),why:"Intake and Assay tools run self-hosted."},
-   {name:"Every retry loop has a cap",nodes:["forge","pitboss"],ok:EDGES.every(e=>!EDGES.some(r=>r.f===e.t&&r.t===e.f)||e.cap||EDGES.find(r=>r.f===e.t&&r.t===e.f).cap),why:`Forge ⇄ Pit Boss capped at ${PARAMS.forgeRetryCap}, then a human.`},
-   {name:"Judges independent of the generator",nodes:["pitboss","forge"],ok:!!gen&&judges.length>=3&&new Set(judges.map(j=>j.fam)).size===judges.length&&judges.every(j=>j.fam!==gen.fam),why:`${judges.length} judges, ${new Set(judges.map(j=>j.fam)).size} families; generator family: ${gen?.fam}.`},
-   {name:"Every AI model that touches data is in the manifest",nodes:["ledger"],ok:ROSTER.filter(r=>r.data).every(r=>r.man),why:`${ROSTER.filter(r=>r.data).length} data-touching models, all recorded.`},
-   {name:"Every AI part has a declared harness",nodes:NODES.filter(n=>n.llm).map(n=>n.id),ok:NODES.filter(n=>n.llm).every(n=>HARNESS.some(h=>h.id===n.harness)),why:"Dealer, Assay, Forge, Pit Boss mapped to the living layer."},
-   {name:"A human recall path reaches the Ledger",nodes:["floor","ledger"],ok:EDGES.some(e=>e.f==="floor"&&e.t==="ledger"&&e.ty==="human"),why:"Shift Manager can revoke, notify buyers and freeze royalties."},
-   {name:"Contributor payouts held long enough for disputes",nodes:["cage"],ok:PARAMS.holdbackDays>=30,why:`Holdback is ${PARAMS.holdbackDays} days.`},
-   {name:"Agent spending capped in code",nodes:["cage"],ok:PARAMS.agentBudgetCaps===true,why:"Cage enforces each buyer agent's preset budget with OPA."},
-   {name:"No bounty goes out before buyer money is held",nodes:["cage","dealer"],ok:EDGES.some(e=>e.f==="cage"&&e.t==="dealer"&&e.ty!=="money"),why:"The Cage confirms escrow to the agent before any bounty post."},
-   {name:"Buyers verified before their first purchase",nodes:["table"],ok:byId.table.kyb===true,why:"Business verification, sanctions check and acceptable-use acceptance at The Table."},
-   {name:"Every escalation lands on a person",nodes:["floor","pitboss"],ok:EDGES.filter(e=>/escalat/.test(e.lb)).every(e=>byId[e.t]?.k==="human"),why:"Pit Boss escalations go to the Shift Manager desk."},
+   {name:"Money only moves through code, never a model",nodes:["settlement","treasury"],ok:EDGES.filter(e=>e.ty==="money").every(e=>!llm(e.f)&&!llm(e.t)),why:"Every green flow starts and ends at a non-AI part."},
+   {name:"Signing and payment keys held only by code",nodes:["attestation","settlement"],ok:NODES.filter(n=>n.holdsKeys).every(n=>!n.llm),why:"Attestation and Settlement hold keys; neither is an AI."},
+   {name:"Personal data scrubbed before anything is locked",nodes:["verification","seedstore","tlog"],ok:NODES.filter(n=>n.immutable).every(n=>EDGES.filter(e=>e.t===n.id&&e.pd!==false).every(e=>byId[e.f]?.scrubs)),why:"The seed store is fed only by Verification's scrubbed output; the log holds hashes only."},
+   {name:"Raw uploads stay in your own cloud",nodes:["quarantine","verification"],ok:NODES.filter(n=>n.handlesRaw||n.scrubs).every(n=>n.env==="self-hosted"),why:"Quarantine and Verification tools run self-hosted."},
+   {name:"Every retry loop has a cap",nodes:["synthesis","evalpanel"],ok:EDGES.every(e=>!EDGES.some(r=>r.f===e.t&&r.t===e.f)||e.cap||EDGES.find(r=>r.f===e.t&&r.t===e.f).cap),why:`Synthesis ⇄ Eval panel capped at ${PARAMS.synthRetryCap}, then a person.`},
+   {name:"Judges independent of the generator",nodes:["evalpanel","synthesis"],ok:!!gen&&judges.length>=3&&new Set(judges.map(j=>j.fam)).size===judges.length&&judges.every(j=>j.fam!==gen.fam),why:`${judges.length} judges, ${new Set(judges.map(j=>j.fam)).size} families; generator family: ${gen?.fam}.`},
+   {name:"Every AI model that touches data is in the manifest",nodes:["attestation"],ok:ROSTER.filter(r=>r.data).every(r=>r.man),why:`${ROSTER.filter(r=>r.data).length} data-touching models, all recorded.`},
+   {name:"Every AI part has a declared harness",nodes:NODES.filter(n=>n.llm).map(n=>n.id),ok:NODES.filter(n=>n.llm).every(n=>HARNESS.some(h=>h.id===n.harness)),why:"Sourcing agent, Verifier, Synthesis and Eval panel are mapped to the control plane."},
+   {name:"A human recall path reaches Attestation",nodes:["review","attestation"],ok:EDGES.some(e=>e.f==="review"&&e.t==="attestation"&&e.ty==="human"),why:"The Review desk can revoke, notify buyers and freeze royalties."},
+   {name:"Contributor payouts held long enough for disputes",nodes:["settlement"],ok:PARAMS.holdbackDays>=30,why:`Holdback is ${PARAMS.holdbackDays} days.`},
+   {name:"Agent spending capped in code",nodes:["settlement"],ok:PARAMS.agentBudgetCaps===true,why:"Settlement enforces each buyer agent's preset budget with OPA."},
+   {name:"No bounty goes out before buyer money is held",nodes:["settlement","sourcing"],ok:EDGES.some(e=>e.f==="settlement"&&e.t==="sourcing"&&e.ty!=="money"),why:"Settlement confirms escrow to the Sourcing agent before any bounty post."},
+   {name:"Buyers verified before their first purchase",nodes:["gateway"],ok:byId.gateway.kyb===true,why:"Business verification, sanctions check and acceptable-use acceptance at the Gateway."},
+   {name:"Every escalation lands on a person",nodes:["review","evalpanel"],ok:EDGES.filter(e=>/escalat/.test(e.lb)).every(e=>byId[e.t]?.k==="human"),why:"Eval panel escalations go to the Review desk."},
    {name:"Every flow is labeled",nodes:[],ok:EDGES.every(e=>e.lb&&e.lb.trim()),why:`${EDGES.length} flows, all labeled.`},
    {name:"Every stage lists its software",nodes:[],ok:NODES.filter(n=>n.k!=="external").every(n=>n.sw&&n.sw.length),why:"See the right rail."}
   ];
@@ -691,9 +692,9 @@ function renderLivingAudits(runs){
 function renderWeek(){
   const el=$("#week");
   const b=briefs[0]?.data();
-  if(!b){el.innerHTML=`<div class="empty"><b>No brief yet.</b> The Monday brief lands here: the top three things, then questions for each hat.</div>`;return}
+  if(!b){el.innerHTML=`<div class="empty"><b>No brief yet.</b> The Monday brief lands here: the top three things, then questions for each role.</div>`;return}
   const qn=(b.hats||[]).reduce((s,h)=>s+(h.questions||[]).length,0);
-  el.innerHTML=`<div class="run-h">Week of ${esc(b.weekOf)}</div><ol class="q">${(b.top||[]).map(t=>`<li><span>${esc(t)}</span></li>`).join("")}</ol><p style="color:var(--muted);font-size:.82rem;margin:10px 0 0">${qn} open questions across ${(b.hats||[]).length} hats. <a href="#brief">Answer them</a></p>`;
+  el.innerHTML=`<div class="run-h">Week of ${esc(b.weekOf)}</div><ol class="q">${(b.top||[]).map(t=>`<li><span>${esc(t)}</span></li>`).join("")}</ol><p style="color:var(--muted);font-size:.82rem;margin:10px 0 0">${qn} open questions across ${(b.hats||[]).length} roles. <a href="#brief">Answer them</a></p>`;
   if(location.hash==="#brief")renderBrief();
 }
 async function connect(){
@@ -736,10 +737,10 @@ const SESSION_SKILLS=[
  ["engineering:* (10)","Architecture, code review, debugging, deploy checklist, incident response, testing strategy, tech debt, system design, documentation, standup"]
 ];
 function renderAgents(){
-  const groups=[["Pipeline agents",f=>/^\.claude\/agents\/(dealer|assayer|pit-boss)/.test(f.path)],["Exec hats",f=>/^\.claude\/agents\//.test(f.path)&&!/(dealer|assayer|pit-boss)/.test(f.path)],["Skills",f=>/^skills\//.test(f.path)],["Shared desk",f=>!/^(\.claude|skills)\//.test(f.path)]];
+  const groups=[["Pipeline agents",f=>/^\.claude\/agents\/(sourcing-agent|verifier|eval-judge)/.test(f.path)],["Role agents",f=>/^\.claude\/agents\//.test(f.path)&&!/(sourcing-agent|verifier|eval-judge)/.test(f.path)],["Skills",f=>/^skills\//.test(f.path)],["Shared desk",f=>!/^(\.claude|skills)\//.test(f.path)]];
   const v=$("#v-agents");
   if(!REPO_FILES.length){v.innerHTML=`<h1>Agents &amp; skills</h1><p class="lede">Files are embedded when the panel is built from the repo.</p>`;return}
-  v.innerHTML=`<span class="eyebrow">findastra/data-dealer</span><h1>Agents &amp; skills</h1><p class="lede">Every agent definition and skill file in the repo, exactly as committed. Pipeline agents run the plant; the six hats run the company and are premised on your weekly questions.</p>
+  v.innerHTML=`<span class="eyebrow">findastra/data-dealer</span><h1>Agents &amp; skills</h1><p class="lede">Every agent definition and skill file in the repo, exactly as committed. Pipeline agents run the data plane; the six role agents run the company and work from your answers.</p>
   <div class="files"><div class="flist" role="group" aria-label="Files">${groups.map(([g,fn])=>{const fs=REPO_FILES.filter(fn);return fs.length?`<h4>${g}</h4>${fs.map(f=>`<button type="button" data-p="${esc(f.path)}" aria-pressed="false">${esc(f.path.replace(/^\.claude\/agents\//,"").replace(/^skills\//,"skills/"))}</button>`).join("")}`:""}).join("")}
   <h4>Claude session skills (not in repo)</h4>${SESSION_SKILLS.map(([n,d])=>`<div style="padding:5px 8px;font-size:.78rem"><span class="mono">${esc(n)}</span><br><span style="color:var(--muted)">${esc(d)}</span></div>`).join("")}</div>
   <article class="doc" id="doc"></article></div>`;
@@ -748,9 +749,9 @@ function renderAgents(){
   show(REPO_FILES[0].path);
 }
 function renderModels(){
-  $("#v-models").innerHTML=`<span class="eyebrow">Model roster</span><h1>Every AI model in the system</h1><p class="lede">If a model touches Deck data, its name, version, provider, license and role go into that Deck's signed manifest. Generation uses only Apache-2.0 or MIT open-weight models, because API providers' terms can restrict using their outputs to train other models.</p>
+  $("#v-models").innerHTML=`<span class="eyebrow">Model roster</span><h1>Every AI model in the system</h1><p class="lede">If a model touches a dataset, its name, version, provider, license and role go into that dataset's signed manifest. Generation uses only Apache-2.0 or MIT open-weight models, because API providers' terms can restrict using their outputs to train other models.</p>
   <div class="tablewrap"><table><thead><tr><th>Model</th><th>Provider</th><th>Family</th><th>License / terms</th><th>Job</th><th>Sees</th><th>In manifest</th></tr></thead><tbody>
-  ${ROSTER.map(r=>`<tr><td><b>${esc(r.name)}</b><br><span class="mono" style="color:var(--muted);font-size:.74rem">${esc(r.id)}</span></td><td>${esc(r.prov)}</td><td><span class="tag ai">${esc(r.fam)}</span></td><td>${esc(r.lic)}</td><td>${esc(r.job)}</td><td>${esc(r.sees)}</td><td>${r.man?`<span class="tag y">YES</span>`:`<span class="tag">no Deck data</span>`}</td></tr>`).join("")}
+  ${ROSTER.map(r=>`<tr><td><b>${esc(r.name)}</b><br><span class="mono" style="color:var(--muted);font-size:.74rem">${esc(r.id)}</span></td><td>${esc(r.prov)}</td><td><span class="tag ai">${esc(r.fam)}</span></td><td>${esc(r.lic)}</td><td>${esc(r.job)}</td><td>${esc(r.sees)}</td><td>${r.man?`<span class="tag y">YES</span>`:`<span class="tag">no dataset data</span>`}</td></tr>`).join("")}
   </tbody></table></div>
   <h2>Rules</h2><div class="grid3">
   <div class="pcard"><h3>Independent judges</h3><p>Three judges from three families, none from the generator's family. If two families disagree on more than 10% of rows, a human decides.</p></div>
@@ -758,26 +759,26 @@ function renderModels(){
   <div class="pcard"><h3>Change control</h3><p>A new model or a version bump updates <span class="mono">docs/models.md</span> first. The weekly brief fails the roster audit otherwise.</p></div></div>`;
 }
 function renderMoney(){
-  $("#v-money").innerHTML=`<span class="eyebrow">Where the cash comes from</span><h1>Money</h1><p class="lede">Green on the flow is money. It enters at one place (the Cage), waits out a holdback, then splits between contributors and the treasury. Figures below are illustrative assumptions to replace after the first pilot.</p>
+  $("#v-money").innerHTML=`<span class="eyebrow">Where the cash comes from</span><h1>Money</h1><p class="lede">Green on the flow is money. It enters at one place (Settlement), waits out a holdback, then splits between contributors and the treasury. Figures below are illustrative assumptions to replace after the first pilot.</p>
   <h2>Revenue streams</h2><div class="grid2">
-   <div class="pcard"><span class="eyebrow">1 · core</span><h3>Deck sales</h3><p>Buyers license a graded Deck. Platform keeps the share left after contributor royalties and costs.</p></div>
-   <div class="pcard"><span class="eyebrow">2 · custom</span><h3>Bounties</h3><p>A buyer funds a custom dataset. The bounty is escrowed at the Cage up front; the platform adds a fee.</p></div>
+   <div class="pcard"><span class="eyebrow">1 · core</span><h3>Dataset sales</h3><p>Buyers license a graded dataset. Platform keeps the share left after contributor royalties and costs.</p></div>
+   <div class="pcard"><span class="eyebrow">2 · custom</span><h3>Bounties</h3><p>A buyer funds a custom dataset. The bounty is escrowed at Settlement up front; the platform adds a fee.</p></div>
    <div class="pcard"><span class="eyebrow">3 · recurring</span><h3>Verify &amp; compliance API</h3><p>Subscription for checking manifests and exporting the training-data disclosures buyers now owe (California AB 2013's 12 categories, EU AI Act training-data summary fields). This is the DataClear idea, built in.</p></div>
    <div class="pcard"><span class="eyebrow">4 · premium</span><h3>Exclusive licenses</h3><p>One buyer, no resale, priced at a multiple. A human signs off on every one.</p></div></div>
-  <h2>One $10,000 Deck sale (illustrative)</h2>
+  <h2>One $10,000 dataset sale (illustrative)</h2>
   <div class="tablewrap"><table><thead><tr><th>Line</th><th>Assumption</th><th class="num">Amount</th></tr></thead><tbody>
    <tr><td>Buyer pays</td><td>Standard tier, grade B</td><td class="num">$10,000</td></tr>
    <tr><td>Contributor royalty pool</td><td>30% of sale, paid after 30-day hold</td><td class="num">−$3,000</td></tr>
    <tr><td>Payment processing</td><td>~3% (card); less by invoice</td><td class="num">−$300</td></tr>
-   <tr><td>Forge + judges compute</td><td>GPU hours + API calls for this Deck</td><td class="num">−$800</td></tr>
+   <tr><td>Synthesis + judges compute</td><td>GPU hours + API calls for this dataset</td><td class="num">−$800</td></tr>
    <tr><td><b>Platform gross profit</b></td><td>59% gross margin</td><td class="num"><b>$5,900</b></td></tr></tbody></table></div>
-  <p style="color:var(--muted);font-size:.84rem">Each later sale of the same Deck skips the compute line, so margin rises with repeat sales. That reuse is the core of the model.</p>
+  <p style="color:var(--muted);font-size:.84rem">Each later sale of the same dataset skips the compute line, so margin rises with repeat sales. That reuse is the core of the model.</p>
   <h2>Self-funding rules</h2><div class="grid3">
    <div class="pcard"><h3>Compute ceiling</h3><p>Compute spend stays at or under 25% of trailing 90-day revenue once live.</p></div>
    <div class="pcard"><h3>Pay from cash</h3><p>Royalties are paid only from collected money, after the ${PARAMS.holdbackDays}-day hold.</p></div>
    <div class="pcard"><h3>Runway floor</h3><p>Below ${PARAMS.runwayFloorMonths} months of runway, new bounties pause automatically.</p></div>
-   <div class="pcard"><h3>Agent caps</h3><p>Every buying agent has a daily and per-order cap, enforced in code at the Cage.</p></div>
-   <div class="pcard"><h3>New-contributor cap</h3><p>Payout limit per contributor until three uploads have passed the Assay.</p></div>
+   <div class="pcard"><h3>Agent caps</h3><p>Every buying agent has a daily and per-order cap, enforced in code at Settlement.</p></div>
+   <div class="pcard"><h3>New-contributor cap</h3><p>Payout limit per contributor until three uploads have passed Verification.</p></div>
    <div class="pcard"><h3>Growth throttle</h3><p>Grow supply only as fast as demand absorbs it: open bounties never exceed escrowed buyer money.</p></div></div>
   <h2>Limits: what the system may never do</h2>
   <div class="pcard"><ul>
@@ -785,7 +786,7 @@ function renderMoney(){
    <li>No health records, biometrics, minors' data, government IDs, or data the contributor doesn't own.</li>
    <li>No scraped data, no matter who uploads it.</li>
    <li>No unscrubbed data in write-once storage.</li>
-   <li>No Exclusive deal, takedown decision or large refund without a person at the Shift Manager desk.</li>
+   <li>No Exclusive deal, takedown decision or large refund without a person at the Review desk.</li>
    <li>No bounty before the buyer's money is held; no purchase before the buyer is verified.</li></ul></div>`;
 }
 const RESEARCH=[
@@ -797,11 +798,11 @@ const RESEARCH=[
   s:[["Authors Guild","https://authorsguild.org/news/court-grants-final-approval-anthropic-copyright-settlement/"],["Case tracker","https://for.you.com/posts/ai-copyright-case-tracker-courts-split-as-suits-multiply-400ec211"]]},
  {e:"Provenance",t:"Standard deviation is evidence, not proof",b:["Proof comes from four layers: signed rights, SHA-256 hashes and a Merkle root, a lineage graph, and a signature written to an append-only log.","Croissant 1.1 adds W3C PROV-O lineage and ODRL usage rules to dataset metadata.","Sigstore Rekor v2 (tile-based transparency log) went GA Oct 2025. AWS KMS signs with Ed25519 since Nov 2025.","Statistics still matter: fidelity scoring, drift, near-duplicate search, and data watermarks that can show a model trained on your data (STAMP, 2025)."],
   s:[["ODI on Croissant 1.1","https://theodi.org/news-and-events/blog/croissant-11/"],["Sigstore","https://blog.sigstore.dev/rekor-v2-ga/"],["AWS","https://aws.amazon.com/about-aws/whats-new/2025/11/aws-kms-edwards-curve-digital-signature-algorithm/"],["STAMP (ICML 2025)","https://proceedings.mlr.press/v267/rastogi25a.html"],["OASIS DPS","https://groups.oasis-open.org/discussion/call-for-participation-data-provenance-standard-dps-tc"]]},
- {e:"Synthetic data",t:"Mix synthetic with real; never replace it",b:["Models collapse when synthetic data replaces real data across generations; accumulating real and synthetic together avoids it.","So every synthetic Deck keeps its real seeds in the lineage, and the Forge scores privacy (distance to closest real record) as well as fidelity.","Use Apache-2.0 or MIT generators; Llama-family licenses add naming and attribution duties."],
+ {e:"Synthetic data",t:"Mix synthetic with real; never replace it",b:["Models collapse when synthetic data replaces real data across generations; accumulating real and synthetic together avoids it.","So every synthetic dataset keeps its real seeds in the lineage, and Synthesis scores privacy (distance to closest real record) as well as fidelity.","Use Apache-2.0 or MIT generators; Llama-family licenses add naming and attribution duties."],
   s:[["Gerstgrasser et al. 2024","https://arxiv.org/abs/2404.01413v2"],["License comparison","https://wz-it.com/en/knowledge/ki/open-llm-licenses-commercial-use/"]]},
  {e:"Agents & payments",t:"Agent buyers are real but early",b:["Anthropic donated MCP to the Agentic AI Foundation (Linux Foundation) on 9 Dec 2025, with OpenAI and Block as co-founders.","x402 reached ~165M transactions and ~$50M by Apr 2026, but roughly half of early activity was testing or bot farming. It has no chargebacks, so budgets and allowlists are our job.","Claude Managed Agents (beta) gives the harness: agents, environments, sessions, permission policies, budgets, self-hosted sandboxes. Not ZDR or HIPAA eligible, so raw data stays self-hosted."],
   s:[["Anthropic","https://anthropic.com/news/donating-the-model-context-protocol-and-establishing-of-the-agentic-ai-foundation"],["Spark research","https://www.spark.money/research/x402-protocol-ai-agent-payments"],["Claude docs","https://platform.claude.com/docs/en/managed-agents/overview"]]},
- {e:"Safety duties",t:"Hosting uploads carries legal duties",b:["The REPORT Act (signed 7 May 2024) requires reporting apparent child sexual abuse material to NCMEC, preserving it for a year, with fines up to $600K–$850K for a first failure.","Hence hash scanning at Intake before any model or person sees a file.","GDPR erasure vs. write-once storage: lock only scrubbed data, keep raw data under per-file keys you can destroy."],
+ {e:"Safety duties",t:"Hosting uploads carries legal duties",b:["The REPORT Act (signed 7 May 2024) requires reporting apparent child sexual abuse material to NCMEC, preserving it for a year, with fines up to $600K–$850K for a first failure.","Hence hash scanning at Quarantine before any model or person sees a file.","GDPR erasure vs. write-once storage: lock only scrubbed data, keep raw data under per-file keys you can destroy."],
   s:[["Wilson Sonsini","https://wsgr.com/en/insights/new-minor-safety-obligations-for-online-services-report-act-expands-child-sexual-exploitation-reporting-requirements.html"],["Impossible Cloud","https://www.impossiblecloud.com/magazine/s3-object-lock-and-gdpr-navigating-compliance-in-2026-new"]]},
  {e:"Investors",t:"What VCs fund, and how Data Dealer matches it",b:["Over half of 20 VCs surveyed named proprietary or rare data as the moat that matters.","Marketplace investors read match rate, time to match, take rate, unit economics and cohort retention (a16z's 13 metrics).","Our match: a verified supply network and a provenance graph nobody else holds, a regulatory tailwind, recurring revenue from the verify API, and comps (Protege, Human Native, Gretel) that show exits."],
   s:[["TechCrunch","https://techcrunch.com/2025/01/10/vcs-say-ai-companies-need-proprietary-data-to-stand-out-from-the-pack"],["a16z","https://a16z.com/2020/02/21/13-metrics-for-marketplace-companies"]]}
@@ -813,12 +814,12 @@ function renderResearch(){
 let hatSel=0;
 function renderBrief(){
   const v=$("#v-brief");const b=briefs[0]?.data();
-  if(!b){v.innerHTML=`<span class="eyebrow">Weekly brief</span><h1>Weekly brief</h1><div class="pcard empty"><b>No brief has arrived yet.</b> Each Monday at 8:53 AM MT the six hats write their section here: what to pay attention to, then your questions. Inside Claude it fills in automatically.</div>`;return}
+  if(!b){v.innerHTML=`<span class="eyebrow">Weekly brief</span><h1>Weekly brief</h1><div class="pcard empty"><b>No brief has arrived yet.</b> Each Monday at 8:53 AM MT the six role agents write their sections here: what to pay attention to, then your questions. Inside Claude it fills in automatically.</div>`;return}
   const hats=b.hats||[];hatSel=Math.min(hatSel,hats.length-1);
   const h=hats[hatSel]||{};
-  v.innerHTML=`<span class="eyebrow">Weekly brief · week of ${esc(b.weekOf)}</span><h1>Questions by job</h1><p class="lede">Pick a hat. Your answers become that agent's premise; answer in chat or in the repo and the next brief drops the question.</p>
+  v.innerHTML=`<span class="eyebrow">Weekly brief · week of ${esc(b.weekOf)}</span><h1>Questions by job</h1><p class="lede">Pick a role. Your answers become that role agent's starting point; answer in chat or in the repo and the next brief drops the question.</p>
   <div class="pcard" style="margin-bottom:14px"><h3>Top of the week</h3><ol>${(b.top||[]).map(t=>`<li>${esc(t)}</li>`).join("")}</ol></div>
-  <div class="hats" role="group" aria-label="Hats">${hats.map((x,k)=>`<button type="button" data-k="${k}" aria-pressed="${k===hatSel}">${esc(x.name)} · ${(x.questions||[]).length}</button>`).join("")}</div>
+  <div class="hats" role="group" aria-label="Roles">${hats.map((x,k)=>`<button type="button" data-k="${k}" aria-pressed="${k===hatSel}">${esc(x.name)} · ${(x.questions||[]).length}</button>`).join("")}</div>
   <div class="grid2"><div class="pcard"><span class="eyebrow">${esc(h.name)} · pay attention</span><ul>${(h.watch||[]).map(w=>`<li>${esc(w.text)}${w.url?` <a href="${esc(w.url)}" target="_blank" rel="noopener">source</a>`:""}</li>`).join("")}</ul></div>
   <div class="pcard"><span class="eyebrow">${esc(h.name)} · questions for you</span><ol class="q">${(h.questions||[]).map(q=>`<li><span>${esc(q)}</span></li>`).join("")}</ol></div></div>
   ${briefs.length>1?`<h2>Earlier briefs</h2><ul>${briefs.slice(1).map(x=>`<li>Week of ${esc(x.data().weekOf)}</li>`).join("")}</ul>`:""}`;
@@ -826,20 +827,21 @@ function renderBrief(){
 }
 const CHANGES=[
  ["Raw vault locked before the personal-data scrub","Quarantine with a per-file key → scrub → lock only scrubbed seeds","Erasure requests (GDPR/CCPA) stay possible; destroying a key erases a file"],
- ["No way to pull a Deck back","Shift Manager can revoke in the log, notify buyers, freeze royalties","Takedowns and disputes happen; recall is a selling point"],
+ ["No way to pull a dataset back","The Review desk can revoke in the log, notify buyers, freeze royalties","Takedowns and disputes happen; recall is a selling point"],
  ["Quote with a 20-row sample before data exists","Price range + preview labeled SYNTHETIC PREVIEW","Don't imply real data you don't have yet"],
- ["Forge ⇄ Pit Boss loop had no limit","Max 3 retries, then a human","No runaway compute bills"],
+ ["Synthesis ⇄ eval loop had no limit","Max 3 retries, then a person","No runaway compute bills"],
  ["\"Open-weight model\" for generation","Apache-2.0 / MIT only, license recorded per model","Clean rights chain for buyers"],
  ["Grades and tiers undefined","A, B, C defined; Standard / Limited / Exclusive with royalty rules","Buyers and contributors know what they get"],
- ["Fully autonomous","Autonomous except one human lane (Shift Manager)","Disputes, takedowns and Exclusive deals need accountable people"],
+ ["Fully autonomous","Autonomous except one human-in-the-loop lane (Review desk)","Disputes, takedowns and Exclusive deals need accountable people"],
  ["\"3 independent models\"","Three model families, none from the generator's family; splits escalate","Judges can't share the generator's blind spots"],
  ["Error rate under 5%","95% upper confidence bound under 5%","A small sample can't pass by luck"],
  ["Agent buyers only","Human AI teams first; agents via MCP and x402","That's where money is today"],
  ["Royalties paid at sale","30-day holdback in escrow","Room to reverse fraud and disputes"],
- ["(new) Child-safety hash scan at Intake","Thorn Safer / PhotoDNA before any model sees a file","Legal duty under the REPORT Act"],
+ ["Casino names (Table, Cage, Shoe, Deck, Pit Boss, Forge, Ledger…)","Literal engineering names (Gateway, Settlement, Fulfillment, Catalog, Eval panel, Synthesis, Attestation…)","The words engineers, auditors and buyers' lawyers already use; see Naming"],
+ ["(new) Child-safety hash scan at Quarantine","Thorn Safer / PhotoDNA before any model sees a file","Legal duty under the REPORT Act"],
  ["(new) Every AI model recorded","Model roster in every manifest","Buyers' disclosure laws ask for it"],
- ["(new) Transparency log","Signatures appended to Rekor v2-style log, public verify page","Proof nobody can quietly rewrite"],
- ["(new) Canary rows per buyer","Unique traceable rows in each delivered copy","Find who leaked a Deck"],
+ ["(new) Transparency log","Signatures appended to a Rekor v2-style log, public verify page","Proof nobody can quietly rewrite"],
+ ["(new) Canary rows per buyer","Unique traceable rows in each delivered copy","Find who leaked a dataset"],
  ["(new) Verify & compliance API","Subscription revenue","Recurring revenue VCs value"]
 ];
 function renderPlan(){
@@ -878,7 +880,7 @@ function bindAssign(root){
         const ed=el.querySelector(".edit");ed.hidden=false;
         const tid="ans-"+a.id;
         ed.innerHTML=`${(a.options||[]).length?`<div class="as-ctl" style="margin-bottom:6px">${a.options.map(o=>`<button type="button" class="opt">${esc(o)}</button>`).join("")}</div>`:""}
-          <label class="note" for="${tid}">Your answer (it becomes this hat's premise)</label><textarea id="${tid}">${esc(a.answer||"")}</textarea>
+          <label class="note" for="${tid}">Your answer (it becomes this role agent's starting point)</label><textarea id="${tid}">${esc(a.answer||"")}</textarea>
           <div class="as-ctl" style="margin-top:6px"><button type="button" class="btn primary" data-s="save">Save answer</button><button type="button" class="btn" data-s="cancel">Cancel</button></div>`;
         const ta=ed.querySelector("textarea");ta.focus();
         ed.querySelectorAll(".opt").forEach(o=>o.addEventListener("click",()=>{ta.value=o.textContent;ta.focus()}));
@@ -907,7 +909,7 @@ function renderAssignNow(){
 }
 function renderAssignPage(){
   const v=$("#v-assign");
-  const head=`<span class="eyebrow">Your assignments</span><h1>Assignments</h1><p class="lede">Decisions and tasks only you can do. Answer a decision and it becomes that hat's premise: the Monday brief reads your answers, updates the agents, and adds new questions here.</p>`;
+  const head=`<span class="eyebrow">Your assignments</span><h1>Assignments</h1><p class="lede">Decisions and tasks only you can do. Answer a decision and it becomes that role agent's starting point: the Monday brief reads your answers, updates the agents, and adds new questions here.</p>`;
   if(assignState!=="ready"){v.innerHTML=head+`<div class="pcard empty"><b>${assignState==="offline"?"Assignments load when this dashboard is open in Claude.":"Loading…"}</b></div>`;return}
   const list=sortedAssign(), groups=[["now","Do now"],["next","Next"],["later","Later"]];
   v.innerHTML=head+groups.map(([p,l])=>{const xs=list.filter(a=>a.priority===p&&a.status!=="done");return xs.length?`<h2>${l} · ${xs.length}</h2><div class="pcard">${xs.map(a=>assignHTML(a)).join("")}</div>`:""}).join("")+
@@ -927,11 +929,11 @@ function gateItems(){
   const done=id=>ASSIGN.find(a=>a.id===id)?.status==="done";
   return [
    {name:"All design audits pass",ok:lastAudit.length>0&&lastAudit.every(a=>a.ok)},
-   {name:"Names approved",ok:done("names")},
+   {name:"Naming settled",ok:done("names")},
    {name:"First vertical chosen",ok:done("vertical")},
    {name:"Partnership terms agreed",ok:done("partner")},
    {name:"Company formed",ok:done("entity")},
-   {name:"Lawyer-drafted contributor agreement and Deck license",ok:done("lawyer")},
+   {name:"Lawyer-drafted contributor agreement and dataset license",ok:done("lawyer")},
    {name:"Second reviewer connected (Claude-2)",ok:done("connect-claude2")},
    {name:"Company-owned accounts and keys (Stripe, AWS, model APIs)",ok:done("accounts")}
   ];
@@ -944,40 +946,39 @@ function renderGate(){
 }
 
 /* ===== names audit ===== */
-const NAMES=[
- ["Data Dealer (company)","The house that runs the games","Sells verified data","part","Keep, with a plain tagline. Ask a lawyer whether the name invites 'data broker' treatment; test it with 3–5 buyers."],
- ["The Table","Where players and the house do business","API + MCP server","good","Keep"],
- ["Dealer (agent)","Runs a table and handles chips and payouts","Quotes and bounties; never money","part","Proposed: rename to Host (looks after players' requests, never handles chips)"],
- ["The Cage","Casino cashier","Payments, escrow, payouts","good","Keep"],
- ["The Shoe","Box that deals cards one at a time","Delivery","good","Keep"],
- ["The Deck","A set of cards","The packaged dataset","part","Keep; call pitch materials 'teaser' and 'diligence slides' so 'deck' means one thing"],
- ["Pit Boss","Supervises tables, catches errors and cheating, can stop play","Three-judge quality panel","good","Keep (ours escalates serious disputes instead of settling them)"],
- ["Floor desk → Shift Manager","Floorpersons work under the pit boss; the shift manager sits above","Human escalations","fixed","Fixed: renamed Shift Manager"],
- ["Bounty","Reward for a specific delivery","Paid data request","good","Keep"],
- ["The Assay","Testing ore for purity before paying","Verification","good","Keep"],
- ["Seed vault","Bank of original seeds","Verified real data","good","Keep; say 'seed rows' in code, not 'seed'"],
- ["The Forge","Shapes metal, but also means to fake (forgery)","Seed → synthetic","bad","Proposed: rename to Greenhouse (or Mint)"],
- ["The Ledger","Book of record","Manifest + signature","good","Keep; tell investors it is not a blockchain"],
- ["Canary rows","Canary in a coal mine; 'canary tokens' in security","Leak tracing","good","Keep"]
+const NAMING=[
+ ["Gateway","The Table","API gateway + MCP server: the one front door that authenticates and routes buyers"],
+ ["Sourcing agent","Dealer","Procurement: turns a requirement into a spec, a quote and a sourcing request (the bounty)"],
+ ["Settlement","The Cage","Finance: completing payment, escrow and payouts"],
+ ["Fulfillment","The Shoe","Supply chain: delivering a paid order"],
+ ["Catalog / dataset","The Deck","The product shelf; each item is a versioned dataset"],
+ ["Review desk","Floor desk / Shift Manager","Human-in-the-loop review for what the system must not decide alone"],
+ ["Onboarding","The Source","Identity checks (KYC) and agreements before someone can supply"],
+ ["Quarantine","Intake","Hold uploads apart until they pass inspection"],
+ ["Verification (Verifier agent)","The Assay","Confirm origin, ownership and quality against evidence"],
+ ["Seed store","Seed vault","'Seed data' is the term of art for the real data synthetic data is generated from"],
+ ["Synthesis","The Forge","Data synthesis: generating new records from a model of real ones"],
+ ["Eval panel","Pit Boss","Evals with a panel of LLM judges, used as a pass/fail step"],
+ ["Attestation","The Ledger","Software supply-chain security (in-toto, SLSA): a signed statement of how an artifact was made"],
+ ["Control plane (your living layer)","Living layer","Agentic systems: the layer that runs agents, enforces policy and watches everything"],
+ ["Role agents","Exec hats","Six agents, one per job: CEO, Engineer, CFO, Counsel, Data Steward, Growth"]
 ];
-const VERDICT={good:"ACCURATE",part:"PARTLY",bad:"MISLEADING",fixed:"FIXED"};
-function renderNames(){
-  $("#v-names").innerHTML=`<span class="eyebrow">docs/metaphor-audit.md</span><h1>Names and metaphors</h1><p class="lede">Each name checked against what the thing really is. Casino roles were checked against published descriptions of casino staff.</p>
-  <div class="grid2"><div class="pcard"><span class="eyebrow">Who is the dealer?</span><h3>The company is the house</h3><p>Two things were called "dealer": the company and the AI agent at The Table. In a casino the house owns the games and the dealer is its employee at one table. Data Dealer is the house. But a real dealer handles chips, and our agent is never allowed to touch money, so the proposal is to rename the agent <b>Host</b>.</p></div>
-  <div class="pcard"><span class="eyebrow">Rule for mixing metaphors</span><h3>Casino in front, production in back</h3><p>Casino names where buyers and money are (Table, Host, Cage, Shoe, Deck, Pit Boss, Shift Manager). Production names behind the scenes (Source, Intake, Assay, Seed vault, Greenhouse, Ledger). Plain names in contracts, buyer documents and the public verify page, because casinos imply chance.</p></div></div>
-  <h2>Verdicts</h2><div class="tablewrap"><table><thead><tr><th>Name</th><th>Means in real life</th><th>Our job</th><th>Verdict</th><th>Action</th></tr></thead><tbody>
-  ${NAMES.map(r=>`<tr><td><b>${esc(r[0])}</b></td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td><span class="verdict ${r[3]}">${VERDICT[r[3]]}</span></td><td>${esc(r[4])}</td></tr>`).join("")}</tbody></table></div>
-  <p class="note" style="margin-top:12px">Approve or change the proposed renames in <a href="#assign">Assignments</a>. Nothing is renamed until you do. Sources: <a href="https://www.dummies.com/article/home-auto-hobbies/games/betting/meeting-the-casinos-cast-of-characters-200979" target="_blank" rel="noopener">Dummies</a> · <a href="https://www.truest.me/careers/casino-shift-manager" target="_blank" rel="noopener">Truest</a></p>`;
+function renderNaming(){
+  $("#v-naming").innerHTML=`<span class="eyebrow">docs/naming.md</span><h1>Naming</h1><p class="lede">No metaphors. Every part is named with words engineers, auditors and buyers' lawyers already use, taken from two real vocabularies.</p>
+  <div class="grid2"><div class="pcard"><span class="eyebrow">Data plane</span><h3>Supply-chain vocabulary</h3><p>Data moves like goods through a supply chain with security controls: onboarding, quarantine, verification, synthesis, evaluation, attestation, catalog, settlement, fulfillment, recall. Provenance borrows directly from software supply-chain security: signed attestations, transparency logs, manifests.</p></div>
+  <div class="pcard"><span class="eyebrow">Control plane</span><h3>Agentic-systems vocabulary</h3><p>The AI side uses the field's own terms: agents, harnesses, tools, permission policies, evals and judges, human-in-the-loop review, role agents. Code that holds keys or moves money is called a service, never an agent.</p></div></div>
+  <h2>What changed</h2><div class="tablewrap"><table><thead><tr><th>Now</th><th>Was</th><th>Why this name</th></tr></thead><tbody>${NAMING.map(r=>`<tr><td><b>${esc(r[0])}</b></td><td style="color:var(--muted)">${esc(r[1])}</td><td>${esc(r[2])}</td></tr>`).join("")}</tbody></table></div>
+  <p class="note" style="margin-top:12px">Unchanged because they were already literal: Buyers, Contributors, Treasury, Transparency log, Bounty, Canary rows, Grades, Tiers. The company name, Data Dealer, is separate and stays your call; a lawyer should still check whether it invites "data broker" treatment.</p>`;
 }
 const REVIEW=[
- ["The AI agent checked the buyer's budget before posting a bounty: a model making a money decision","The Cage checks the spending policy in code and holds the money; the agent posts the bounty only after the Cage confirms"],
- ["Real-data Decks could only reach buyers through the synthetic step","Seed vault → Ledger path for grade A/B Decks"],
- ["Buyers weren't verified","Business verification, sanctions check and acceptable-use acceptance before the first purchase"],
- ["Grade A needs a human spot-check, but no human step existed for it","Grade A spot-checks go to the Shift Manager desk"],
- ["Uploads can contain other people's personal data","Contributor attests to consent; the Assay scrubs it or rejects the upload"],
- ["'Floor desk' had the casino hierarchy backwards","Renamed Shift Manager"]
+ ["The AI agent checked the buyer's budget before posting a bounty: a model making a money decision","Settlement checks the spending policy in code and holds the money; the Sourcing agent posts the bounty only after Settlement confirms"],
+ ["Real data could only reach buyers through the synthetic step","Seed store → Attestation path for grade A/B data"],
+ ["Buyers weren't verified","Business verification, sanctions check and acceptable-use acceptance at the Gateway before the first purchase"],
+ ["Grade A needs a human spot-check, but no human step existed for it","Grade A spot-checks go to the Review desk"],
+ ["Uploads can contain other people's personal data","Contributor attests to consent; Verification scrubs it or rejects the upload"],
+ ["Casino names didn't match what the parts do","Literal engineering names throughout (see Naming)"]
 ];
-const GUARDS=["A model never moves money, holds a key or signs a manifest","No unscrubbed data in write-once storage","No health records, biometrics, minors' data, government IDs, financial account data, scraped data, or data the contributor doesn't own","Child-safety hash scan before any person or model sees a file","Exclusive deals, takedowns, recalls and large refunds need a person at the Shift Manager desk","API-model output is never used as training rows","No judge from the generator's model family","Log entries are never deleted","No bounty before escrow","No purchase before buyer verification","Nothing goes live until the go-live gate is all green"];
+const GUARDS=["A model never moves money, holds a key or signs a manifest","No unscrubbed data in write-once storage","No health records, biometrics, minors' data, government IDs, financial account data, scraped data, or data the contributor doesn't own","Child-safety hash scan before any person or model sees a file","Exclusive deals, takedowns, recalls and large refunds need a person at the Review desk","API-model output is never used as training rows","No judge from the generator's model family","Log entries are never deleted","No bounty before escrow","No purchase before buyer verification","Nothing goes live until the go-live gate is all green"];
 
 /* ===== Chip, the pocket pet ===== */
 const PET={sample:undefined,blocked:false,busy:false,ctl:null,turns:[],bob:0,blinkIn:8,greeted:false};
@@ -999,23 +1000,21 @@ function petFace(){
 function drawPet(cv,face,bob,blink){
   const c=cv.getContext("2d"), BG="#c3d39b", INK="#1f2b0e", MID="#7d8f55";
   c.fillStyle=BG;c.fillRect(0,0,32,24);
-  const cx=16, cy=10+bob;
-  for(let y=0;y<24;y++)for(let x=0;x<32;x++){
-    const dx=x+.5-cx, dy=y+.5-cy, d=Math.hypot(dx,dy); let col=null;
-    if(d>9.3) continue;
-    if(d>8.3) col=INK; else if(d>6.3){const a=(Math.atan2(dy,dx)+Math.PI)/(Math.PI*2);col=(Math.floor(a*12)%2)?INK:MID} else if(d>5.5) col=INK;
-    if(col){c.fillStyle=col;c.fillRect(x,y,1,1)}
-  }
   const p=(x,y,col=INK,fixed)=>{c.fillStyle=col;c.fillRect(x,y+(fixed?0:bob),1,1)};
-  [13,19].forEach(x=>{for(let y=19+bob;y<=20;y++)p(x,y,INK,true);p(x-1,21,INK,true);p(x,21,INK,true);p(x+1,21,INK,true)});
-  const eyesOpen=()=>{p(14,8);p(14,9);p(18,8);p(18,9)};
-  const eyesShut=()=>{p(13,9);p(14,9);p(18,9);p(19,9)};
-  if(face==="sleep"){eyesShut();p(16,12);[[23,2],[24,2],[25,2],[24,3],[23,4],[24,4],[25,4]].forEach(([x,y])=>p(x,y,INK,true));return}
-  if(face==="think"){p(15,7);p(15,8);p(19,7);p(19,8);p(15,12);p(16,12);p(17,12);[[22,2],[25,2],[28,2]].forEach(([x,y],i)=>{if((Date.now()/400|0)%4>i)p(x,y,INK,true)});return}
+  // a microchip: package outline, side pins, orientation notch, pin-1 dot
+  for(let x=9;x<=22;x++){p(x,4);p(x,16)}
+  for(let y=4;y<=16;y++){p(9,y);p(22,y)}
+  [6,9,12,15].forEach(y=>{p(7,y);p(8,y);p(23,y);p(24,y)});
+  p(15,4,BG);p(16,4,BG);p(15,5);p(16,5);p(11,6,MID);
+  [12,19].forEach(x=>{for(let y=17+bob;y<=19;y++)p(x,y,INK,true);p(x-1,20,INK,true);p(x,20,INK,true);p(x+1,20,INK,true)});
+  const eyesOpen=()=>{p(13,9);p(13,10);p(18,9);p(18,10)};
+  const eyesShut=()=>{p(12,10);p(13,10);p(18,10);p(19,10)};
+  if(face==="sleep"){eyesShut();p(15,13);p(16,13);[[25,1],[26,1],[27,1],[26,2],[25,3],[26,3],[27,3]].forEach(([x,y])=>p(x,y,INK,true));return}
+  if(face==="think"){p(14,8);p(14,9);p(19,8);p(19,9);p(14,13);p(15,13);p(16,13);p(17,13);[[25,2],[27,2],[29,2]].forEach(([x,y],i)=>{if((Date.now()/400|0)%4>i)p(x,y,INK,true)});return}
   blink?eyesShut():eyesOpen();
-  if(face==="happy"){p(14,11);p(15,12);p(16,12);p(17,12);p(18,11);p(12,11,MID);p(20,11,MID)}
-  else if(face==="hungry"){[[15,11],[16,11],[17,11],[15,12],[17,12],[15,13],[16,13],[17,13]].forEach(([x,y])=>p(x,y))}
-  else if(face==="worried"){p(14,12);p(15,11);p(16,11);p(17,11);p(18,12);p(21,6,MID);p(21,7,MID)}
+  if(face==="happy"){p(13,12);p(14,13);p(15,13);p(16,13);p(17,13);p(18,12);p(11,12,MID);p(20,12,MID)}
+  else if(face==="hungry"){[[14,12],[15,12],[16,12],[17,12],[14,13],[17,13],[14,14],[15,14],[16,14],[17,14]].forEach(([x,y])=>p(x,y))}
+  else if(face==="worried"){p(13,14);p(14,13);p(15,13);p(16,13);p(17,13);p(18,14);p(26,5,MID);p(26,6,MID)}
 }
 function petTick(){
   if(!reduceMotion){PET.bob=PET.bob?0:-1}
@@ -1057,13 +1056,13 @@ function petRules(){
     parts:NODES.map(n=>({id:n.id,name:n.t,kind:KIND[n.k],job:n.what,name_check:n.meta,software:n.sw||[],ai_model:n.model||n.models||null})),
     flows:EDGES.map(e=>`${nameOf(e.f)} -> ${nameOf(e.t)} [${TYPE[e.ty].n}]: ${e.lb.replace(/\n/g," ")}`),
     agents_harness:HARNESS.map(h=>({harness:h.t,note:h.n,runs:h.chips.map(c=>c.l)})),
-    exec_hats:HATS,
+    role_agents:HATS,
     ai_models:ROSTER.map(r=>({name:r.name,provider:r.prov,job:r.job,sees:r.sees,license:r.lic})),
     guardrails:GUARDS, design_review_fixes:REVIEW.map(r=>r[0]+" → "+r[1]),
-    names_audit:NAMES.map(r=>`${r[0]}: ${VERDICT[r[3]]}. ${r[4]}`),
+    naming:NAMING.map(r=>`${r[0]} (was ${r[1]}): ${r[2]}`),
     design_audits:lastAudit.map(a=>`${a.ok?"PASS":"FAIL"}: ${a.name}`),
     go_live_gate:gateItems().map(g=>`${g.ok?"green":"blocked"}: ${g.name}`),
-    revenue:["Deck sales","Bounties (buyer-funded, escrowed)","Verify & compliance API (subscription)","Exclusive licenses"],
+    revenue:["Dataset sales","Bounties (buyer-funded, escrowed)","Verify & compliance API (subscription)","Exclusive licenses"],
     assignments:ASSIGN.map(a=>({id:a.id,title:a.title,kind:a.kind,priority:a.priority,status:a.status,answer:a.answer||"",options:a.options||[]})),
     dashboard_pages:Object.keys(VIEWS)
   };
@@ -1079,13 +1078,13 @@ How to answer:
 
 What you can do with tools: open a dashboard page, highlight a part of the diagram, list assignments, save the founder's answer to a decision, or mark a task done or not done. Only save an answer or change a task when the founder clearly tells you their decision or asks you to; then say exactly what you saved.
 
-Who is "the dealer": Data Dealer, the company, is the house. The AI agent at The Table is currently called Dealer; the names audit proposes renaming it Host, because a real casino dealer handles chips and this agent is never allowed to touch money.
+Naming: the system uses literal engineering names, not metaphors. The data plane uses supply-chain words (Onboarding, Quarantine, Verification, Seed store, Synthesis, Eval panel, Attestation, Catalog, Settlement, Fulfillment). The control plane, which the founder calls the living layer, uses agentic-systems words (agents, harness, evals, the human-in-the-loop Review desk, role agents). If someone uses an old casino name (Table, Dealer, Cage, Shoe, Deck, Pit Boss, Forge, Ledger, Assay), say what it is called now. Data Dealer is the company's name.
 
 DATA (JSON):
 ${JSON.stringify(data)}`;
 }
 const PET_TOOLS=[
- {name:"open_page",description:"Open a page of the dashboard. Returns 'opened'.",inputSchema:{type:"object",properties:{page:{type:"string",enum:["flow","assign","agents","models","money","names","research","brief","plan"]}},required:["page"]},
+ {name:"open_page",description:"Open a page of the dashboard. Returns 'opened'.",inputSchema:{type:"object",properties:{page:{type:"string",enum:["flow","assign","agents","models","money","naming","research","brief","plan"]}},required:["page"]},
   execute:({page})=>{const p=String(page);if(!VIEWS.hasOwnProperty(p))throw new Error("unknown page");location.hash="#"+p;return "opened "+p}},
  {name:"highlight_part",description:"Show one part of the process-flow diagram and its details. Use the part id from DATA.parts. Returns the part's name.",inputSchema:{type:"object",properties:{id:{type:"string"}},required:["id"]},
   execute:({id})=>{const k=String(id);if(!byId[k])throw new Error("unknown part id");location.hash="#flow";setTimeout(()=>select(k),60);return "highlighted "+byId[k].t}},
@@ -1130,13 +1129,13 @@ function bindPet(){
     if(q==="tasks"){petMsg("me","My assignments");petMsg("bot",localTasks());return}
     if(q==="audits"){petMsg("me","Audits");petMsg("bot",localAudits());return}
     if(q==="explain") petAsk("Explain the whole Data Dealer system to me in plain words, start to finish, in about 6 short sentences.");
-    if(q==="dealer") petAsk("Who is the dealer in all this?");
+    if(q==="planes") petAsk("What is the difference between the data plane and the control plane here, in plain words?");
   }));
   setInterval(petTick,450);petTick();
 }
 
 /* ===== router ===== */
-const VIEWS={flow:null,assign:renderAssignPage,agents:renderAgents,names:renderNames,models:renderModels,money:renderMoney,research:renderResearch,brief:renderBrief,plan:renderPlan};
+const VIEWS={flow:null,assign:renderAssignPage,agents:renderAgents,naming:renderNaming,models:renderModels,money:renderMoney,research:renderResearch,brief:renderBrief,plan:renderPlan};
 const done={};
 function route(){
   const v=(location.hash.replace("#","")||"flow");const key=VIEWS.hasOwnProperty(v)?v:"flow";

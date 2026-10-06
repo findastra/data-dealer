@@ -6,18 +6,18 @@
 Training generative models on their own outputs degrades them when synthetic data **replaces** real data generation after generation. When synthetic data **accumulates alongside** the original real data, test error stays bounded and collapse is avoided. The result held across language models, diffusion models and VAEs, with a proof for linear models. [Gerstgrasser et al., 2024](https://arxiv.org/abs/2404.01413v2)
 
 **Design consequences**
-- Every synthetic Deck names its real seeds in its lineage, so buyers can keep real data in the mix.
+- Every synthetic dataset names its real seeds in its lineage, so buyers can keep real data in the mix.
 - Sell seed + synthetic bundles, not synthetic alone, for training use.
 - Track generation depth: never generate from synthetic rows (depth stays 1).
 
-## Scoring a Forge batch
+## Scoring a Synthesis batch
 | Dimension | Question | Typical method |
 | --- | --- | --- |
 | Fidelity | Does it look like the seeds statistically? | Column distributions, correlations (SDMetrics) |
 | Diversity | Is it more than reworded copies? | Embedding spread, n-gram novelty |
 | Privacy | Is any row too close to a real person's record? | Distance to closest record vs. a holdout baseline; membership-inference test |
 | Usefulness | Does a model trained on it do well on real data? | Train on synthetic, test on held-out real |
-| Correctness | Are the facts right? | Pit Boss judge panel on a random sample |
+| Correctness | Are the facts right? | Eval panel (three judges) on a random sample |
 
 ## Generator licensing
 API providers' terms can restrict using outputs to train other models, so generation uses Apache-2.0 or MIT open-weight models. Llama-family licenses add naming and attribution duties; Apache-2.0 and MIT releases (many Qwen, Mistral and gpt-oss releases) impose minimal restrictions. Confirm the license on each model card before use and record it in the manifest. [License comparison](https://wz-it.com/en/knowledge/ki/open-llm-licenses-commercial-use/)

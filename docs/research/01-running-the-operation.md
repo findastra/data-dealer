@@ -5,21 +5,21 @@
 ## The jobs, and who (or what) does them
 | Job | Early stage (2 founders) | Automated by | Human still needed for |
 | --- | --- | --- | --- |
-| Find buyers, sell pilots | Founder | Growth hat drafts lists and follow-ups | Calls, pricing, trust |
-| Recruit contributors | Founder | Dealer posts bounties | Community, first 50 people |
-| Contributor agreement, Deck license | Startup lawyer | — | Drafting and sign-off |
-| Intake, Assay, Ledger, Cage, Shoe | Technical founder | Code + Assayer agent | Code review on money and keys |
-| Forge + Pit Boss | Technical founder | Batch jobs + judge panel | Calibration, escalations |
-| Disputes, takedowns, recalls | Both founders | Shift Manager queue | Every decision |
-| Books, taxes, payouts | Founder + bookkeeper | CFO hat, Stripe Connect | Filing, sign-off |
-| Weekly direction | Both founders | Six hats write the brief | Answering the questions |
+| Find buyers, sell pilots | Founder | Growth role agent drafts lists and follow-ups | Calls, pricing, trust |
+| Recruit contributors | Founder | Sourcing agent posts bounties | Community, first 50 people |
+| Contributor agreement, dataset license | Startup lawyer | — | Drafting and sign-off |
+| Quarantine, Verification, Attestation, Settlement, Fulfillment | Technical founder | Code + Verifier agent | Code review on money and keys |
+| Synthesis + Eval panel | Technical founder | Batch jobs + judge panel | Calibration, escalations |
+| Disputes, takedowns, recalls | Both founders | Review desk queue | Every decision |
+| Books, taxes, payouts | Founder + bookkeeper | CFO role agent, Stripe Connect | Filing, sign-off |
+| Weekly direction | Both founders | Six role agents write the brief | Answering the questions |
 
 ## What to learn, in order
 Each step unlocks the next. Learn by building the manual pilot (Phase 1), not by studying first.
 
 1. **Data basics:** CSV/JSON → Parquet, pandas or Polars, schema validation (pandera). *Practice:* turn one messy dataset into a clean Parquet file with a schema.
 2. **Hashes and signatures:** SHA-256, Merkle trees, public/private keys, Ed25519. *Practice:* sign a manifest locally, verify it, then change one byte and watch verification fail.
-3. **Postgres + SQL:** tickets, catalog, audit log. *Practice:* the catalog table and a "search Decks" query.
+3. **Postgres + SQL:** tickets, catalog, audit log. *Practice:* the catalog table and a "search datasets" query.
 4. **Cloud essentials (AWS):** S3, IAM least privilege, KMS keys, Object Lock modes. *Practice:* quarantine bucket + per-file key + crypto-shred one file.
 5. **Payments:** Stripe Billing, Stripe Connect (contributor payouts, tax forms), Stripe Identity. *Practice:* test-mode payment → 30-day hold → payout.
 6. **Personal-data scrubbing:** Presidio analyzers and anonymizers. *Practice:* scrub a sample chat log; measure what it misses.
@@ -33,9 +33,9 @@ Each step unlocks the next. Learn by building the manual pilot (Phase 1), not by
 | --- | --- | --- |
 | 1–2 | Founder agreement, entity choice, one vertical picked | Signed agreement; one-page vertical thesis |
 | 2–4 | 10 buyer discovery calls | Notes; 3 written pilot commitments |
-| 3–6 | Lawyer drafts contributor agreement + Deck license | Two signed-off templates |
-| 4–8 | Manual pilot: recruit 20 contributors, run checks with scripts, hand-build one Deck and manifest | Deck #1 with signed manifest |
-| 8–12 | Sell Deck #1; automate Intake + Ledger + Cage | First revenue; recall drill passed |
+| 3–6 | Lawyer drafts contributor agreement + dataset license | Two signed-off templates |
+| 4–8 | Manual pilot: recruit 20 contributors, run checks with scripts, hand-build one dataset and manifest | Dataset #1 with signed manifest |
+| 8–12 | Sell dataset #1; automate Quarantine + Attestation + Settlement | First revenue; recall drill passed |
 
 ## Credits and programs worth applying for
 AWS Activate, Anthropic's startup program, and Stripe Atlas (if forming a Delaware C-corp). Check each program's current terms before applying.

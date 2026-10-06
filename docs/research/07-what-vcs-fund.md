@@ -10,23 +10,23 @@
 ## Qualities to build into the system (and where they live)
 | What VCs look for | How Data Dealer has it | Where |
 | --- | --- | --- |
-| Proprietary data moat | Verified contributor network + provenance graph nobody else holds | Seed vault, Ledger |
+| Proprietary data moat | Verified contributor network + provenance graph nobody else holds | Seed store, Attestation |
 | Regulatory tailwind | Buyers owe AB 2013 and EU AI Act disclosures; our manifests export them | Verify & compliance API |
 | Recurring revenue | Verify API subscription on top of transactional sales | Revenue stream 3 |
-| Network effects | More seeds → more Decks → more buyers → more bounties → more contributors | Bounty loop |
-| Improving margins | Repeat sales of a Deck carry no new compute | Money page |
-| Defensibility via standards | Croissant 1.1, Data Provenance Standard, transparency log | Ledger |
+| Network effects | More seeds → more datasets → more buyers → more bounties → more contributors | Bounty loop |
+| Improving margins | Repeat sales of a dataset carry no new compute | Money page |
+| Defensibility via standards | Croissant 1.1, Data Provenance Standard, transparency log | Attestation |
 | Risk discipline | Guardrails, human lane, recall drills | `docs/guardrails.md` |
-| Measurable liquidity | Time-to-match, fill rate, repeat buyers on the dashboard | Growth hat |
+| Measurable liquidity | Time-to-match, fill rate, repeat buyers on the dashboard | Growth role agent |
 | Comparable exits | Gretel → NVIDIA, Human Native → Cloudflare | Market note |
 
 ## The metrics to show at a seed pitch
 1. Paying pilots and revenue (even small), with logos or named personas.
-2. Time from ticket to delivered Deck.
-3. Assay pass rate and recall-drill time.
+2. Time from ticket to delivered dataset.
+3. Verification pass rate and recall-drill time.
 4. Gross margin on first sale vs. repeat sale.
 5. Contributor time-to-first-payout and repeat-contribution rate.
 6. Pipeline: letters of intent by vertical.
 
-## Deck structure
+## Pitch deck structure
 Standard practice is a short **teaser** (8–12 slides, read without you) that earns the meeting, then a longer **technical / diligence deck** for partners and their technical advisors. See `docs/pitch/`.
