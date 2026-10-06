@@ -11,31 +11,31 @@ Data Dealer pays verified people for data they own, proves it is clean, expands 
 | Stage | Job | Key rule |
 | --- | --- | --- |
 | **Buyers** | AI teams (web) and AI agents (MCP / API) | Human teams first; agents are early |
-| **The Table** | Search, manifests, tickets, orders | One front door for both buyer types |
-| **Dealer** (AI agent) | Quote, preview, bounty | Preview labeled `SYNTHETIC PREVIEW`; never touches money |
+| **The Table** | Search, manifests, tickets, orders | One front door; first purchase needs business verification, sanctions check, acceptable-use acceptance |
+| **Dealer** (AI agent; proposed rename: Host) | Quote, preview, bounty | Preview labeled `SYNTHETIC PREVIEW`; posts a bounty only after the Cage confirms escrow; never touches money |
 | **Contributors → The Source** | ID + 18+ check, e-signed agreement, payout account | Ownership attestation + license grant + indemnity |
 | **Intake** | Quarantine, per-file key, hash, malware + CSAM hash scan | Nothing reaches a model before this |
-| **The Assay** (AI agent) | Origin, forensics, personal-data scrub, quality, grade | Scrub before anything is locked; model sees reports, not raw files |
-| **Seed vault** | Scrubbed seeds, write-once | Only scrubbed data is ever locked |
-| **The Forge** (AI job) | Seed → synthetic, scored | Apache-2.0/MIT generators; synthetic mixed with real, never replacing it |
+| **The Assay** (AI agent) | Origin, forensics, personal-data scrub, quality, grade | Scrub before anything is locked; model sees reports, not raw files; other people's data inside an upload is scrubbed or rejected |
+| **Seed vault** | Scrubbed seeds, write-once | Only scrubbed data is ever locked; real-data Decks (grade A/B) go straight to the Ledger |
+| **The Forge** (AI job; proposed rename: Greenhouse) | Seed → synthetic, scored | Apache-2.0/MIT generators; synthetic mixed with real, never replacing it |
 | **Pit Boss** (AI panel) | 3 judges, 3 model families | Pass if the 95% upper bound on error < 5%; max 3 retries |
 | **The Ledger** (code) | Manifest, Merkle root, Ed25519 signature, log entry | No model holds a key |
 | **Transparency log** | Append-only public record + verify page | Revocations are appended, never deleted |
 | **The Deck** | Parquet + Croissant + manifest + datasheet + license | Graded and tiered |
 | **The Cage** (code) | Payment, budget caps, 30-day holdback, splits | No model moves money |
 | **The Shoe** (code) | Signed download / cloud share + canary rows | Each buyer's copy is traceable |
-| **Floor desk** (humans) | Disputes, takedowns, recalls, Exclusive deals | The one human lane |
+| **Shift Manager** (humans) | Disputes, takedowns, recalls, Exclusive deals, grade A spot-checks | The one human lane |
 
 ## Changes from v1
 | v1 | v2 | Why |
 | --- | --- | --- |
 | Raw vault object-locked before the scrub | Quarantine with a per-file key → scrub → lock only scrubbed seeds | GDPR/CCPA erasure stays possible; destroying a key erases a file |
-| No way to pull a Deck back | Floor desk revokes in the log, notifies buyers, freezes royalties | Takedowns happen; recall is a selling point |
+| No way to pull a Deck back | Shift Manager desk revokes in the log, notifies buyers, freezes royalties | Takedowns happen; recall is a selling point |
 | Quote + 20-row sample before data exists | Price range + labeled synthetic preview | Don't imply real data you don't have |
 | Forge ⇄ Pit Boss loop unbounded | Max 3 retries, then a human | No runaway compute |
 | "Open-weight model" | Apache-2.0 / MIT only, license recorded per model | Clean rights chain |
 | Grades and tiers undefined | Defined below | Buyers and contributors know what they get |
-| Fully autonomous | Autonomous except the Floor desk | Accountable people for disputes and big deals |
+| Fully autonomous | Autonomous except the Shift Manager desk | Accountable people for disputes and big deals |
 | "3 independent models" | 3 families, none from the generator's family; splits escalate | No shared blind spots |
 | Error rate < 5% | 95% upper confidence bound < 5% | A small sample can't pass by luck |
 | Agent buyers only | Human teams first, agents too | That's where money is today |
@@ -46,10 +46,24 @@ Data Dealer pays verified people for data they own, proves it is clean, expands 
 | — | Per-buyer canary rows | Trace leaks |
 | — | Verify & compliance API | Recurring revenue |
 
+## Design review, 6 Oct (before anything goes live)
+| Problem found | Fix |
+| --- | --- |
+| The AI agent checked the buyer's budget before posting a bounty, so a model was making a money decision | The Cage checks the spending policy in code and escrows the money; the agent posts the bounty only after the Cage confirms |
+| Real-data Decks could only reach buyers through the synthetic step | Seed vault → Ledger path for grade A/B Decks |
+| Buyers weren't verified | Business verification, sanctions check and acceptable-use acceptance before the first purchase |
+| Grade A needs a human spot-check, but the design said "autonomous except one desk" | Grade A spot-checks go to the Shift Manager desk |
+| Uploads can contain other people's personal data | Contributor attests to third-party consent; the Assay flags it and scrubs or rejects |
+| "Floor desk" had the casino hierarchy backwards (floorpersons report to the pit boss) | Renamed Shift Manager, who sits above the pit boss |
+| Names that mislead | See `docs/metaphor-audit.md`; renames await Astra's approval |
+
+## Go-live gate
+Nothing goes live until every item is green on the dashboard: all design audits pass, names approved, first vertical chosen, partnership terms set, entity formed, lawyer-drafted contributor agreement and Deck license, buyer verification in place.
+
 ## Grades and tiers
 | Grade | Meaning |
 | --- | --- |
-| **A** | Real data, ID-verified contributor, full consent chain, human spot-check passed |
+| **A** | Real data, ID-verified contributor, full consent chain, human spot-check passed at the Shift Manager desk |
 | **B** | Real data, ID-verified contributor, automated checks only |
 | **C** | Synthetic, generated from A/B seeds, Pit Boss passed; seeds named in lineage |
 

@@ -29,7 +29,7 @@ A manifest is proof, in four layers. Each layer answers a different question; no
 Recompute hashes → compare Merkle root → check signature with the published public key → confirm the log entry and that it is not revoked.
 
 ## Revoke
-Floor desk only. Append a revocation entry (never delete), mark the Deck withdrawn, notify every buyer of that Deck, freeze held royalties.
+Shift Manager desk only. Append a revocation entry (never delete), mark the Deck withdrawn, notify every buyer of that Deck, freeze held royalties.
 
 ## What statistics are for
 Distribution fingerprints (means, standard deviations, quantiles, correlations, embeddings) score synthetic fidelity, catch drift and near-duplicates, and support leak detection with canary rows. They are **evidence**, not **proof**: many different datasets share the same standard deviation, and anyone can forge one.

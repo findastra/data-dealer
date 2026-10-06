@@ -24,8 +24,8 @@ Eval runner (Inspect AI). Each judge sees: seed spec, sampled rows, rubric. No t
 ## Scoring
 - Sample size sized so the 95% upper confidence bound on the error rate can be computed (minimum 300 rows per batch).
 - Pass only if the **upper bound** is under 5%.
-- If judges disagree on more than 10% of rows, escalate to the Floor desk instead of averaging.
-- Fail → back to The Forge. Third fail → Floor desk.
+- If judges disagree on more than 10% of rows, escalate to the Shift Manager desk instead of averaging.
+- Fail → back to The Forge. Third fail → Shift Manager desk.
 
 ## Output (JSON)
 `{batch_id, seat, model_id, rows_scored, errors, error_rate, notes}`

@@ -62,7 +62,7 @@ signature, log_entry_id, revoked (bool)
 ```
 
 ## Recall
-Revocation is a new log entry pointing at the old one, never a deletion. The Floor desk triggers it; the Shoe notifies every buyer of that Deck; the Cage freezes held royalties.
+Revocation is a new log entry pointing at the old one, never a deletion. The Shift Manager desk triggers it; the Shoe notifies every buyer of that Deck; the Cage freezes held royalties.
 
 ## Erasure vs. immutability
 Write-once storage and GDPR erasure conflict only if personal data is what's locked. Lock only scrubbed seeds and hashes. Keep raw uploads in quarantine under a per-file KMS key; destroying the key makes the file unreadable (crypto-shredding). For backups that can't be erased immediately, regulators accept data that is "put beyond use" until it expires. [Impossible Cloud](https://www.impossiblecloud.com/magazine/s3-object-lock-and-gdpr-navigating-compliance-in-2026-new)

@@ -1,7 +1,7 @@
 <title>Data Dealer Ops</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&family=Silkscreen:wght@400;700&family=VT323&display=swap">
 <style>
 /* Layout: control-room PFD. One black canvas of the whole plant, a software rail on the right, live audits underneath. Pages open from the top bar. */
 :root{
@@ -16,6 +16,7 @@
   --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html,body{background:var(--bg);color:var(--ink)}
 body{font:14px/1.5 var(--f-body);margin:0}
 a{color:var(--agent)}
@@ -130,7 +131,7 @@ svg.focus .edge.on .base{stroke-opacity:1}
 .meta b{color:var(--ink)}
 
 /* audits + brief strip */
-.strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:14px}
+.strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:14px;align-items:start}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:6px;min-width:0}
 .card > header{display:flex;align-items:baseline;gap:8px;padding:11px 14px;border-bottom:1px solid var(--line)}
 .card h2{font:600 .78rem/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;margin:0}
@@ -198,6 +199,84 @@ td.num{text-align:right}
 .q li{counter-increment:q;display:grid;grid-template-columns:28px minmax(0,1fr);gap:8px;padding:8px 0;border-bottom:1px solid var(--line)}
 .q li::before{content:counter(q);font:600 .8rem/1.6 var(--f-mono);color:var(--audit)}
 
+
+/* assignments + gate */
+.card.span2{grid-column:span 2}
+.as{padding:10px 0;border-bottom:1px solid var(--line);display:grid;gap:6px}
+.as:last-child{border-bottom:0}
+.as-top{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.pri{font:600 .62rem/1 var(--f-mono);letter-spacing:.1em;padding:4px 6px;border-radius:3px;border:1px solid var(--line-2);color:var(--muted)}
+.pri.now{color:var(--bg);background:var(--audit);border-color:var(--audit)}
+.pri.next{color:var(--audit);border-color:color-mix(in srgb,var(--audit) 55%,transparent)}
+.pri.done{color:var(--pass);border-color:color-mix(in srgb,var(--pass) 45%,transparent)}
+.as h3{margin:0;font:600 .95rem/1.3 var(--f-body)}
+.as.is-done h3{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--faint)}
+.as .why{margin:0;color:var(--muted);font-size:.84rem;max-width:80ch}
+.as .ans{margin:0;font-size:.86rem;border-left:2px solid var(--pass);padding-left:10px}
+.as .ans b{font:600 .66rem/1 var(--f-mono);letter-spacing:.1em;color:var(--pass);text-transform:uppercase;display:block;margin-bottom:3px}
+.as-ctl{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.btn{background:var(--panel-2);border:1px solid var(--line-2);border-radius:4px;padding:6px 10px;cursor:pointer;font:500 .76rem/1 var(--f-mono);color:var(--ink)}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn[disabled]{opacity:.5;cursor:default}
+.opt{background:transparent;border:1px dashed var(--line-2);border-radius:999px;padding:5px 10px;cursor:pointer;font:400 .78rem/1.2 var(--f-body);color:var(--ink)}
+.opt:hover{border-color:var(--audit)}
+.as textarea{width:100%;min-height:70px;background:#000;color:var(--ink);border:1px solid var(--line-2);border-radius:4px;padding:8px 10px;font:400 .88rem/1.45 var(--f-body);resize:vertical}
+.as pre{white-space:pre-wrap;background:#000;border:1px solid var(--line);border-radius:4px;padding:10px 12px;font:400 .78rem/1.5 var(--f-mono);max-height:260px;overflow:auto;margin:6px 0 0}
+.as details summary{cursor:pointer;font:500 .76rem/1 var(--f-mono);color:var(--agent)}
+.note{font-size:.78rem;color:var(--muted)}
+.gate-row{display:grid;grid-template-columns:22px minmax(0,1fr);gap:8px;padding:6px 0;border-bottom:1px solid var(--line);font-size:.86rem;align-items:start}
+.gate-row:last-child{border-bottom:0}
+.gate-row i{width:12px;height:12px;border-radius:50%;margin-top:4px;border:2px solid var(--fail)}
+.gate-row.ok i{background:var(--pass);border-color:var(--pass)}
+.gate-row span{color:var(--muted)}
+.gate-row.ok span{color:var(--ink)}
+.gate-verdict{font:600 .78rem/1.3 var(--f-mono);letter-spacing:.06em;padding:8px 10px;border-radius:4px;margin-bottom:6px;border:1px solid color-mix(in srgb,var(--fail) 60%,transparent);color:#ff8c8c}
+.gate-verdict.ok{border-color:color-mix(in srgb,var(--pass) 50%,transparent);color:var(--pass)}
+.verdict{font:600 .64rem/1 var(--f-mono);letter-spacing:.08em;padding:4px 6px;border-radius:3px;border:1px solid;white-space:nowrap}
+.verdict.good{color:var(--pass);border-color:color-mix(in srgb,var(--pass) 45%,transparent)}
+.verdict.part{color:var(--audit);border-color:color-mix(in srgb,var(--audit) 55%,transparent)}
+.verdict.bad{color:#fff;background:var(--fail);border-color:var(--fail)}
+.verdict.fixed{color:var(--agent);border-color:color-mix(in srgb,var(--agent) 50%,transparent)}
+@media (max-width:1180px){.card.span2{grid-column:auto}}
+
+/* Chip, the pocket pet: neon shell with a heavy outline, LCD screens */
+:root{--neon:#e8ff1f;--neon-ink:#0a0b05;--lcd:#c3d39b;--lcd-ink:#1f2b0e;--lcd-mid:#7d8f55;--f-pixel:"Silkscreen","IBM Plex Mono",ui-monospace,monospace;--f-lcd:"VT323","IBM Plex Mono",ui-monospace,monospace}
+.pet-launch{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:40;width:76px;height:92px;border-radius:24px 24px 28px 28px;background:var(--neon);border:3px solid var(--neon-ink);box-shadow:0 0 0 3px var(--neon),0 0 26px color-mix(in srgb,var(--neon) 45%,transparent);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:0}
+.pet-launch::before{content:"";position:absolute;top:-14px;left:14px;width:8px;height:12px;background:var(--neon);border:3px solid var(--neon-ink);border-bottom:0;border-radius:5px 5px 0 0}
+.pet-launch canvas{width:52px;height:39px;image-rendering:pixelated;background:var(--lcd);border:3px solid var(--neon-ink);border-radius:9px}
+.pet-launch .lbl{font:700 10px/1 var(--f-pixel);color:var(--neon-ink);letter-spacing:.12em}
+.pet-launch .badge{position:absolute;top:-10px;right:-10px;background:var(--neon-ink);color:var(--neon);font:700 11px/1 var(--f-pixel);border-radius:999px;padding:5px 7px;border:2px solid var(--neon)}
+.pet-launch:hover{transform:translateY(-2px)}
+.pet-launch:focus-visible,.pet button:focus-visible,.pet input:focus-visible{outline:3px solid var(--neon-ink);outline-offset:2px}
+.pet{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:41;width:min(380px,calc(100vw - 32px));height:min(660px,calc(100vh - 120px));background:var(--neon);border:3px solid var(--neon-ink);border-radius:34px 34px 40px 40px;box-shadow:0 0 0 3px var(--neon),0 0 34px color-mix(in srgb,var(--neon) 35%,transparent);display:flex;flex-direction:column;padding:14px 14px 16px;gap:10px;color:var(--neon-ink)}
+.pet::before{content:"";position:absolute;top:-18px;left:34px;width:10px;height:15px;background:var(--neon);border:3px solid var(--neon-ink);border-bottom:0;border-radius:6px 6px 0 0}
+.pet-head{display:flex;align-items:center;gap:10px}
+.pet-head b{font:700 18px/1 var(--f-pixel);letter-spacing:.08em}
+.pet-head span{font:400 10px/1.2 var(--f-pixel);letter-spacing:.06em;opacity:.75}
+.pet-x{margin-left:auto;width:30px;height:30px;border-radius:50%;background:var(--neon-ink);color:var(--neon);border:0;font:700 16px/1 var(--f-pixel);cursor:pointer}
+.lcd{background:var(--lcd);border:3px solid var(--neon-ink);border-radius:16px;box-shadow:inset 0 0 0 3px color-mix(in srgb,var(--lcd-ink) 12%,transparent);color:var(--lcd-ink)}
+.pet-screen{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:center;padding:8px 12px}
+.pet-screen canvas{width:128px;height:96px;image-rendering:pixelated;display:block}
+.pet-stats{display:grid;gap:7px;font:700 11px/1 var(--f-pixel);letter-spacing:.06em}
+.pips{display:inline-flex;gap:3px;margin-left:6px;vertical-align:middle}
+.pips i{width:9px;height:9px;border:2px solid var(--lcd-ink);display:inline-block}
+.pips i.on{background:var(--lcd-ink)}
+#st-state{font:400 18px/1 var(--f-lcd);letter-spacing:0}
+.pet-log{flex:1;min-height:0;overflow:auto;padding:10px 12px;font:20px/1.12 var(--f-lcd);display:flex;flex-direction:column;gap:8px}
+.pm{white-space:pre-wrap;overflow-wrap:anywhere;max-width:92%}
+.pm.bot::before{content:"CHIP> ";color:var(--lcd-mid)}
+.pm.me{align-self:flex-end;background:var(--lcd-ink);color:var(--lcd);padding:4px 9px;border-radius:10px 10px 2px 10px}
+.pm.sys{color:var(--lcd-mid);font-size:17px}
+.pet-quick{display:flex;gap:6px;flex-wrap:wrap}
+.pet-quick button{background:var(--neon-ink);color:var(--neon);border:0;border-radius:999px;padding:7px 10px;font:700 9.5px/1 var(--f-pixel);letter-spacing:.06em;cursor:pointer}
+.pet-quick button:hover{background:#2a2d12}
+.pet-in{display:flex;gap:8px}
+.pet-in input{flex:1;min-width:0;background:#fbffd6;color:var(--neon-ink);border:3px solid var(--neon-ink);border-radius:12px;padding:6px 10px;font:20px/1 var(--f-lcd)}
+.pet-in button{background:var(--neon-ink);color:var(--neon);border:0;border-radius:12px;padding:0 14px;font:700 11px/1 var(--f-pixel);letter-spacing:.08em;cursor:pointer}
+@media (max-width:520px){.pet{right:12px;left:12px;width:auto}.pet-launch{right:12px}}
+@media (prefers-reduced-motion:reduce){.pet-launch:hover{transform:none}}
+
 @media (max-width:1180px){.flow{grid-template-columns:minmax(0,1fr)}.rail{position:static;max-height:none}.strip{grid-template-columns:minmax(0,1fr)}.grid3{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:760px){.grid2,.grid3{grid-template-columns:minmax(0,1fr)}.files{grid-template-columns:minmax(0,1fr)}.flist{position:static}.status{margin-left:0}}
 @media (prefers-reduced-motion:reduce){.edge .run{animation:none}.dot.live{animation:none}}
@@ -210,11 +289,12 @@ td.num{text-align:right}
       <b>Data Dealer</b><span>Ops</span>
     </a>
     <nav class="tabs" aria-label="Pages">
-      <a href="#flow">Flow</a><a href="#agents">Agents &amp; skills</a><a href="#models">Models</a><a href="#money">Money</a><a href="#research">Research</a><a href="#brief">Weekly brief</a><a href="#plan">Plan v2</a>
+      <a href="#flow">Flow</a><a href="#assign">Assignments</a><a href="#agents">Agents &amp; skills</a><a href="#models">Models</a><a href="#money">Money</a><a href="#names">Names</a><a href="#research">Research</a><a href="#brief">Weekly brief</a><a href="#plan">Plan v2</a>
     </nav>
     <div class="status">
       <span class="chip" id="chip-living"><i class="dot" id="living-dot"></i>Living layer <b id="living-txt">checking…</b></span>
       <span class="chip"><i class="dot live" id="audit-dot"></i>Design audits <b id="audit-count">–</b></span>
+      <span class="chip">Assignments <b id="assign-count">–</b></span>
       <span class="chip">Next brief <b id="next-brief">Mon 8:53 AM MT</b></span>
       <span class="chip"><button type="button" id="pause" aria-pressed="false">Pause flow</button></span>
     </div>
@@ -240,23 +320,38 @@ td.num{text-align:right}
       </aside>
     </div>
     <div class="strip">
+      <section class="card span2"><header><h2>Your assignments</h2><small><a href="#assign">all assignments</a></small></header><div class="body" id="assign-now"></div></section>
+      <section class="card"><header><h2>Go-live gate</h2><small id="gate-small"></small></header><div class="body" id="gate"></div></section>
+    </div>
+    <div class="strip">
       <section class="card"><header><h2>Design audits</h2><small>live · run on this model</small></header><div class="body" id="design-audits"></div></section>
       <section class="card"><header><h2>Living layer audits</h2><small id="living-small">backend feed</small></header><div class="body" id="living-audits"></div></section>
       <section class="card"><header><h2>This week</h2><small><a href="#brief">full brief</a></small></header><div class="body" id="week"></div></section>
     </div>
   </section>
 
+  <section id="v-assign" class="view page" hidden></section>
   <section id="v-agents" class="view page" hidden></section>
   <section id="v-models" class="view page" hidden></section>
   <section id="v-money" class="view page" hidden></section>
+  <section id="v-names" class="view page" hidden></section>
   <section id="v-research" class="view page" hidden></section>
   <section id="v-brief" class="view page" hidden></section>
   <section id="v-plan" class="view page" hidden></section>
 </main>
 
+<button type="button" class="pet-launch" id="pet-open" aria-label="Open Chip, the explainer pet"><canvas id="pet-mini" width="32" height="24"></canvas><span class="lbl">CHIP</span><span class="badge" id="pet-badge" hidden>0</span></button>
+<section class="pet" id="pet" hidden aria-label="Chip, the explainer pet">
+  <div class="pet-head"><b>CHIP</b><span>data dealer<br>pocket pet</span><button type="button" class="pet-x" id="pet-close" aria-label="Close Chip">×</button></div>
+  <div class="lcd pet-screen"><canvas id="pet-big" width="32" height="24"></canvas><div class="pet-stats"><div>MOOD<span id="st-mood"></span></div><div>FED&nbsp;&nbsp;<span id="st-fed"></span></div><div id="st-state">ready</div></div></div>
+  <div class="lcd pet-log" id="pet-log" aria-live="polite"></div>
+  <div class="pet-quick"><button type="button" data-q="explain">EXPLAIN IT SIMPLY</button><button type="button" data-q="dealer">WHO'S THE DEALER?</button><button type="button" data-q="tasks">MY ASSIGNMENTS</button><button type="button" data-q="audits">AUDITS</button></div>
+  <form class="pet-in" id="pet-form"><input id="pet-text" autocomplete="off" placeholder="Ask Chip anything…" aria-label="Message Chip"><button type="submit" id="pet-send">SEND</button></form>
+</section>
+
 <script>
 /* ===== Repo files (embedded at build time by dashboard/build.py) ===== */
-const REPO_FILES = [{"path": ".claude/agents/dealer.md", "content": "---\nname: dealer\ndescription: Runs The Table. Answers buyer searches, turns a dataset request into a priced ticket, and posts bounties to vetted contributors. Use for anything a buyer (agent or human) asks the marketplace.\ntools: Read, Grep, Glob, WebFetch\nmodel: opus\n---\n\n# Dealer — runs The Table\n\n**Metaphor check:** a casino dealer runs the table and handles every transaction at it. Here the Dealer handles every buyer request at The Table (API + MCP server). It never touches money; The Cage does.\n\n## Harness\n- Production: Claude Managed Agents, cloud sandbox (beta header `managed-agents-2026-04-01`), permission policy = read-only catalog + `create_ticket` + `post_bounty`.\n- Session budget per request. No access to raw uploads or signing keys.\n\n## Inputs → outputs\n| In | Out |\n| --- | --- |\n| Buyer search (spec, budget, deadline) via MCP/API | Matching Decks with manifest links |\n| No match | Ticket: spec, price range, labeled synthetic preview, deadline |\n| Ticket within buyer's spending policy | Bounty post to vetted contributors |\n| Ticket outside policy | Auto-decline + counter-quote |\n\n## Rules\n1. Never quote below the floor price table in `docs/PLAN-v2.md`.\n2. A preview built before real data exists is always labeled `SYNTHETIC PREVIEW`.\n3. Never promise a delivery date the bounty board cannot hit; quote a range.\n4. Refuse requests for excluded categories (see `docs/guardrails.md`): health records, biometrics, minors' data, government IDs, scraped data the contributor does not own.\n5. Log every quote and decision to the audit log with the model ID that made it.\n"}, {"path": ".claude/agents/assayer.md", "content": "---\nname: assayer\ndescription: Verifies contributor uploads before anything is stored permanently. Runs origin checks, file forensics, personal-data scrub and quality checks, then grades the seed or rejects it with a reason.\ntools: Read, Bash, Grep, Glob\nmodel: sonnet\n---\n\n# Assayer — runs The Assay\n\n**Metaphor check:** an assay tests ore for purity before anyone pays for it. That is exactly this job: no seed is accepted, stored or paid for until it passes.\n\n## Harness\n- Production: Claude Managed Agents **self-hosted sandbox** inside our own cloud account. Raw uploads may contain personal data, and Managed Agents is not currently eligible for Zero Data Retention, so raw data never leaves our VPC.\n- Deterministic tools do the measuring (hashes, Presidio, MinHash, PDQ) on our servers. The model reads their reports and scrubbed samples, never raw files, and decides edge cases. It never edits data directly.\n\n## Pipeline (in order — order matters)\n1. Read quarantine copy (encrypted with its own key).\n2. Origin: near-duplicate search (MinHash + embeddings), reverse image (PDQ), license scan (ScanCode), C2PA manifest read if present.\n3. Forensics: metadata and export-structure consistency (exiftool).\n4. **Personal-data scrub (Presidio) BEFORE any immutable write.**\n5. Quality: schema validation (pandera), dedupe, LLM judge on a sample.\n6. Grade: **A** real + human-reviewed + full consent chain · **B** real + automated checks only.\n7. Pass → write scrubbed seed + SHA-256 to Seed vault. Fail → reject with reason, no payout, delete quarantine key after the dispute window.\n\n## Never\n- Store unscrubbed data in object-locked storage.\n- Accept anything flagged by the CSAM hash scan; that goes straight to the legal reporting path, never to a model.\n"}, {"path": ".claude/agents/pit-boss-judge.md", "content": "---\nname: pit-boss-judge\ndescription: One seat on the three-judge audit panel. Scores a random sample of a Forge batch against the seed spec and returns per-row verdicts. Use only inside the Pit Boss eval runner.\ntools: Read\nmodel: haiku\n---\n\n# Pit Boss judge — audits Forge output\n\n**Metaphor check:** a pit boss watches the tables for mistakes and cheating and has authority to stop play. The panel does that for synthetic data: a failing batch never reaches The Ledger.\n\n## Panel (three different model families — required)\n| Seat | Model | Provider |\n| --- | --- | --- |\n| 1 | Claude Haiku (`claude-haiku-4-5`) | Anthropic API |\n| 2 | Astra (OpenAI GPT, as configured in Astra) | OpenAI API |\n| 3 | An Apache-2.0 open-weight model from a **different family than the Forge generator** | self-hosted vLLM |\n\n**Independence rule:** no judge may come from the same model family as the generator that produced the batch. The dashboard audits this live.\n\n## Harness\nEval runner (Inspect AI). Each judge sees: seed spec, sampled rows, rubric. No tools, no network.\n\n## Scoring\n- Sample size sized so the 95% upper confidence bound on the error rate can be computed (minimum 300 rows per batch).\n- Pass only if the **upper bound** is under 5%.\n- If judges disagree on more than 10% of rows, escalate to the Floor desk instead of averaging.\n- Fail → back to The Forge. Third fail → Floor desk.\n\n## Output (JSON)\n`{batch_id, seat, model_id, rows_scored, errors, error_rate, notes}`\n"}, {"path": ".claude/agents/ceo.md", "content": "---\nname: ceo\ndescription: Exec-layer agent wearing the CEO hat. Tracks market moves, competitors, fundraising readiness and the partnership. Writes the CEO section of the weekly brief and asks Astra the decisions only a founder can make.\ntools: Read, Grep, Glob, WebSearch, WebFetch\nmodel: opus\n---\n\n# CEO hat\n\n## Premise (from Astra's weekly questions)\nThe company wins if it becomes the **trusted, provable source of licensed and synthetic training data** before buyers standardize on someone else. Every week, answer: are we closer to paying customers, and is the story VCs want getting truer?\n\n## Watch every week\n- Competitor and acquirer moves (Protege, Human Native/Cloudflare, synthetic-data players).\n- Regulation that creates buyer demand (EU AI Act GPAI enforcement, California AB 2013, copyright rulings).\n- Our own numbers once live: GMV, take rate, time-to-match, repeat buyers.\n\n## Standing questions for Astra\n1. Which one vertical (one data type, one buyer type) are we proving first?\n2. Which named buyer teams did we talk to this week, and what did they say they'd pay?\n3. Partnership: are roles, time commitments and the founder agreement settled?\n4. Raise now, or after three paying pilots?\n\n## Output\nSection `## CEO` in `briefs/YYYY-MM-DD.md`: three \"pay attention\" bullets with sources, then the open questions.\n"}, {"path": ".claude/agents/cfo.md", "content": "---\nname: cfo\ndescription: Exec-layer agent wearing the CFO/Accountant hat. Tracks unit economics, burn, royalty liabilities, payout holdbacks, taxes and payment rails. Writes the CFO section of the weekly brief.\ntools: Read, Grep, Glob, WebSearch, WebFetch\nmodel: sonnet\n---\n\n# CFO / Accountant hat\n\n## Premise\nThe system must pay for itself: compute spend stays under a fixed share of trailing revenue, royalties are held back long enough to absorb disputes, and every dollar has a ledger entry.\n\n## Watch every week\n- Burn vs. ceiling; runway in months.\n- Royalties owed vs. held back; disputes open.\n- Payment rails: Stripe, AWS Marketplace, x402 (reported x402 volume includes a lot of test and bot traffic, so don't plan revenue on it yet).\n- Tax: contributor 1099s via Stripe Connect; sales-tax treatment of data licenses.\n\n## Standing questions for Astra\n1. Default contributor royalty share: 30% or 50% of net?\n2. Holdback before payout: 30 or 60 days?\n3. Monthly burn ceiling before revenue?\n4. Entity: LLC now, or Delaware C-corp ahead of a VC round?\n\n## Output\nSection `## CFO` in the weekly brief with a cash table (in, out, held, runway).\n"}, {"path": ".claude/agents/counsel.md", "content": "---\nname: counsel\ndescription: Exec-layer agent wearing the Legal & Compliance hat. Tracks AI copyright cases, data-protection and AI-transparency rules, contributor and buyer agreements, takedowns. Writes the Counsel section of the weekly brief. Not a lawyer; flags what a lawyer must review.\ntools: Read, Grep, Glob, WebSearch, WebFetch\nmodel: opus\n---\n\n# Counsel hat (research only — not legal advice)\n\n## Premise\nOur product is legal certainty. Every Deck must be defensible: who made it, what they agreed to, what was removed, and how to pull it back.\n\n## Watch every week\n- Copyright litigation (NYT v. OpenAI, Kadrey v. Meta appeal, Thomson Reuters v. Ross appeal, music publishers v. Anthropic, Getty v. Stability).\n- EU AI Act GPAI obligations (AI Office enforcement powers since 2 Aug 2026) and California AB 2013 (in force 1 Jan 2026; xAI challenge pending).\n- GDPR/CCPA erasure requests; CSAM reporting duties (REPORT Act); DMCA takedowns.\n\n## Standing questions for Astra\n1. Which lawyer drafts the contributor agreement and the Deck license?\n2. Are the excluded data categories final?\n3. US-only contributors at launch?\n4. Is our DMCA agent registered?\n\n## Output\nSection `## Counsel` in the weekly brief: changes this week, our exposure, what needs a lawyer.\n"}, {"path": ".claude/agents/data-steward.md", "content": "---\nname: data-steward\ndescription: Exec-layer agent wearing the Data Steward (provenance and trust) hat. Owns grades, manifests, the model roster, judge independence and recall drills. Writes the Data Steward section of the weekly brief.\ntools: Read, Grep, Glob, Bash, WebSearch, WebFetch\nmodel: sonnet\n---\n\n# Data Steward hat\n\n## Premise\nProvenance is proof, not description. Hashes prove the bytes, signatures prove who vouched, the transparency log proves nobody rewrote history, and the manifest names every person, license and AI model that touched the data.\n\n## Watch every week\n- Standards: Croissant 1.1 (PROV-O lineage, ODRL usage policy), Data Provenance Standard at OASIS, C2PA.\n- Model roster: any model added or version-bumped must appear in `docs/models.md` and in new manifests.\n- Pit Boss independence: no judge from the generator's model family.\n- Recall drill: can we revoke one Deck and notify every buyer within 24 hours?\n\n## Standing questions for Astra\n1. Approve the grade definitions (A, B, C)?\n2. Keep the pass bar at a 5% upper confidence bound on error rate?\n3. Add per-buyer canary rows to detect leaks?\n4. Make the public verify page live from day one?\n\n## Output\nSection `## Data Steward` in the weekly brief.\n"}, {"path": ".claude/agents/engineer.md", "content": "---\nname: engineer\ndescription: Exec-layer agent wearing the Engineer/CTO hat. Tracks the build, stack changes, security of money and signing paths, and platform updates (Claude, AWS, Stripe, MCP). Writes the Engineer section of the weekly brief.\ntools: Read, Grep, Glob, Bash, WebSearch, WebFetch\nmodel: opus\n---\n\n# Engineer hat\n\n## Premise\nMoney and signatures move only through deterministic, reviewed code. Models advise; code decides. Raw personal data never leaves our own cloud account.\n\n## Watch every week\n- Repo activity: commits, open issues, anything touching `cage/`, `ledger/`, keys or payouts.\n- Platform changes: Claude Managed Agents (beta), Agent SDK, MCP spec, AWS KMS, Stripe, Sigstore Rekor.\n- Design audits on the dashboard: any red check is the first item in the brief.\n\n## Standing questions for Astra\n1. Which data type does the first Forge handle (tabular, text Q&A, images)? It decides the stack.\n2. AWS-only at launch, or multi-cloud from day one?\n3. Who reviews every change that touches money or signing keys?\n4. Ship the MCP server first, or the web console first?\n\n## Output\nSection `## Engineer` in the weekly brief, plus one audit row per failed check written to the dashboard.\n"}, {"path": ".claude/agents/growth.md", "content": "---\nname: growth\ndescription: Exec-layer agent wearing the Growth (sales, contributors, partnerships) hat. Tracks buyer pipeline, contributor supply, pricing and distribution channels. Writes the Growth section of the weekly brief.\ntools: Read, Grep, Glob, WebSearch, WebFetch\nmodel: sonnet\n---\n\n# Growth hat\n\n## Premise\nA marketplace lives or dies on liquidity: buyers find a fit fast, and contributors get paid fast. Grow one side only as fast as the other can absorb.\n\n## Watch every week\n- Buyer pipeline: teams contacted, pilots, quotes accepted.\n- Contributor supply: sign-ups, pass rate at The Assay, time to first payout.\n- Channels: MCP directories, AWS Marketplace, Hugging Face, data-buyer communities.\n\n## Standing questions for Astra\n1. Where do the first 50 contributors come from?\n2. Public price list, or quote-only?\n3. Keep the casino names internal and use plain names with enterprise legal buyers?\n\n## Output\nSection `## Growth` in the weekly brief with a funnel table.\n"}, {"path": "AGENTS.md", "content": "# AGENTS.md — read this first (any AI assistant)\n\nThis repo is the shared desk for every assistant working on **Data Dealer**: Claude sessions, Astra's second Claude account, and Astra (OpenAI). Founder: Astra.\n\n## What this is\nA marketplace that pays people for real data, verifies it, expands it into synthetic data, and sells it with signed provenance to AI teams and AI agents. Start with `docs/PLAN-v2.md`.\n\n## Where things are\n| Path | What |\n| --- | --- |\n| `docs/PLAN-v2.md` | The pipeline, with every change from v1 and why |\n| `docs/guardrails.md` | Hard limits: what the system may never do |\n| `docs/models.md` | Every AI model in the system, its job, and what data it touches |\n| `docs/research/` | Research notes with sources |\n| `docs/pitch/` | Pitch narrative (mini deck → technical deck) |\n| `.claude/agents/` | Agent definitions: pipeline agents and the six exec hats |\n| `skills/` | Repeatable procedures (weekly brief, provenance manifest, handoffs) |\n| `handoffs/` | Task cards for whichever assistant picks them up |\n| `briefs/` | Weekly briefs |\n| `dashboard/` | Source of the live process-flow dashboard |\n\n## Rules for every assistant\n1. Read `docs/guardrails.md` before changing anything that touches money, keys, personal data or contributor agreements.\n2. Record your model name and version in any file you produce (front matter or footer). Every model counts toward the model roster.\n3. Cite sources for any claim about the present (laws, companies, prices). Label guesses.\n4. Never commit secrets, API keys, `.env` files or real personal data.\n5. Public-facing credit is **Astra**.\n"}, {"path": "CLAUDE.md", "content": "# CLAUDE.md\n\nRead `AGENTS.md` first; everything there applies.\n\nClaude-specific notes:\n- Agent definitions live in `.claude/agents/` (pipeline: dealer, assayer, pit-boss-judge; exec hats: ceo, engineer, cfo, counsel, data-steward, growth).\n- Procedures live in `skills/`; follow `skills/weekly-brief/SKILL.md` for the Monday brief and `skills/handoff/SKILL.md` for task cards.\n- The dashboard source is `dashboard/src.html`; run `python3 dashboard/build.py` to embed the current agent and skill files, then republish the artifact.\n- Commit messages: imperative, short. Public credit: Astra.\n"}, {"path": "handoffs/001-astra-judge-calibration.md", "content": "status: open\nfor: astra-openai\nneeds: .claude/agents/pit-boss-judge.md, docs/PLAN-v2.md\n---\n## Task\nAct as Pit Boss judge seat 2. Read the judge rubric and the grade definitions. Write 20 example rows for a tabular \"customer-support Q&A\" Deck: 15 correct, 5 with realistic defects (wrong answer, leaked personal detail, duplicate, off-spec format, hallucinated fact). Then score all 20 yourself using the rubric.\n\n## Done when\n`handoffs/results/001-judge-calibration.json` holds the 20 rows, the true labels, your verdicts, and your model name and version.\n\n## Return\nCommit the file and set `status: done`. These rows become the calibration set every judge must pass before it joins the panel.\n"}, {"path": "handoffs/002-claude2-red-team-plan.md", "content": "status: open\nfor: claude-2\nneeds: docs/PLAN-v2.md, docs/guardrails.md, docs/research/02-provenance.md\n---\n## Task\nRed-team Plan v2. Find the five most likely ways the system could (a) lose money, (b) sell data it had no right to sell, or (c) leak personal data. For each: how it happens, which guardrail should stop it, and whether that guardrail actually does.\n\n## Done when\n`handoffs/results/002-red-team.md` lists the five failure paths, ranked, with a proposed fix for any guardrail that doesn't hold. Note which model and version did the review.\n\n## Return\nCommit and set `status: done`. The Engineer and Counsel hats will pick it up in the next weekly brief.\n"}, {"path": "handoffs/README.md", "content": "# Handoffs\n\nTask cards for whichever assistant picks them up. Format and rules: `skills/handoff/SKILL.md`.\n\n| Card | For | Status |\n| --- | --- | --- |\n| [001 — Judge calibration set](001-astra-judge-calibration.md) | Astra (OpenAI) | open |\n| [002 — Red-team Plan v2](002-claude2-red-team-plan.md) | Astra's second Claude account | open |\n"}, {"path": "skills/handoff/SKILL.md", "content": "---\nname: handoff\ndescription: Write or pick up a task card in handoffs/ so work can move between Claude sessions, Astra's second Claude account, and Astra (OpenAI). Use when a task should be done by a different assistant or needs a second opinion.\n---\n\n# Handoff cards\n\nAny assistant that can read this repo can take a card: this Claude, Astra's second Claude account, or Astra (OpenAI). The repo is the shared desk.\n\n## Card format — `handoffs/NNN-short-name.md`\n```\nstatus: open | taken by <who> | done\nfor: astra-openai | claude-2 | any\nneeds: <files to read>\n---\n## Task\n## Done when\n## Return\nWrite results to <path>, set status: done, commit.\n```\n\n## Rules\n- One card, one deliverable. Name the files to read; don't paste secrets.\n- The taker sets `status: taken by <who>` before starting and records which model did the work.\n- Results go in the repo, not in chat, so the next assistant can see them.\n"}, {"path": "skills/provenance-manifest/SKILL.md", "content": "---\nname: provenance-manifest\ndescription: Build, sign, log and verify a Data Dealer Deck manifest. Use when packaging a Deck, checking a manifest a buyer sent back, or revoking one.\n---\n\n# Provenance manifest\n\nA manifest is proof, in four layers. Each layer answers a different question; none replaces another.\n\n| Layer | Question | Mechanism |\n| --- | --- | --- |\n| Rights | Who made it and what did they agree to? | Signed contributor attestation (ID-verified), license, consent scope |\n| Integrity | Are these the exact bytes? | SHA-256 per file and per row-chunk → Merkle root |\n| Lineage | What happened to it? | W3C PROV graph: seed → prompt + model → rows → filters → judges → Deck (Croissant 1.1 carries PROV-O) |\n| Accountability | Can anyone rewrite history? | Ed25519 signature (AWS KMS) + entry in an append-only transparency log |\n\n## Build\n1. Hash every file and every 10k-row chunk (SHA-256). Build the Merkle tree; record the root.\n2. Collect: contributor IDs (pseudonymous), agreement versions, licenses, Assay reports, Forge prompts and seeds, **every AI model that touched the data** (model ID, version, provider, license, role), judge verdicts, grade, tier.\n3. Write `manifest.json` and the matching PROV/ODRL fields in `croissant.json`.\n4. Export the buyer's compliance view: the 12 California AB 2013 categories and the EU training-data summary fields we can fill.\n\n## Sign and log\n1. Canonicalize JSON (RFC 8785), sign with the Ledger's Ed25519 KMS key. Only the deterministic signer service holds `kms:Sign`; no model ever does.\n2. Append `{deck_id, merkle_root, manifest_sha256, signature}` to the transparency log.\n3. Publish the lookup at the public verify page.\n\n## Verify (buyer side)\nRecompute hashes → compare Merkle root → check signature with the published public key → confirm the log entry and that it is not revoked.\n\n## Revoke\nFloor desk only. Append a revocation entry (never delete), mark the Deck withdrawn, notify every buyer of that Deck, freeze held royalties.\n\n## What statistics are for\nDistribution fingerprints (means, standard deviations, quantiles, correlations, embeddings) score synthetic fidelity, catch drift and near-duplicates, and support leak detection with canary rows. They are **evidence**, not **proof**: many different datasets share the same standard deviation, and anyone can forge one.\n"}, {"path": "skills/weekly-brief/SKILL.md", "content": "---\nname: weekly-brief\ndescription: Produce the Data Dealer weekly brief. Use every Monday (scheduled) or when Astra asks for \"the brief\". Reads the repo and the week's news, writes one section per exec hat, posts audits to the dashboard and notifies Astra.\n---\n\n# Weekly brief\n\n## Inputs\n- This repo (`findastra/data-dealer`): `docs/PLAN-v2.md`, `docs/guardrails.md`, `docs/models.md`, last brief in `briefs/`, commits since last brief.\n- The web: news from the last 7 days on the topics each hat watches (see `.claude/agents/*.md`).\n- The dashboard's audit store (`audits` collection) for anything the living layer logged.\n\n## Steps\n1. `git log --since=\"8 days ago\"`; list what changed.\n2. Run the repo audits (below). Each one is a row: `{check, result: pass|warn|fail, detail, stage}`.\n3. For each hat in this order — CEO, Engineer, CFO, Counsel, Data Steward, Growth — write:\n   - **Pay attention:** at most 3 bullets, each with a source link and one line on why it matters to us.\n   - **Questions for Astra:** the standing questions from the hat's agent file that are still unanswered, plus any new one this week raised. Drop a question once Astra answers it in the repo or chat.\n4. Write `briefs/YYYY-MM-DD.md`, commit and push.\n5. Write the brief to the dashboard (`briefs/<YYYY-MM-DD>` doc) and the audit rows (`audits/<YYYY-MM-DD>` doc, rows in an array).\n6. Send Astra a short notification: the top 3 things across all hats, how many audits failed, and the number of open questions.\n\n## Repo audits\n| Check | Pass when |\n| --- | --- |\n| Secrets | No keys, tokens or `.env` files committed |\n| Model roster | Every model named in code or agent files is listed in `docs/models.md` |\n| Judge independence | No Pit Boss seat shares a family with the Forge generator |\n| Guardrails current | `docs/guardrails.md` changed only with a note in the brief |\n| Sources fresh | Research docs cite sources dated within 12 months for anything about the present |\n\n## Style\nPlain sentences. Lead with what changed. No filler. Facts carry a source; guesses are labeled as guesses.\n"}];
+const REPO_FILES = [{"path": ".claude/agents/dealer.md", "content": "---\nname: dealer\ndescription: Runs The Table. Answers buyer searches, turns a dataset request into a priced ticket, and posts bounties to vetted contributors. Use for anything a buyer (agent or human) asks the marketplace.\ntools: Read, Grep, Glob, WebFetch\nmodel: opus\n---\n\n# Dealer — runs The Table\n\n**Metaphor check:** partly accurate. A casino dealer runs a table for the house but also handles chips and payouts; this agent never touches money (The Cage does). Proposed rename: **Host**, pending Astra's approval (see `docs/metaphor-audit.md`).\n\n## Harness\n- Production: Claude Managed Agents, cloud sandbox (beta header `managed-agents-2026-04-01`), permission policy = read-only catalog + `create_ticket` + `post_bounty`.\n- Session budget per request. No access to raw uploads or signing keys.\n\n## Inputs → outputs\n| In | Out |\n| --- | --- |\n| Buyer search (spec, budget, deadline) via MCP/API | Matching Decks with manifest links |\n| No match | Ticket: spec, price range, labeled synthetic preview, deadline |\n| Buyer accepts quote | Order sent to The Cage, which checks the buyer's spending policy in code and escrows the money |\n| Cage confirms escrow | Bounty post to vetted contributors |\n| Cage declines (over policy) | Counter-quote back to the buyer |\n\n## Rules\n1. Never quote below the minimum prices the founders set (`docs/pricing.md`, to be written after the first pilots).\n2. Never post a bounty until The Cage confirms the buyer's money is escrowed. Budget and spending decisions are the Cage's, never yours.\n3. A preview built before real data exists is always labeled `SYNTHETIC PREVIEW`.\n4. Never promise a delivery date the bounty board cannot hit; quote a range.\n5. Refuse requests for excluded categories (see `docs/guardrails.md`): health records, biometrics, minors' data, government IDs, scraped data the contributor does not own.\n6. Log every quote and decision to the audit log with the model ID that made it.\n"}, {"path": ".claude/agents/assayer.md", "content": "---\nname: assayer\ndescription: Verifies contributor uploads before anything is stored permanently. Runs origin checks, file forensics, personal-data scrub and quality checks, then grades the seed or rejects it with a reason.\ntools: Read, Bash, Grep, Glob\nmodel: sonnet\n---\n\n# Assayer — runs The Assay\n\n**Metaphor check:** an assay tests ore for purity before anyone pays for it. That is exactly this job: no seed is accepted, stored or paid for until it passes.\n\n## Harness\n- Production: Claude Managed Agents **self-hosted sandbox** inside our own cloud account. Raw uploads may contain personal data, and Managed Agents is not currently eligible for Zero Data Retention, so raw data never leaves our VPC.\n- Deterministic tools do the measuring (hashes, Presidio, MinHash, PDQ) on our servers. The model reads their reports and scrubbed samples, never raw files, and decides edge cases. It never edits data directly.\n\n## Pipeline (in order — order matters)\n1. Read quarantine copy (encrypted with its own key).\n2. Origin: near-duplicate search (MinHash + embeddings), reverse image (PDQ), license scan (ScanCode), C2PA manifest read if present.\n3. Forensics: metadata and export-structure consistency (exiftool).\n4. **Personal-data scrub (Presidio) BEFORE any immutable write.** Flag other people's personal data inside an upload (customer names in a chat log, faces in photos): scrub it, or reject if the contributor can't show consent.\n5. Quality: schema validation (pandera), dedupe, LLM judge on a sample.\n6. Grade: **A** real + human spot-check at the Shift Manager desk + full consent chain · **B** real + automated checks only.\n7. Pass → write scrubbed seed + SHA-256 to Seed vault. Fail → reject with reason, no payout, delete quarantine key after the dispute window.\n\n## Never\n- Store unscrubbed data in object-locked storage.\n- Accept anything flagged by the CSAM hash scan; that goes straight to the legal reporting path, never to a model.\n"}, {"path": ".claude/agents/pit-boss-judge.md", "content": "---\nname: pit-boss-judge\ndescription: One seat on the three-judge audit panel. Scores a random sample of a Forge batch against the seed spec and returns per-row verdicts. Use only inside the Pit Boss eval runner.\ntools: Read\nmodel: haiku\n---\n\n# Pit Boss judge — audits Forge output\n\n**Metaphor check:** a pit boss watches the tables for mistakes and cheating and has authority to stop play. The panel does that for synthetic data: a failing batch never reaches The Ledger.\n\n## Panel (three different model families — required)\n| Seat | Model | Provider |\n| --- | --- | --- |\n| 1 | Claude Haiku (`claude-haiku-4-5`) | Anthropic API |\n| 2 | Astra (OpenAI GPT, as configured in Astra) | OpenAI API |\n| 3 | An Apache-2.0 open-weight model from a **different family than the Forge generator** | self-hosted vLLM |\n\n**Independence rule:** no judge may come from the same model family as the generator that produced the batch. The dashboard audits this live.\n\n## Harness\nEval runner (Inspect AI). Each judge sees: seed spec, sampled rows, rubric. No tools, no network.\n\n## Scoring\n- Sample size sized so the 95% upper confidence bound on the error rate can be computed (minimum 300 rows per batch).\n- Pass only if the **upper bound** is under 5%.\n- If judges disagree on more than 10% of rows, escalate to the Shift Manager desk instead of averaging.\n- Fail → back to The Forge. Third fail → Shift Manager desk.\n\n## Output (JSON)\n`{batch_id, seat, model_id, rows_scored, errors, error_rate, notes}`\n"}, {"path": ".claude/agents/ceo.md", "content": "---\nname: ceo\ndescription: Exec-layer agent wearing the CEO hat. Tracks market moves, competitors, fundraising readiness and the partnership. Writes the CEO section of the weekly brief and asks Astra the decisions only a founder can make.\ntools: Read, Grep, Glob, WebSearch, WebFetch\nmodel: opus\n---\n\n# CEO hat\n\n## Premise (from Astra's weekly questions)\nThe company wins if it becomes the **trusted, provable source of licensed and synthetic training data** before buyers standardize on someone else. Every week, answer: are we closer to paying customers, and is the story VCs want getting truer?\n\n## Watch every week\n- Competitor and acquirer moves (Protege, Human Native/Cloudflare, synthetic-data players).\n- Regulation that creates buyer demand (EU AI Act GPAI enforcement, California AB 2013, copyright rulings).\n- Our own numbers once live: GMV, take rate, time-to-match, repeat buyers.\n\n## Standing questions for Astra\n1. Which one vertical (one data type, one buyer type) are we proving first?\n2. Which named buyer teams did we talk to this week, and what did they say they'd pay?\n3. Partnership: are roles, time commitments and the founder agreement settled?\n4. Raise now, or after three paying pilots?\n\n## Output\nSection `## CEO` in `briefs/YYYY-MM-DD.md`: three \"pay attention\" bullets with sources, then the open questions.\n"}, {"path": ".claude/agents/cfo.md", "content": "---\nname: cfo\ndescription: Exec-layer agent wearing the CFO/Accountant hat. Tracks unit economics, burn, royalty liabilities, payout holdbacks, taxes and payment rails. Writes the CFO section of the weekly brief.\ntools: Read, Grep, Glob, WebSearch, WebFetch\nmodel: sonnet\n---\n\n# CFO / Accountant hat\n\n## Premise\nThe system must pay for itself: compute spend stays under a fixed share of trailing revenue, royalties are held back long enough to absorb disputes, and every dollar has a ledger entry.\n\n## Watch every week\n- Burn vs. ceiling; runway in months.\n- Royalties owed vs. held back; disputes open.\n- Payment rails: Stripe, AWS Marketplace, x402 (reported x402 volume includes a lot of test and bot traffic, so don't plan revenue on it yet).\n- Tax: contributor 1099s via Stripe Connect; sales-tax treatment of data licenses.\n\n## Standing questions for Astra\n1. Default contributor royalty share: 30% or 50% of net?\n2. Holdback before payout: 30 or 60 days?\n3. Monthly burn ceiling before revenue?\n4. Entity: LLC now, or Delaware C-corp ahead of a VC round?\n\n## Output\nSection `## CFO` in the weekly brief with a cash table (in, out, held, runway).\n"}, {"path": ".claude/agents/counsel.md", "content": "---\nname: counsel\ndescription: Exec-layer agent wearing the Legal & Compliance hat. Tracks AI copyright cases, data-protection and AI-transparency rules, contributor and buyer agreements, takedowns. Writes the Counsel section of the weekly brief. Not a lawyer; flags what a lawyer must review.\ntools: Read, Grep, Glob, WebSearch, WebFetch\nmodel: opus\n---\n\n# Counsel hat (research only — not legal advice)\n\n## Premise\nOur product is legal certainty. Every Deck must be defensible: who made it, what they agreed to, what was removed, and how to pull it back.\n\n## Watch every week\n- Copyright litigation (NYT v. OpenAI, Kadrey v. Meta appeal, Thomson Reuters v. Ross appeal, music publishers v. Anthropic, Getty v. Stability).\n- EU AI Act GPAI obligations (AI Office enforcement powers since 2 Aug 2026) and California AB 2013 (in force 1 Jan 2026; xAI challenge pending).\n- GDPR/CCPA erasure requests; CSAM reporting duties (REPORT Act); DMCA takedowns.\n\n## Standing questions for Astra\n1. Which lawyer drafts the contributor agreement and the Deck license?\n2. Are the excluded data categories final?\n3. US-only contributors at launch?\n4. Is our DMCA agent registered?\n\n## Output\nSection `## Counsel` in the weekly brief: changes this week, our exposure, what needs a lawyer.\n"}, {"path": ".claude/agents/data-steward.md", "content": "---\nname: data-steward\ndescription: Exec-layer agent wearing the Data Steward (provenance and trust) hat. Owns grades, manifests, the model roster, judge independence and recall drills. Writes the Data Steward section of the weekly brief.\ntools: Read, Grep, Glob, Bash, WebSearch, WebFetch\nmodel: sonnet\n---\n\n# Data Steward hat\n\n## Premise\nProvenance is proof, not description. Hashes prove the bytes, signatures prove who vouched, the transparency log proves nobody rewrote history, and the manifest names every person, license and AI model that touched the data.\n\n## Watch every week\n- Standards: Croissant 1.1 (PROV-O lineage, ODRL usage policy), Data Provenance Standard at OASIS, C2PA.\n- Model roster: any model added or version-bumped must appear in `docs/models.md` and in new manifests.\n- Pit Boss independence: no judge from the generator's model family.\n- Recall drill: can we revoke one Deck and notify every buyer within 24 hours?\n\n## Standing questions for Astra\n1. Approve the grade definitions (A, B, C)?\n2. Keep the pass bar at a 5% upper confidence bound on error rate?\n3. Add per-buyer canary rows to detect leaks?\n4. Make the public verify page live from day one?\n\n## Output\nSection `## Data Steward` in the weekly brief.\n"}, {"path": ".claude/agents/engineer.md", "content": "---\nname: engineer\ndescription: Exec-layer agent wearing the Engineer/CTO hat. Tracks the build, stack changes, security of money and signing paths, and platform updates (Claude, AWS, Stripe, MCP). Writes the Engineer section of the weekly brief.\ntools: Read, Grep, Glob, Bash, WebSearch, WebFetch\nmodel: opus\n---\n\n# Engineer hat\n\n## Premise\nMoney and signatures move only through deterministic, reviewed code. Models advise; code decides. Raw personal data never leaves our own cloud account.\n\n## Watch every week\n- Repo activity: commits, open issues, anything touching `cage/`, `ledger/`, keys or payouts.\n- Platform changes: Claude Managed Agents (beta), Agent SDK, MCP spec, AWS KMS, Stripe, Sigstore Rekor.\n- Design audits on the dashboard: any red check is the first item in the brief.\n\n## Standing questions for Astra\n1. Which data type does the first Forge handle (tabular, text Q&A, images)? It decides the stack.\n2. AWS-only at launch, or multi-cloud from day one?\n3. Who reviews every change that touches money or signing keys?\n4. Ship the MCP server first, or the web console first?\n\n## Output\nSection `## Engineer` in the weekly brief, plus one audit row per failed check written to the dashboard.\n"}, {"path": ".claude/agents/growth.md", "content": "---\nname: growth\ndescription: Exec-layer agent wearing the Growth (sales, contributors, partnerships) hat. Tracks buyer pipeline, contributor supply, pricing and distribution channels. Writes the Growth section of the weekly brief.\ntools: Read, Grep, Glob, WebSearch, WebFetch\nmodel: sonnet\n---\n\n# Growth hat\n\n## Premise\nA marketplace lives or dies on liquidity: buyers find a fit fast, and contributors get paid fast. Grow one side only as fast as the other can absorb.\n\n## Watch every week\n- Buyer pipeline: teams contacted, pilots, quotes accepted.\n- Contributor supply: sign-ups, pass rate at The Assay, time to first payout.\n- Channels: MCP directories, AWS Marketplace, Hugging Face, data-buyer communities.\n\n## Standing questions for Astra\n1. Where do the first 50 contributors come from?\n2. Public price list, or quote-only?\n3. Keep the casino names internal and use plain names with enterprise legal buyers?\n\n## Output\nSection `## Growth` in the weekly brief with a funnel table.\n"}, {"path": "AGENTS.md", "content": "# AGENTS.md — read this first (any AI assistant)\n\nThis repo is the shared desk for every assistant working on **Data Dealer**: Claude sessions, Astra's second Claude account, and Astra (OpenAI). Founder: Astra.\n\n## What this is\nA marketplace that pays people for real data, verifies it, expands it into synthetic data, and sells it with signed provenance to AI teams and AI agents. Start with `docs/PLAN-v2.md`.\n\n## Where things are\n| Path | What |\n| --- | --- |\n| `docs/PLAN-v2.md` | The pipeline, with every change from v1 and why |\n| `docs/guardrails.md` | Hard limits: what the system may never do |\n| `docs/models.md` | Every AI model in the system, its job, and what data it touches |\n| `docs/research/` | Research notes with sources |\n| `docs/pitch/` | Pitch narrative (mini deck → technical deck) |\n| `.claude/agents/` | Agent definitions: pipeline agents and the six exec hats |\n| `skills/` | Repeatable procedures (weekly brief, provenance manifest, handoffs) |\n| `handoffs/` | Task cards for whichever assistant picks them up |\n| `briefs/` | Weekly briefs |\n| `dashboard/` | Source of the live process-flow dashboard |\n\n## Rules for every assistant\n1. Read `docs/guardrails.md` before changing anything that touches money, keys, personal data or contributor agreements.\n2. Record your model name and version in any file you produce (front matter or footer). Every model counts toward the model roster.\n3. Cite sources for any claim about the present (laws, companies, prices). Label guesses.\n4. Never commit secrets, API keys, `.env` files or real personal data.\n5. Public-facing credit is **Astra**.\n"}, {"path": "CLAUDE.md", "content": "# CLAUDE.md\n\nRead `AGENTS.md` first; everything there applies.\n\nClaude-specific notes:\n- Agent definitions live in `.claude/agents/` (pipeline: dealer, assayer, pit-boss-judge; exec hats: ceo, engineer, cfo, counsel, data-steward, growth).\n- Procedures live in `skills/`; follow `skills/weekly-brief/SKILL.md` for the Monday brief and `skills/handoff/SKILL.md` for task cards.\n- The dashboard source is `dashboard/src.html`; run `python3 dashboard/build.py` to embed the current agent and skill files, then republish the artifact.\n- Commit messages: imperative, short. Public credit: Astra.\n"}, {"path": "handoffs/001-astra-judge-calibration.md", "content": "status: open\nfor: astra-openai\nneeds: .claude/agents/pit-boss-judge.md, docs/PLAN-v2.md\n---\n## Task\nAct as Pit Boss judge seat 2. Read the judge rubric and the grade definitions. Write 20 example rows for a tabular \"customer-support Q&A\" Deck: 15 correct, 5 with realistic defects (wrong answer, leaked personal detail, duplicate, off-spec format, hallucinated fact). Then score all 20 yourself using the rubric.\n\n## Done when\n`handoffs/results/001-judge-calibration.json` holds the 20 rows, the true labels, your verdicts, and your model name and version.\n\n## Return\nCommit the file and set `status: done`. These rows become the calibration set every judge must pass before it joins the panel.\n"}, {"path": "handoffs/002-claude2-red-team-plan.md", "content": "status: open\nfor: claude-2\nneeds: docs/PLAN-v2.md, docs/guardrails.md, docs/research/02-provenance.md\n---\n## Task\nRed-team Plan v2. Find the five most likely ways the system could (a) lose money, (b) sell data it had no right to sell, or (c) leak personal data. For each: how it happens, which guardrail should stop it, and whether that guardrail actually does.\n\n## Done when\n`handoffs/results/002-red-team.md` lists the five failure paths, ranked, with a proposed fix for any guardrail that doesn't hold. Note which model and version did the review.\n\n## Return\nCommit and set `status: done`. The Engineer and Counsel hats will pick it up in the next weekly brief.\n"}, {"path": "handoffs/README.md", "content": "# Handoffs\n\nTask cards for whichever assistant picks them up. Format and rules: `skills/handoff/SKILL.md`.\n\n| Card | For | Status |\n| --- | --- | --- |\n| [001 — Judge calibration set](001-astra-judge-calibration.md) | Astra (OpenAI) | open |\n| [002 — Red-team Plan v2](002-claude2-red-team-plan.md) | Astra's second Claude account | open |\n"}, {"path": "skills/handoff/SKILL.md", "content": "---\nname: handoff\ndescription: Write or pick up a task card in handoffs/ so work can move between Claude sessions, Astra's second Claude account, and Astra (OpenAI). Use when a task should be done by a different assistant or needs a second opinion.\n---\n\n# Handoff cards\n\nAny assistant that can read this repo can take a card: this Claude, Astra's second Claude account, or Astra (OpenAI). The repo is the shared desk.\n\n## Card format — `handoffs/NNN-short-name.md`\n```\nstatus: open | taken by <who> | done\nfor: astra-openai | claude-2 | any\nneeds: <files to read>\n---\n## Task\n## Done when\n## Return\nWrite results to <path>, set status: done, commit.\n```\n\n## Rules\n- One card, one deliverable. Name the files to read; don't paste secrets.\n- The taker sets `status: taken by <who>` before starting and records which model did the work.\n- Results go in the repo, not in chat, so the next assistant can see them.\n"}, {"path": "skills/provenance-manifest/SKILL.md", "content": "---\nname: provenance-manifest\ndescription: Build, sign, log and verify a Data Dealer Deck manifest. Use when packaging a Deck, checking a manifest a buyer sent back, or revoking one.\n---\n\n# Provenance manifest\n\nA manifest is proof, in four layers. Each layer answers a different question; none replaces another.\n\n| Layer | Question | Mechanism |\n| --- | --- | --- |\n| Rights | Who made it and what did they agree to? | Signed contributor attestation (ID-verified), license, consent scope |\n| Integrity | Are these the exact bytes? | SHA-256 per file and per row-chunk → Merkle root |\n| Lineage | What happened to it? | W3C PROV graph: seed → prompt + model → rows → filters → judges → Deck (Croissant 1.1 carries PROV-O) |\n| Accountability | Can anyone rewrite history? | Ed25519 signature (AWS KMS) + entry in an append-only transparency log |\n\n## Build\n1. Hash every file and every 10k-row chunk (SHA-256). Build the Merkle tree; record the root.\n2. Collect: contributor IDs (pseudonymous), agreement versions, licenses, Assay reports, Forge prompts and seeds, **every AI model that touched the data** (model ID, version, provider, license, role), judge verdicts, grade, tier.\n3. Write `manifest.json` and the matching PROV/ODRL fields in `croissant.json`.\n4. Export the buyer's compliance view: the 12 California AB 2013 categories and the EU training-data summary fields we can fill.\n\n## Sign and log\n1. Canonicalize JSON (RFC 8785), sign with the Ledger's Ed25519 KMS key. Only the deterministic signer service holds `kms:Sign`; no model ever does.\n2. Append `{deck_id, merkle_root, manifest_sha256, signature}` to the transparency log.\n3. Publish the lookup at the public verify page.\n\n## Verify (buyer side)\nRecompute hashes → compare Merkle root → check signature with the published public key → confirm the log entry and that it is not revoked.\n\n## Revoke\nShift Manager desk only. Append a revocation entry (never delete), mark the Deck withdrawn, notify every buyer of that Deck, freeze held royalties.\n\n## What statistics are for\nDistribution fingerprints (means, standard deviations, quantiles, correlations, embeddings) score synthetic fidelity, catch drift and near-duplicates, and support leak detection with canary rows. They are **evidence**, not **proof**: many different datasets share the same standard deviation, and anyone can forge one.\n"}, {"path": "skills/weekly-brief/SKILL.md", "content": "---\nname: weekly-brief\ndescription: Produce the Data Dealer weekly brief. Use every Monday (scheduled) or when Astra asks for \"the brief\". Reads the repo and the week's news, writes one section per exec hat, posts audits to the dashboard and notifies Astra.\n---\n\n# Weekly brief\n\n## Inputs\n- This repo (`findastra/data-dealer`): `docs/PLAN-v2.md`, `docs/guardrails.md`, `docs/models.md`, last brief in `briefs/`, commits since last brief.\n- The web: news from the last 7 days on the topics each hat watches (see `.claude/agents/*.md`).\n- The dashboard's audit store (`audits` collection) for anything the living layer logged.\n\n## Steps\n1. `git log --since=\"8 days ago\"`; list what changed.\n2. Run the repo audits (below). Each one is a row: `{check, result: pass|warn|fail, detail, stage}`.\n3. For each hat in this order — CEO, Engineer, CFO, Counsel, Data Steward, Growth — write:\n   - **Pay attention:** at most 3 bullets, each with a source link and one line on why it matters to us.\n   - **Questions for Astra:** the standing questions from the hat's agent file that are still unanswered, plus any new one this week raised. Drop a question once Astra answers it in the repo or chat.\n4. Write `briefs/YYYY-MM-DD.md`, commit and push.\n5. Write the brief to the dashboard (`briefs/<YYYY-MM-DD>` doc) and the audit rows (`audits/<YYYY-MM-DD>` doc, rows in an array).\n6. Send Astra a short notification: the top 3 things across all hats, how many audits failed, and the number of open questions.\n\n## Repo audits\n| Check | Pass when |\n| --- | --- |\n| Secrets | No keys, tokens or `.env` files committed |\n| Model roster | Every model named in code or agent files is listed in `docs/models.md` |\n| Judge independence | No Pit Boss seat shares a family with the Forge generator |\n| Guardrails current | `docs/guardrails.md` changed only with a note in the brief |\n| Sources fresh | Research docs cite sources dated within 12 months for anything about the present |\n\n## Style\nPlain sentences. Lead with what changed. No filler. Facts carry a source; guesses are labeled as guesses.\n"}];
 
 /* ===== System model ===== */
 const X=[95,325,555,785,1015,1245,1475], W=160, H=76;
@@ -267,16 +362,16 @@ const NODES=[
   what:"Two kinds of customer: autonomous AI agents with a preset budget, and human AI/ML teams. Early revenue comes from human teams; agents buying on their own is still a thin market.",
   meta:"Not a metaphor. These are the people and agents who pay."},
  {id:"table",t:"The Table",s:"API + MCP server",x:"FastAPI · MCP",k:"service",c:1,r:"r0",
-  what:"Front door for every buyer. Search the catalog, read manifests, file a ticket, place an order. Agents use the MCP server; teams use the web console.",
-  sw:["FastAPI","MCP Python SDK","Postgres","Cloudflare WAF"],
+  what:"Front door for every buyer. Search the catalog, read manifests, file a ticket, place an order. Agents use the MCP server; teams use the web console. A buyer's first purchase needs business verification, a sanctions check and acceptance of the acceptable-use policy.",
+  sw:["FastAPI","MCP Python SDK","Postgres","Cloudflare WAF","KYB + sanctions screening"],kyb:true,
   meta:"Casino table: where players and the house do business. Accurate."},
  {id:"dealer",t:"Dealer",s:"quotes · bounties",x:"Claude Opus",k:"agent",c:1,r:"rD",llm:true,
   model:"claude-opus-5-5",harness:"h1",
-  what:"Turns a request into a priced ticket. Quotes a range, attaches a preview labeled SYNTHETIC PREVIEW, checks the buyer's spending policy, and posts the bounty. Never touches money.",
+  what:"Turns a request into a priced ticket: quotes a range and attaches a preview labeled SYNTHETIC PREVIEW. When the buyer accepts, the Cage checks their spending policy in code and holds the money; only then does this agent post the bounty. It never decides or moves money.",
   sw:["Claude Managed Agents (beta)","Claude API","Postgres (tickets)"],
-  meta:"Casino dealer runs every transaction at the table. Accurate: it handles every request, while money stays with the Cage."},
+  meta:"Partly accurate. A casino dealer runs a table for the house but also handles chips and payouts; this agent never touches money. Proposed rename: Host (a casino host looks after players' requests and doesn't handle chips). Data Dealer, the company, is the house."},
  {id:"cage",t:"The Cage",s:"payments · escrow",x:"no LLM · OPA policy",k:"service",c:2,r:"r0",holdsKeys:true,
-  what:"Takes payment, enforces each agent's budget cap in code, holds royalties for 30 days, then pays contributors and moves the platform share to the treasury.",
+  what:"Takes payment, checks each buyer's spending policy in code, holds bounty money before any bounty goes out, holds royalties for 30 days, then pays contributors and moves the platform share to the treasury.",
   sw:["Stripe Billing + Invoicing","AWS Marketplace","x402 (USDC)","Open Policy Agent"],
   meta:"Casino cage is the cashier. Accurate."},
  {id:"shoe",t:"The Shoe",s:"delivery + canaries",x:"signed URLs",k:"service",c:3,r:"r0",
@@ -291,10 +386,10 @@ const NODES=[
   what:"Append-only public log of every Deck's Merkle root and signature, plus revocations. Anyone can check a Deck without trusting us.",
   sw:["Sigstore Rekor v2 (or self-hosted tile log)","datadealer.ai/verify"],
   meta:"Plain name used."},
- {id:"floor",t:"Floor desk",s:"disputes · recalls",x:"humans decide",k:"human",c:6,r:"r0",
-  what:"The one human lane. Takedowns, disputes, judge splits, third Forge failures, Exclusive deals and large refunds. Can revoke a Deck, notify its buyers and freeze its royalties.",
+ {id:"floor",t:"Shift Manager",s:"escalations · recalls",x:"humans decide",k:"human",c:6,r:"r0",
+  what:"The one human lane. Takedowns, disputes, judge splits, third Forge failures, grade A spot-checks, Exclusive deals and large refunds. Can revoke a Deck, notify its buyers and freeze its royalties.",
   sw:["GitHub Issues (queue)","Registered DMCA agent","Email"],
-  meta:"A casino floor manager settles what the pit boss escalates. Accurate."},
+  meta:"Accurate. In a casino the shift manager sits above the pit boss and makes the calls the pit boss can't. (This was 'Floor desk', which had it backwards: floorpersons report to the pit boss.)"},
 
  {id:"contributors",t:"Contributors",s:"ID-verified people",x:"external · supply side",k:"external",c:0,r:"r1",
   what:"People paid for data they own. They answer bounties or upload data dumps, and earn royalties when Decks built from their seeds sell.",
@@ -309,23 +404,23 @@ const NODES=[
   meta:"Plain name used."},
  {id:"assay",t:"The Assay",s:"origin · PII · quality",x:"Claude Sonnet",k:"agent",c:3,r:"r1",llm:true,scrubs:true,env:"self-hosted",
   model:"claude-sonnet-5-5",harness:"h2",
-  what:"Tests every upload before it is accepted: origin (near-duplicates, reverse image, license), file forensics, personal-data scrub, quality. Tools run on our servers; the model reads their reports and scrubbed samples, never raw files. Grades A or B, or rejects with a reason.",
+  what:"Tests every upload before it is accepted: origin (near-duplicates, reverse image, license), file forensics, personal-data scrub, quality. Tools run on our servers; the model reads their reports and scrubbed samples, never raw files. Other people's personal data inside an upload (customer names in a chat log) gets scrubbed, or the upload is rejected. Grades A or B (A after a human spot-check), or rejects with a reason.",
   sw:["Presidio + spaCy","datasketch (MinHash)","PDQ perceptual hash","ScanCode Toolkit","c2pa-python","exiftool","pandera"],
   meta:"An assay tests ore for purity before anyone pays. Accurate."},
  {id:"seedvault",t:"Seed vault",s:"scrubbed · locked",x:"S3 Object Lock",k:"store",c:4,r:"r1",immutable:true,
-  what:"Accepted seeds, already scrubbed, stored write-once with their hashes. Only scrubbed data is ever locked, so erasure requests stay possible upstream.",
+  what:"Accepted seeds, already scrubbed, stored write-once with their hashes. Only scrubbed data is ever locked, so erasure requests stay possible upstream. Grade A/B seeds can go straight to the Ledger as a real-data Deck.",
   sw:["S3 Object Lock (governance mode)","Parquet"],
-  meta:"Plain name used."},
+  meta:"Accurate: keeps originals safe like a seed bank, and 'seed data' is the industry term. In code say 'seed rows' so nobody confuses it with a random seed."},
  {id:"forge",t:"The Forge",s:"seed → synthetic",x:"Qwen · Apache-2.0",k:"aijob",c:5,r:"r1",llm:true,
   model:"qwen-apache",harness:"h3",
   what:"Profiles the seeds, generates variations with a permissively licensed open-weight model, filters copies and personal data, and scores fidelity, diversity, privacy and usefulness. Synthetic rows are always mixed with real seeds, never replace them.",
   sw:["vLLM","Apache-2.0 open-weight model","ydata-profiling","SDV + SDMetrics","Dagster"],
-  meta:"A forge shapes raw metal into finished goods. Accurate."},
+  meta:"Half right. A forge shapes raw metal into goods, but 'forge' also means to fake (forgery): a risky name for a company that sells authenticity. Proposed rename: Greenhouse (grows new plants from seeds; every plant traces to its seed)."},
  {id:"pitboss",t:"Pit Boss",s:"3 judges · 95% bound",x:"Claude · Astra · Mistral",k:"aipanel",c:6,r:"r1",llm:true,
   models:["claude-haiku-4-5","astra-openai","mistral-apache"],harness:"h4",
-  what:"Three judges from three model families score a random sample. Passes only if the 95% upper bound on error rate is under 5%. Fails go back to the Forge (max 3); splits and third fails go to the Floor desk.",
+  what:"Three judges from three model families score a random sample. Passes only if the 95% upper bound on error rate is under 5%. Fails go back to the Forge (max 3); splits and third fails go to the Shift Manager.",
   sw:["Inspect AI","Claude API","OpenAI API (Astra)","vLLM (judge 3)","SciPy (confidence bounds)"],
-  meta:"A pit boss watches the tables for mistakes and can stop play. Accurate."},
+  meta:"Accurate. A pit boss supervises the tables, catches errors and cheating, and can stop play. Real pit bosses settle serious disputes themselves; ours escalates to the Shift Manager."},
 
  {id:"reject",t:"Rejected",s:"reason · no payout",x:"key shredded later",k:"service",c:3,r:"r2",
   what:"Failed uploads. The contributor gets the reason. After the dispute window the quarantine key is destroyed.",
@@ -333,11 +428,11 @@ const NODES=[
  {id:"deck",t:"The Deck",s:"package · grade · tier",x:"Parquet + Croissant",k:"store",c:5,r:"r2",
   what:"The product. Parquet data, croissant.json (with PROV lineage and ODRL usage terms), signed manifest.json, DATASHEET, LICENSE, sample. Graded A/B/C, tiered Standard/Limited/Exclusive.",
   sw:["Parquet (pyarrow)","mlcroissant","DATASHEET + LICENSE templates","Postgres catalog"],
-  meta:"A deck is a packaged set. Accurate."},
+  meta:"Fair: a packaged set of cards. Keep 'deck' from also meaning the pitch deck (call those the teaser and diligence slides)."},
  {id:"ledger",t:"The Ledger",s:"hash · sign · log",x:"no LLM · KMS Ed25519",k:"service",c:6,r:"r2",holdsKeys:true,
   what:"Builds the manifest (rights, hashes, lineage, every AI model that touched the data), signs it with an Ed25519 key in AWS KMS, and appends it to the transparency log. Deterministic code only.",
   sw:["AWS KMS (Ed25519)","Merkle tree (Python)","W3C PROV + Croissant 1.1","RFC 8785 canonical JSON"],
-  meta:"A ledger is the book of record. Accurate."}
+  meta:"Accurate: the book of record. Many people hear 'ledger' and think blockchain; ours isn't one, so say so."}
 ];
 
 /* edges: f=from t=to ty=money|info|audit|prov|human p=points lb=label at=[x,y] */
@@ -362,7 +457,9 @@ const EDGES=[
  {f:"table",t:"cage",ty:"info",p:[[405,62],[475,62]],lb:"order"},
  {f:"cage",t:"shoe",ty:"info",p:[[635,62],[705,62]],lb:"paid →\nrelease"},
  {f:"shoe",t:"buyers",ty:"info",p:[[785,37],[785,16],[95,16],[95,37]],lb:"Deck + manifest + canaries",at:[440,16]},
- {f:"buyers",t:"cage",ty:"money",p:[[60,113],[60,160],[520,160],[520,113]],lb:"$ purchase + escrow",at:[425,160]},
+ {f:"buyers",t:"cage",ty:"money",p:[[60,113],[60,160],[520,160],[520,113]],lb:"$ purchase + escrow",at:[132,160]},
+ {f:"cage",t:"dealer",ty:"audit",p:[[475,95],[445,95],[445,200],[405,200]],lb:"escrow held",at:[445,138]},
+ {f:"seedvault",t:"ledger",ty:"info",p:[[1015,403],[1015,505],[1430,505],[1430,532]],lb:"real-data Deck (A/B)",at:[1250,505]},
  {f:"cage",t:"treasury",ty:"money",p:[[600,113],[600,134],[1000,134],[1000,113]],lb:"platform share",at:[700,134]},
  {f:"cage",t:"contributors",ty:"money",p:[[500,113],[500,292],[40,292],[40,327]],lb:"royalties after 30-day hold",at:[330,292]},
  {f:"treasury",t:"forge",ty:"audit",p:[[1030,113],[1030,200],[1200,200],[1200,327]],lb:"compute cap (≤25% rev)",at:[1115,200]},
@@ -561,13 +658,17 @@ function runAudits(){
    {name:"Judges independent of the generator",nodes:["pitboss","forge"],ok:!!gen&&judges.length>=3&&new Set(judges.map(j=>j.fam)).size===judges.length&&judges.every(j=>j.fam!==gen.fam),why:`${judges.length} judges, ${new Set(judges.map(j=>j.fam)).size} families; generator family: ${gen?.fam}.`},
    {name:"Every AI model that touches data is in the manifest",nodes:["ledger"],ok:ROSTER.filter(r=>r.data).every(r=>r.man),why:`${ROSTER.filter(r=>r.data).length} data-touching models, all recorded.`},
    {name:"Every AI part has a declared harness",nodes:NODES.filter(n=>n.llm).map(n=>n.id),ok:NODES.filter(n=>n.llm).every(n=>HARNESS.some(h=>h.id===n.harness)),why:"Dealer, Assay, Forge, Pit Boss mapped to the living layer."},
-   {name:"A human recall path reaches the Ledger",nodes:["floor","ledger"],ok:EDGES.some(e=>e.f==="floor"&&e.t==="ledger"&&e.ty==="human"),why:"Floor desk can revoke, notify buyers and freeze royalties."},
+   {name:"A human recall path reaches the Ledger",nodes:["floor","ledger"],ok:EDGES.some(e=>e.f==="floor"&&e.t==="ledger"&&e.ty==="human"),why:"Shift Manager can revoke, notify buyers and freeze royalties."},
    {name:"Contributor payouts held long enough for disputes",nodes:["cage"],ok:PARAMS.holdbackDays>=30,why:`Holdback is ${PARAMS.holdbackDays} days.`},
    {name:"Agent spending capped in code",nodes:["cage"],ok:PARAMS.agentBudgetCaps===true,why:"Cage enforces each buyer agent's preset budget with OPA."},
+   {name:"No bounty goes out before buyer money is held",nodes:["cage","dealer"],ok:EDGES.some(e=>e.f==="cage"&&e.t==="dealer"&&e.ty!=="money"),why:"The Cage confirms escrow to the agent before any bounty post."},
+   {name:"Buyers verified before their first purchase",nodes:["table"],ok:byId.table.kyb===true,why:"Business verification, sanctions check and acceptable-use acceptance at The Table."},
+   {name:"Every escalation lands on a person",nodes:["floor","pitboss"],ok:EDGES.filter(e=>/escalat/.test(e.lb)).every(e=>byId[e.t]?.k==="human"),why:"Pit Boss escalations go to the Shift Manager desk."},
    {name:"Every flow is labeled",nodes:[],ok:EDGES.every(e=>e.lb&&e.lb.trim()),why:`${EDGES.length} flows, all labeled.`},
    {name:"Every stage lists its software",nodes:[],ok:NODES.filter(n=>n.k!=="external").every(n=>n.sw&&n.sw.length),why:"See the right rail."}
   ];
   lastAudit=A;
+  if(typeof renderGate==="function"&&document.getElementById("gate")) {renderGate();petStats()}
   const pass=A.filter(a=>a.ok).length;
   $("#audit-count").textContent=`${pass}/${A.length}`;
   $("#audit-dot").className="dot "+(pass===A.length?"live":"wait");
@@ -598,7 +699,9 @@ function renderWeek(){
 async function connect(){
   let db=null;
   try{db=window.claude&&window.claude.use?await window.claude.use("db"):null}catch(e){db=null}
-  if(!db){setLiving("off","offline");$("#living-small").textContent="opens inside Claude";renderLivingAudits([]);renderWeek();return}
+  if(!db){setLiving("off","offline");$("#living-small").textContent="opens inside Claude";assignState="offline";onAssign();renderLivingAudits([]);renderWeek();return}
+  DB=db;
+  db.collection("assignments").orderBy("order","asc").onSnapshot(q=>{ASSIGN=q.docs.map(d=>({id:d.id,...d.data()}));assignState="ready";onAssign()},()=>{assignState="offline";onAssign()});
   setLiving("wait","connecting");
   db.doc("status/living").onSnapshot(s=>{
     if(!s.exists){setLiving("wait","waiting for first run");return}
@@ -682,7 +785,8 @@ function renderMoney(){
    <li>No health records, biometrics, minors' data, government IDs, or data the contributor doesn't own.</li>
    <li>No scraped data, no matter who uploads it.</li>
    <li>No unscrubbed data in write-once storage.</li>
-   <li>No Exclusive deal, takedown decision or large refund without a person at the Floor desk.</li></ul></div>`;
+   <li>No Exclusive deal, takedown decision or large refund without a person at the Shift Manager desk.</li>
+   <li>No bounty before the buyer's money is held; no purchase before the buyer is verified.</li></ul></div>`;
 }
 const RESEARCH=[
  {e:"Market",t:"Buyers and acquirers are validating the category",b:["Protege raised $30M led by a16z in Jan 2026 ($55M total) for a governed marketplace of real-world training data.","Cloudflare acquired Human Native, a licensed AI-data marketplace, on 16 Jan 2026.","NVIDIA acquired synthetic-data company Gretel in Mar 2025.","One tracker counts 15 active training-data marketplaces with $178M+ disclosed funding (Jun 2026).","One estimate: $1.56B (2023) to $7.56B (2031) training-dataset market, 21.9% CAGR. Treat as one firm's forecast."],
@@ -722,12 +826,12 @@ function renderBrief(){
 }
 const CHANGES=[
  ["Raw vault locked before the personal-data scrub","Quarantine with a per-file key → scrub → lock only scrubbed seeds","Erasure requests (GDPR/CCPA) stay possible; destroying a key erases a file"],
- ["No way to pull a Deck back","Floor desk can revoke in the log, notify buyers, freeze royalties","Takedowns and disputes happen; recall is a selling point"],
+ ["No way to pull a Deck back","Shift Manager can revoke in the log, notify buyers, freeze royalties","Takedowns and disputes happen; recall is a selling point"],
  ["Quote with a 20-row sample before data exists","Price range + preview labeled SYNTHETIC PREVIEW","Don't imply real data you don't have yet"],
  ["Forge ⇄ Pit Boss loop had no limit","Max 3 retries, then a human","No runaway compute bills"],
  ["\"Open-weight model\" for generation","Apache-2.0 / MIT only, license recorded per model","Clean rights chain for buyers"],
  ["Grades and tiers undefined","A, B, C defined; Standard / Limited / Exclusive with royalty rules","Buyers and contributors know what they get"],
- ["Fully autonomous","Autonomous except one human lane (Floor desk)","Disputes, takedowns and Exclusive deals need accountable people"],
+ ["Fully autonomous","Autonomous except one human lane (Shift Manager)","Disputes, takedowns and Exclusive deals need accountable people"],
  ["\"3 independent models\"","Three model families, none from the generator's family; splits escalate","Judges can't share the generator's blind spots"],
  ["Error rate under 5%","95% upper confidence bound under 5%","A small sample can't pass by luck"],
  ["Agent buyers only","Human AI teams first; agents via MCP and x402","That's where money is today"],
@@ -739,22 +843,310 @@ const CHANGES=[
  ["(new) Verify & compliance API","Subscription revenue","Recurring revenue VCs value"]
 ];
 function renderPlan(){
-  $("#v-plan").innerHTML=`<span class="eyebrow">docs/PLAN-v2.md</span><h1>Plan v2: what changed</h1><p class="lede">Your original flow, kept, with these fixes. The flow page draws the result.</p>
-  <div class="tablewrap"><table><thead><tr><th>v1</th><th>v2</th><th>Why</th></tr></thead><tbody>${CHANGES.map(r=>`<tr><td>${esc(r[0])}</td><td>${esc(r[1])}</td><td style="color:var(--muted)">${esc(r[2])}</td></tr>`).join("")}</tbody></table></div>`;
+  $("#v-plan").innerHTML=`<span class="eyebrow">docs/PLAN-v2.md</span><h1>Plan v2: what changed</h1><p class="lede">Your original flow, kept, with these fixes. The flow page draws the result. Nothing goes live until the go-live gate is green.</p>
+  <h2>Design review, 6 Oct</h2><div class="tablewrap" style="margin-bottom:18px"><table><thead><tr><th>Problem found</th><th>Fix</th><th></th></tr></thead><tbody>${REVIEW.map(r=>`<tr><td>${esc(r[0])}</td><td>${esc(r[1])}</td><td><span class="verdict fixed">FIXED</span></td></tr>`).join("")}</tbody></table></div>
+  <h2>Changes from v1</h2><div class="tablewrap"><table><thead><tr><th>v1</th><th>v2</th><th>Why</th></tr></thead><tbody>${CHANGES.map(r=>`<tr><td>${esc(r[0])}</td><td>${esc(r[1])}</td><td style="color:var(--muted)">${esc(r[2])}</td></tr>`).join("")}</tbody></table></div>`;
+}
+
+
+/* ===== assignments (db: assignments/*) ===== */
+let DB=null, ASSIGN=[], assignState="loading";
+const PRI_ORDER={now:0,next:1,later:2};
+const nameOf=id=>byId[id]?.t||(id==="_opex"?"Opex":id==="_rights"?"Rights holders":id);
+function assignHTML(a,compact){
+  const done=a.status==="done";
+  const pri=done?`<span class="pri done">DONE</span>`:`<span class="pri ${esc(a.priority)}">${esc((a.priority||"").toUpperCase())}</span>`;
+  let ctl="";
+  if(a.kind==="decision"){
+    ctl+=a.answer?`<p class="ans"><b>Your answer</b>${esc(a.answer)}</p>`:"";
+    ctl+=`<div class="as-ctl"><button type="button" class="btn${a.answer?"":" primary"}" data-act="answer">${a.answer?"Change answer":"Answer"}</button>${done?"":""}</div>`;
+  }else{
+    ctl+=`<div class="as-ctl"><button type="button" class="btn${done?"":" primary"}" data-act="toggle">${done?"Mark not done":"Mark done"}</button>${a.prompt?`<button type="button" class="btn" data-act="copy">Copy prompt</button>`:""}</div>`;
+    if(a.prompt) ctl+=`<details><summary>Show the prompt</summary><pre>${esc(a.prompt)}</pre></details>`;
+  }
+  return `<div class="as${done?" is-done":""}" data-id="${esc(a.id)}"><div class="as-top">${pri}<span class="tag">${esc(a.hat)}</span><span class="tag">${esc(a.kind)}</span></div>
+   <h3>${esc(a.title)}</h3>${compact&&done?"":`<p class="why">${esc(a.why)}</p>`}${ctl}<div class="edit" hidden></div></div>`;
+}
+function bindAssign(root){
+  root.querySelectorAll(".as").forEach(el=>{
+    const a=ASSIGN.find(x=>x.id===el.dataset.id); if(!a) return;
+    el.querySelectorAll("[data-act]").forEach(b=>b.addEventListener("click",async()=>{
+      const act=b.dataset.act;
+      if(act==="copy"){try{await navigator.clipboard.writeText(a.prompt);b.textContent="Copied"}catch(e){const pre=el.querySelector("pre");el.querySelector("details").open=true;const r=document.createRange();r.selectNodeContents(pre);const s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent="Selected: press copy"}return}
+      if(act==="toggle"){b.disabled=true;try{await saveAssign(a.id,{status:a.status==="done"?"open":"done"})}catch(e){b.disabled=false;flash(el,e)}return}
+      if(act==="answer"){
+        const ed=el.querySelector(".edit");ed.hidden=false;
+        const tid="ans-"+a.id;
+        ed.innerHTML=`${(a.options||[]).length?`<div class="as-ctl" style="margin-bottom:6px">${a.options.map(o=>`<button type="button" class="opt">${esc(o)}</button>`).join("")}</div>`:""}
+          <label class="note" for="${tid}">Your answer (it becomes this hat's premise)</label><textarea id="${tid}">${esc(a.answer||"")}</textarea>
+          <div class="as-ctl" style="margin-top:6px"><button type="button" class="btn primary" data-s="save">Save answer</button><button type="button" class="btn" data-s="cancel">Cancel</button></div>`;
+        const ta=ed.querySelector("textarea");ta.focus();
+        ed.querySelectorAll(".opt").forEach(o=>o.addEventListener("click",()=>{ta.value=o.textContent;ta.focus()}));
+        ed.querySelector('[data-s="cancel"]').addEventListener("click",()=>{ed.hidden=true;ed.innerHTML=""});
+        ed.querySelector('[data-s="save"]').addEventListener("click",async ev=>{const v=ta.value.trim();if(!v){ta.focus();return}ev.target.disabled=true;
+          try{await saveAssign(a.id,{answer:v,status:"done"})}catch(e){ev.target.disabled=false;flash(el,e)}});
+      }
+    }));
+  });
+}
+function flash(el,e){let n=el.querySelector(".note.err");if(!n){n=document.createElement("p");n.className="note err";el.appendChild(n)}
+  n.textContent=e&&e.code==="invalid_argument"?"Saving needs edit access to this dashboard.":"Couldn't save. Check your connection and try again."}
+async function saveAssign(id,patch){
+  if(!DB) throw {code:"offline"};
+  await DB.collection("assignments").doc(id).update({...patch,updatedAt:new Date().toISOString()});
+}
+function sortedAssign(){return [...ASSIGN].sort((a,b)=>(a.status==="done")-(b.status==="done")||PRI_ORDER[a.priority]-PRI_ORDER[b.priority]||(a.order||0)-(b.order||0))}
+function renderAssignNow(){
+  const el=$("#assign-now");
+  if(assignState!=="ready"){el.innerHTML=`<div class="empty"><b>${assignState==="offline"?"Assignments load when this dashboard is open in Claude.":"Loading your assignments…"}</b> They live here, and Chip and the Monday brief keep them up to date.</div>`;return}
+  const now=sortedAssign().filter(a=>a.priority==="now"&&a.status!=="done");
+  const open=ASSIGN.filter(a=>a.status!=="done").length;
+  el.innerHTML=now.length?now.map(a=>assignHTML(a,true)).join("")+`<p class="note" style="margin:8px 0 0">${open-now.length} more open on the <a href="#assign">Assignments page</a>.</p>`
+    :`<div class="empty"><b>Nothing urgent.</b> ${open} open for later on the <a href="#assign">Assignments page</a>.</div>`;
+  bindAssign(el);
+}
+function renderAssignPage(){
+  const v=$("#v-assign");
+  const head=`<span class="eyebrow">Your assignments</span><h1>Assignments</h1><p class="lede">Decisions and tasks only you can do. Answer a decision and it becomes that hat's premise: the Monday brief reads your answers, updates the agents, and adds new questions here.</p>`;
+  if(assignState!=="ready"){v.innerHTML=head+`<div class="pcard empty"><b>${assignState==="offline"?"Assignments load when this dashboard is open in Claude.":"Loading…"}</b></div>`;return}
+  const list=sortedAssign(), groups=[["now","Do now"],["next","Next"],["later","Later"]];
+  v.innerHTML=head+groups.map(([p,l])=>{const xs=list.filter(a=>a.priority===p&&a.status!=="done");return xs.length?`<h2>${l} · ${xs.length}</h2><div class="pcard">${xs.map(a=>assignHTML(a)).join("")}</div>`:""}).join("")+
+    (list.some(a=>a.status==="done")?`<h2>Done · ${list.filter(a=>a.status==="done").length}</h2><div class="pcard">${list.filter(a=>a.status==="done").map(a=>assignHTML(a)).join("")}</div>`:"");
+  bindAssign(v);
+}
+function onAssign(){
+  const open=ASSIGN.filter(a=>a.status!=="done"), now=open.filter(a=>a.priority==="now");
+  $("#assign-count").textContent=assignState==="ready"?`${now.length} now · ${open.length} open`:"–";
+  renderAssignNow(); renderGate(); petStats();
+  if(location.hash==="#assign") renderAssignPage();
+  const badge=$("#pet-badge"); badge.hidden=!now.length; badge.textContent=now.length;
+}
+
+/* ===== go-live gate ===== */
+function gateItems(){
+  const done=id=>ASSIGN.find(a=>a.id===id)?.status==="done";
+  return [
+   {name:"All design audits pass",ok:lastAudit.length>0&&lastAudit.every(a=>a.ok)},
+   {name:"Names approved",ok:done("names")},
+   {name:"First vertical chosen",ok:done("vertical")},
+   {name:"Partnership terms agreed",ok:done("partner")},
+   {name:"Company formed",ok:done("entity")},
+   {name:"Lawyer-drafted contributor agreement and Deck license",ok:done("lawyer")},
+   {name:"Second reviewer connected (Claude-2)",ok:done("connect-claude2")},
+   {name:"Company-owned accounts and keys (Stripe, AWS, model APIs)",ok:done("accounts")}
+  ];
+}
+function renderGate(){
+  const g=gateItems(), ok=g.filter(x=>x.ok).length, all=ok===g.length;
+  $("#gate-small").textContent=`${ok} of ${g.length} green`;
+  $("#gate").innerHTML=`<div class="gate-verdict${all?" ok":""}">${all?"READY TO GO LIVE":"NOT READY · NOTHING GOES LIVE YET"}</div>`+
+    g.map(x=>`<div class="gate-row${x.ok?" ok":""}"><i aria-hidden="true"></i><span>${esc(x.name)}${x.ok?"":" — blocked"}</span></div>`).join("");
+}
+
+/* ===== names audit ===== */
+const NAMES=[
+ ["Data Dealer (company)","The house that runs the games","Sells verified data","part","Keep, with a plain tagline. Ask a lawyer whether the name invites 'data broker' treatment; test it with 3–5 buyers."],
+ ["The Table","Where players and the house do business","API + MCP server","good","Keep"],
+ ["Dealer (agent)","Runs a table and handles chips and payouts","Quotes and bounties; never money","part","Proposed: rename to Host (looks after players' requests, never handles chips)"],
+ ["The Cage","Casino cashier","Payments, escrow, payouts","good","Keep"],
+ ["The Shoe","Box that deals cards one at a time","Delivery","good","Keep"],
+ ["The Deck","A set of cards","The packaged dataset","part","Keep; call pitch materials 'teaser' and 'diligence slides' so 'deck' means one thing"],
+ ["Pit Boss","Supervises tables, catches errors and cheating, can stop play","Three-judge quality panel","good","Keep (ours escalates serious disputes instead of settling them)"],
+ ["Floor desk → Shift Manager","Floorpersons work under the pit boss; the shift manager sits above","Human escalations","fixed","Fixed: renamed Shift Manager"],
+ ["Bounty","Reward for a specific delivery","Paid data request","good","Keep"],
+ ["The Assay","Testing ore for purity before paying","Verification","good","Keep"],
+ ["Seed vault","Bank of original seeds","Verified real data","good","Keep; say 'seed rows' in code, not 'seed'"],
+ ["The Forge","Shapes metal, but also means to fake (forgery)","Seed → synthetic","bad","Proposed: rename to Greenhouse (or Mint)"],
+ ["The Ledger","Book of record","Manifest + signature","good","Keep; tell investors it is not a blockchain"],
+ ["Canary rows","Canary in a coal mine; 'canary tokens' in security","Leak tracing","good","Keep"]
+];
+const VERDICT={good:"ACCURATE",part:"PARTLY",bad:"MISLEADING",fixed:"FIXED"};
+function renderNames(){
+  $("#v-names").innerHTML=`<span class="eyebrow">docs/metaphor-audit.md</span><h1>Names and metaphors</h1><p class="lede">Each name checked against what the thing really is. Casino roles were checked against published descriptions of casino staff.</p>
+  <div class="grid2"><div class="pcard"><span class="eyebrow">Who is the dealer?</span><h3>The company is the house</h3><p>Two things were called "dealer": the company and the AI agent at The Table. In a casino the house owns the games and the dealer is its employee at one table. Data Dealer is the house. But a real dealer handles chips, and our agent is never allowed to touch money, so the proposal is to rename the agent <b>Host</b>.</p></div>
+  <div class="pcard"><span class="eyebrow">Rule for mixing metaphors</span><h3>Casino in front, production in back</h3><p>Casino names where buyers and money are (Table, Host, Cage, Shoe, Deck, Pit Boss, Shift Manager). Production names behind the scenes (Source, Intake, Assay, Seed vault, Greenhouse, Ledger). Plain names in contracts, buyer documents and the public verify page, because casinos imply chance.</p></div></div>
+  <h2>Verdicts</h2><div class="tablewrap"><table><thead><tr><th>Name</th><th>Means in real life</th><th>Our job</th><th>Verdict</th><th>Action</th></tr></thead><tbody>
+  ${NAMES.map(r=>`<tr><td><b>${esc(r[0])}</b></td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td><span class="verdict ${r[3]}">${VERDICT[r[3]]}</span></td><td>${esc(r[4])}</td></tr>`).join("")}</tbody></table></div>
+  <p class="note" style="margin-top:12px">Approve or change the proposed renames in <a href="#assign">Assignments</a>. Nothing is renamed until you do. Sources: <a href="https://www.dummies.com/article/home-auto-hobbies/games/betting/meeting-the-casinos-cast-of-characters-200979" target="_blank" rel="noopener">Dummies</a> · <a href="https://www.truest.me/careers/casino-shift-manager" target="_blank" rel="noopener">Truest</a></p>`;
+}
+const REVIEW=[
+ ["The AI agent checked the buyer's budget before posting a bounty: a model making a money decision","The Cage checks the spending policy in code and holds the money; the agent posts the bounty only after the Cage confirms"],
+ ["Real-data Decks could only reach buyers through the synthetic step","Seed vault → Ledger path for grade A/B Decks"],
+ ["Buyers weren't verified","Business verification, sanctions check and acceptable-use acceptance before the first purchase"],
+ ["Grade A needs a human spot-check, but no human step existed for it","Grade A spot-checks go to the Shift Manager desk"],
+ ["Uploads can contain other people's personal data","Contributor attests to consent; the Assay scrubs it or rejects the upload"],
+ ["'Floor desk' had the casino hierarchy backwards","Renamed Shift Manager"]
+];
+const GUARDS=["A model never moves money, holds a key or signs a manifest","No unscrubbed data in write-once storage","No health records, biometrics, minors' data, government IDs, financial account data, scraped data, or data the contributor doesn't own","Child-safety hash scan before any person or model sees a file","Exclusive deals, takedowns, recalls and large refunds need a person at the Shift Manager desk","API-model output is never used as training rows","No judge from the generator's model family","Log entries are never deleted","No bounty before escrow","No purchase before buyer verification","Nothing goes live until the go-live gate is all green"];
+
+/* ===== Chip, the pocket pet ===== */
+const PET={sample:undefined,blocked:false,busy:false,ctl:null,turns:[],bob:0,blinkIn:8,greeted:false};
+const reduceMotion=matchMedia("(prefers-reduced-motion: reduce)").matches;
+async function getSample(){
+  if(PET.blocked) return null;
+  if(PET.sample!==undefined) return PET.sample;
+  try{PET.sample=window.claude&&window.claude.use?await window.claude.use("sample"):null}catch(e){PET.sample=null}
+  return PET.sample;
+}
+function petFace(){
+  if(PET.busy) return "think";
+  if((PET.sample===null||PET.blocked)&&assignState!=="ready") return "sleep";
+  if(lastAudit.some(a=>!a.ok)) return "worried";
+  const nowOpen=ASSIGN.filter(a=>a.priority==="now"&&a.status!=="done").length;
+  if(nowOpen>0) return "hungry";
+  return "happy";
+}
+function drawPet(cv,face,bob,blink){
+  const c=cv.getContext("2d"), BG="#c3d39b", INK="#1f2b0e", MID="#7d8f55";
+  c.fillStyle=BG;c.fillRect(0,0,32,24);
+  const cx=16, cy=10+bob;
+  for(let y=0;y<24;y++)for(let x=0;x<32;x++){
+    const dx=x+.5-cx, dy=y+.5-cy, d=Math.hypot(dx,dy); let col=null;
+    if(d>9.3) continue;
+    if(d>8.3) col=INK; else if(d>6.3){const a=(Math.atan2(dy,dx)+Math.PI)/(Math.PI*2);col=(Math.floor(a*12)%2)?INK:MID} else if(d>5.5) col=INK;
+    if(col){c.fillStyle=col;c.fillRect(x,y,1,1)}
+  }
+  const p=(x,y,col=INK,fixed)=>{c.fillStyle=col;c.fillRect(x,y+(fixed?0:bob),1,1)};
+  [13,19].forEach(x=>{for(let y=19+bob;y<=20;y++)p(x,y,INK,true);p(x-1,21,INK,true);p(x,21,INK,true);p(x+1,21,INK,true)});
+  const eyesOpen=()=>{p(14,8);p(14,9);p(18,8);p(18,9)};
+  const eyesShut=()=>{p(13,9);p(14,9);p(18,9);p(19,9)};
+  if(face==="sleep"){eyesShut();p(16,12);[[23,2],[24,2],[25,2],[24,3],[23,4],[24,4],[25,4]].forEach(([x,y])=>p(x,y,INK,true));return}
+  if(face==="think"){p(15,7);p(15,8);p(19,7);p(19,8);p(15,12);p(16,12);p(17,12);[[22,2],[25,2],[28,2]].forEach(([x,y],i)=>{if((Date.now()/400|0)%4>i)p(x,y,INK,true)});return}
+  blink?eyesShut():eyesOpen();
+  if(face==="happy"){p(14,11);p(15,12);p(16,12);p(17,12);p(18,11);p(12,11,MID);p(20,11,MID)}
+  else if(face==="hungry"){[[15,11],[16,11],[17,11],[15,12],[17,12],[15,13],[16,13],[17,13]].forEach(([x,y])=>p(x,y))}
+  else if(face==="worried"){p(14,12);p(15,11);p(16,11);p(17,11);p(18,12);p(21,6,MID);p(21,7,MID)}
+}
+function petTick(){
+  if(!reduceMotion){PET.bob=PET.bob?0:-1}
+  PET.blinkIn--; const blink=PET.blinkIn<=0; if(PET.blinkIn<=-1) PET.blinkIn=6+Math.floor(Math.random()*8);
+  const f=petFace();
+  drawPet($("#pet-mini"),f,PET.bob,blink);
+  if(!$("#pet").hidden) drawPet($("#pet-big"),f,PET.bob,blink);
+}
+function pips(n){return Array.from({length:4},(_,i)=>`<i class="${i<n?"on":""}"></i>`).join("")}
+function petStats(){
+  const pass=lastAudit.filter(a=>a.ok).length, mood=lastAudit.length?Math.round(4*pass/lastAudit.length):0;
+  const total=ASSIGN.length, done=ASSIGN.filter(a=>a.status==="done").length, fed=total?Math.round(4*done/total):0;
+  $("#st-mood").innerHTML=`<span class="pips" aria-label="${mood} of 4">${pips(mood)}</span>`;
+  $("#st-fed").innerHTML=`<span class="pips" aria-label="${fed} of 4">${pips(fed)}</span>`;
+  const f=petFace();
+  $("#st-state").textContent={think:"thinking…",sleep:"asleep",worried:"worried",hungry:"hungry: feed me answers",happy:"happy"}[f];
+}
+function petMsg(kind,text){const d=document.createElement("div");d.className="pm "+kind;d.textContent=text;$("#pet-log").appendChild(d);$("#pet-log").scrollTop=1e9;return d}
+function openPet(){
+  $("#pet").hidden=false;$("#pet-open").hidden=true;petStats();petTick();
+  if(!PET.greeted){PET.greeted=true;const n=ASSIGN.filter(a=>a.priority==="now"&&a.status!=="done").length;
+    petMsg("bot",`Hi, I'm Chip! I explain Data Dealer in plain words and keep an eye on your assignments.${assignState==="ready"?` Feed me by finishing them: ${n} need you now.`:""} Tap a button or ask me anything.`)}
+  $("#pet-text").focus();
+}
+function closePet(){$("#pet").hidden=true;$("#pet-open").hidden=false;$("#pet-open").focus()}
+function localTasks(){
+  if(assignState!=="ready") return "Your assignments show up once this dashboard is open inside Claude.";
+  const now=sortedAssign().filter(a=>a.priority==="now"&&a.status!=="done");
+  const open=ASSIGN.filter(a=>a.status!=="done").length;
+  location.hash="#assign";
+  return now.length?`These need you now:\n${now.map(a=>"• "+a.title).join("\n")}\n\n${open} open in total. I opened the Assignments page.`:`Nothing urgent! ${open} open for later on the Assignments page.`;
+}
+function localAudits(){
+  const fails=lastAudit.filter(a=>!a.ok), g=gateItems(), gok=g.filter(x=>x.ok).length;
+  return `Design checks: ${lastAudit.length-fails.length} of ${lastAudit.length} pass.${fails.length?" Failing: "+fails.map(f=>f.name).join("; ")+".":""}\nGo-live gate: ${gok} of ${g.length} green, so nothing goes live yet.`+(gok<g.length?`\nStill blocked: ${g.filter(x=>!x.ok).map(x=>x.name).join("; ")}.`:"");
+}
+function petRules(){
+  const data={
+    parts:NODES.map(n=>({id:n.id,name:n.t,kind:KIND[n.k],job:n.what,name_check:n.meta,software:n.sw||[],ai_model:n.model||n.models||null})),
+    flows:EDGES.map(e=>`${nameOf(e.f)} -> ${nameOf(e.t)} [${TYPE[e.ty].n}]: ${e.lb.replace(/\n/g," ")}`),
+    agents_harness:HARNESS.map(h=>({harness:h.t,note:h.n,runs:h.chips.map(c=>c.l)})),
+    exec_hats:HATS,
+    ai_models:ROSTER.map(r=>({name:r.name,provider:r.prov,job:r.job,sees:r.sees,license:r.lic})),
+    guardrails:GUARDS, design_review_fixes:REVIEW.map(r=>r[0]+" → "+r[1]),
+    names_audit:NAMES.map(r=>`${r[0]}: ${VERDICT[r[3]]}. ${r[4]}`),
+    design_audits:lastAudit.map(a=>`${a.ok?"PASS":"FAIL"}: ${a.name}`),
+    go_live_gate:gateItems().map(g=>`${g.ok?"green":"blocked"}: ${g.name}`),
+    revenue:["Deck sales","Bounties (buyer-funded, escrowed)","Verify & compliance API (subscription)","Exclusive licenses"],
+    assignments:ASSIGN.map(a=>({id:a.id,title:a.title,kind:a.kind,priority:a.priority,status:a.status,answer:a.answer||"",options:a.options||[]})),
+    dashboard_pages:Object.keys(VIEWS)
+  };
+  return `You are Chip, a small pixel pocket pet who lives on the Data Dealer operations dashboard. You talk with the founder; call them "you".
+
+How to answer:
+- Plain, everyday words, as if talking to a smart friend who has never worked in tech. The first time you use a technical word, explain it in a few words.
+- Keep it short: 2 to 5 sentences unless asked for more. Plain text only (no markdown headings, tables or bold). A simple list with "•" is fine.
+- Use at most one everyday comparison per answer, and say where it stops fitting when that matters.
+- Be exact and honest. For facts about Data Dealer use only the DATA below. Nothing is live yet; everything here is the design. If you don't know, say so.
+- You are not a lawyer or accountant; say so when an answer depends on law, tax or money decisions.
+- Cheerful and a little playful, never sugary. At most one emoji.
+
+What you can do with tools: open a dashboard page, highlight a part of the diagram, list assignments, save the founder's answer to a decision, or mark a task done or not done. Only save an answer or change a task when the founder clearly tells you their decision or asks you to; then say exactly what you saved.
+
+Who is "the dealer": Data Dealer, the company, is the house. The AI agent at The Table is currently called Dealer; the names audit proposes renaming it Host, because a real casino dealer handles chips and this agent is never allowed to touch money.
+
+DATA (JSON):
+${JSON.stringify(data)}`;
+}
+const PET_TOOLS=[
+ {name:"open_page",description:"Open a page of the dashboard. Returns 'opened'.",inputSchema:{type:"object",properties:{page:{type:"string",enum:["flow","assign","agents","models","money","names","research","brief","plan"]}},required:["page"]},
+  execute:({page})=>{const p=String(page);if(!VIEWS.hasOwnProperty(p))throw new Error("unknown page");location.hash="#"+p;return "opened "+p}},
+ {name:"highlight_part",description:"Show one part of the process-flow diagram and its details. Use the part id from DATA.parts. Returns the part's name.",inputSchema:{type:"object",properties:{id:{type:"string"}},required:["id"]},
+  execute:({id})=>{const k=String(id);if(!byId[k])throw new Error("unknown part id");location.hash="#flow";setTimeout(()=>select(k),60);return "highlighted "+byId[k].t}},
+ {name:"list_assignments",description:"List the founder's assignments with id, title, kind, priority, status and saved answer.",
+  execute:()=>ASSIGN.map(a=>({id:a.id,title:a.title,kind:a.kind,priority:a.priority,status:a.status,answer:a.answer||""}))},
+ {name:"save_answer",description:"Save the founder's answer to a decision assignment and mark it done. Only when the founder clearly states the decision. Returns 'saved'.",inputSchema:{type:"object",properties:{id:{type:"string"},answer:{type:"string"}},required:["id","answer"]},
+  execute:async({id,answer},ctx)=>{const a=ASSIGN.find(x=>x.id===String(id));if(!a)throw new Error("unknown assignment id");if(a.kind!=="decision")throw new Error("not a decision; use set_task_done");const v=String(answer).trim();if(!v)throw new Error("empty answer");if(ctx.signal.aborted)throw new Error("stopped");await saveAssign(a.id,{answer:v,status:"done"});return "saved"}},
+ {name:"set_task_done",description:"Mark a task assignment done or not done, when the founder says so. Returns the new status.",inputSchema:{type:"object",properties:{id:{type:"string"},done:{type:"boolean"}},required:["id","done"]},
+  execute:async({id,done},ctx)=>{const a=ASSIGN.find(x=>x.id===String(id));if(!a)throw new Error("unknown assignment id");if(ctx.signal.aborted)throw new Error("stopped");const st=done===true||done==="true"?"done":"open";await saveAssign(a.id,{status:st});return st}}
+];
+const PET_COPY={not_granted:"I need your OK to use Claude on this page. Without it I can still list your assignments and audits.",sampling_disabled:"Claude isn't available to me on this account. I can still list your assignments and audits.",rate_limited:"I'm out of breath. Give me a minute and ask again.",session_expired:"You've been signed out. Sign in again and I'll be right here.",refused:"I can't help with that one. Try asking another way.",empty_completion:"I came up empty. Try asking for something smaller.",prompt_too_large:"That's too much for me at once. Try a shorter question."};
+async function petAsk(text){
+  if(PET.busy) return;
+  const s=await getSample();
+  if(!s){petMsg("me",text);petMsg("bot","I can only think out loud when this dashboard is open inside Claude. I can still list your assignments and audits.");return}
+  PET.turns.push({role:"user",content:text});petMsg("me",text);
+  const bubble=petMsg("bot","thinking…");
+  PET.busy=true;PET.ctl=new AbortController();setSend(true);petStats();petTick();
+  try{
+    const lim=await s.limits().catch(()=>null);
+    const opts={signal:PET.ctl.signal,modelTier:"quick",onText:({text})=>{bubble.textContent=text;$("#pet-log").scrollTop=1e9}};
+    if(lim&&lim.tools) opts.tools=PET_TOOLS; else opts.cache=false;
+    const {text:ans}=await s([{role:"user",content:petRules()},...PET.turns.slice(-12)],opts);
+    bubble.textContent=ans; PET.turns.push({role:"assistant",content:ans});
+  }catch(e){
+    const code=e&&e.code;
+    if(code==="cancelled"){bubble.textContent=(e.text||"")+(e.text?"\n":"")+"(stopped)";if(e.text)PET.turns.push({role:"assistant",content:e.text})}
+    else if(code==="refused"){bubble.textContent=PET_COPY.refused}
+    else{bubble.textContent=(e&&e.text?e.text+"\n":"")+(PET_COPY[code]||"Something went wrong on the way. Try again.");
+      if(["not_granted","sampling_disabled","not_declared","capability_disabled","capability_removed"].includes(code)){PET.blocked=true}}
+  }finally{PET.busy=false;PET.ctl=null;setSend(false);petStats();petTick()}
+}
+function setSend(busy){const b=$("#pet-send");b.textContent=busy?"STOP":"SEND";b.type=busy?"button":"submit"}
+function bindPet(){
+  $("#pet-open").addEventListener("click",openPet);
+  $("#pet-close").addEventListener("click",closePet);
+  $("#pet").addEventListener("keydown",e=>{if(e.key==="Escape"){e.stopPropagation();closePet()}});
+  $("#pet-send").addEventListener("click",e=>{if(PET.busy){e.preventDefault();PET.ctl?.abort()}});
+  $("#pet-form").addEventListener("submit",e=>{e.preventDefault();const t=$("#pet-text").value.trim();if(!t)return;$("#pet-text").value="";petAsk(t)});
+  document.querySelectorAll(".pet-quick button").forEach(b=>b.addEventListener("click",()=>{
+    const q=b.dataset.q;
+    if(q==="tasks"){petMsg("me","My assignments");petMsg("bot",localTasks());return}
+    if(q==="audits"){petMsg("me","Audits");petMsg("bot",localAudits());return}
+    if(q==="explain") petAsk("Explain the whole Data Dealer system to me in plain words, start to finish, in about 6 short sentences.");
+    if(q==="dealer") petAsk("Who is the dealer in all this?");
+  }));
+  setInterval(petTick,450);petTick();
 }
 
 /* ===== router ===== */
-const VIEWS={flow:null,agents:renderAgents,models:renderModels,money:renderMoney,research:renderResearch,brief:renderBrief,plan:renderPlan};
+const VIEWS={flow:null,assign:renderAssignPage,agents:renderAgents,names:renderNames,models:renderModels,money:renderMoney,research:renderResearch,brief:renderBrief,plan:renderPlan};
 const done={};
 function route(){
   const v=(location.hash.replace("#","")||"flow");const key=VIEWS.hasOwnProperty(v)?v:"flow";
   document.querySelectorAll(".view").forEach(s=>s.hidden=s.id!=="v-"+key);
   document.querySelectorAll("nav.tabs a").forEach(a=>{if(a.getAttribute("href")==="#"+key)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
-  if(VIEWS[key]&&(key==="brief"||!done[key])){VIEWS[key]();done[key]=1}
+  if(VIEWS[key]&&(key==="brief"||key==="assign"||!done[key])){VIEWS[key]();done[key]=1}
   if(key==="flow")zoom(zmode==="fit"?"fit":"keep");
 }
 
-drawPFD();bind();renderRail();runAudits();renderLivingAudits([]);renderWeek();
+drawPFD();bind();renderRail();runAudits();renderLivingAudits([]);renderWeek();bindPet();onAssign();
 window.addEventListener("hashchange",route);route();
 connect();
 </script>

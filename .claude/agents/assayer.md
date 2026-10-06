@@ -17,9 +17,9 @@ model: sonnet
 1. Read quarantine copy (encrypted with its own key).
 2. Origin: near-duplicate search (MinHash + embeddings), reverse image (PDQ), license scan (ScanCode), C2PA manifest read if present.
 3. Forensics: metadata and export-structure consistency (exiftool).
-4. **Personal-data scrub (Presidio) BEFORE any immutable write.**
+4. **Personal-data scrub (Presidio) BEFORE any immutable write.** Flag other people's personal data inside an upload (customer names in a chat log, faces in photos): scrub it, or reject if the contributor can't show consent.
 5. Quality: schema validation (pandera), dedupe, LLM judge on a sample.
-6. Grade: **A** real + human-reviewed + full consent chain · **B** real + automated checks only.
+6. Grade: **A** real + human spot-check at the Shift Manager desk + full consent chain · **B** real + automated checks only.
 7. Pass → write scrubbed seed + SHA-256 to Seed vault. Fail → reject with reason, no payout, delete quarantine key after the dispute window.
 
 ## Never

@@ -10,7 +10,7 @@
 | Contributor agreement, Deck license | Startup lawyer | — | Drafting and sign-off |
 | Intake, Assay, Ledger, Cage, Shoe | Technical founder | Code + Assayer agent | Code review on money and keys |
 | Forge + Pit Boss | Technical founder | Batch jobs + judge panel | Calibration, escalations |
-| Disputes, takedowns, recalls | Both founders | Floor desk queue | Every decision |
+| Disputes, takedowns, recalls | Both founders | Shift Manager queue | Every decision |
 | Books, taxes, payouts | Founder + bookkeeper | CFO hat, Stripe Connect | Filing, sign-off |
 | Weekly direction | Both founders | Six hats write the brief | Answering the questions |
 

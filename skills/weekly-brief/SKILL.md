@@ -11,11 +11,12 @@ description: Produce the Data Dealer weekly brief. Use every Monday (scheduled) 
 - The dashboard's audit store (`audits` collection) for anything the living layer logged.
 
 ## Steps
+0. Read the dashboard's `assignments` collection (ArtifactData `query`, limit 1000). Every decision with `status: done` has Astra's `answer`: copy new answers into `docs/decisions.md` (date, hat, question, answer) and treat them as each hat's premise from now on.
 1. `git log --since="8 days ago"`; list what changed.
 2. Run the repo audits (below). Each one is a row: `{check, result: pass|warn|fail, detail, stage}`.
 3. For each hat in this order — CEO, Engineer, CFO, Counsel, Data Steward, Growth — write:
    - **Pay attention:** at most 3 bullets, each with a source link and one line on why it matters to us.
-   - **Questions for Astra:** the standing questions from the hat's agent file that are still unanswered, plus any new one this week raised. Drop a question once Astra answers it in the repo or chat.
+   - **Questions for Astra:** the open assignments for that hat, plus at most one new question this week raised. Add each new question to the dashboard's `assignments` collection (kind `decision` or `task`, priority `now`/`next`/`later`, status `open`, next `order` number). Never re-ask an answered one.
 4. Write `briefs/YYYY-MM-DD.md`, commit and push.
 5. Write the brief to the dashboard (`briefs/<YYYY-MM-DD>` doc) and the audit rows (`audits/<YYYY-MM-DD>` doc, rows in an array).
 6. Send Astra a short notification: the top 3 things across all hats, how many audits failed, and the number of open questions.

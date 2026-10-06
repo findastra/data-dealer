@@ -34,4 +34,4 @@ Second sale of the same Deck: no compute line → about 67% gross margin.
 Buyer ticket → bounty → contributors paid → verified seeds → Deck sold → repeat sales → more catalog → more buyers find a fit without a ticket (faster match, higher margin).
 
 ## Limits
-See `docs/guardrails.md`. The system grows only inside those caps; the Floor desk can stop anything.
+See `docs/guardrails.md`. The system grows only inside those caps; the Shift Manager desk can stop anything.
