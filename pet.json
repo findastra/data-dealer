@@ -1,0 +1,18 @@
+{
+  "pet": "Chip",
+  "kind": "pet-app",
+  "owner": "Astra",
+  "sprite": "pet-sprite-20261008.json",
+  "art_key": "chip",
+  "job": "Data Dealer's pixel twin.",
+  "runs_on": "Modern browser for the pet interface; original application requirements remain in README.md.",
+  "entry": "data-dealer-20261008.html",
+  "status": "hatching",
+  "cage": {
+    "topic": "pet-app",
+    "home": "https://github.com/findastra/astras-pet-apps"
+  },
+  "version": "0.1.0-20261008-pets",
+  "source": "https://github.com/findastra/data-dealer/tree/v0.1.0-20261008-pets",
+  "built_with": "OpenAI Codex (GPT-6), 2026-10-08"
+}
