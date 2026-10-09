@@ -32,3 +32,5 @@ description: Produce the Data Dealer weekly brief. Use every Monday (scheduled) 
 
 ## Style
 Plain sentences. Lead with what changed. No filler. Facts carry a source; guesses are labeled as guesses.
+
+Start a line with ✨ only when it is a concrete action for Astra: each question under **Questions for Astra**, and in the notification the count of open questions. One action per line, and ✨ nowhere else (not on **Pay attention** bullets or audit rows). Set by Astra on 2026-10-09.

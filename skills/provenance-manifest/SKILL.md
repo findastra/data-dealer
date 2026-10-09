@@ -31,5 +31,8 @@ Recompute hashes → compare Merkle root → check signature with the published 
 ## Revoke
 Review desk only. Append a revocation entry (never delete), mark the dataset withdrawn, notify every buyer of that dataset, freeze held royalties.
 
+## Reporting
+Start a line with ✨ only when it is a concrete action for Astra (approve a revocation, confirm a signing key change, answer a buyer). One action per line, and ✨ nowhere else.
+
 ## What statistics are for
 Distribution fingerprints (means, standard deviations, quantiles, correlations, embeddings) score synthetic fidelity, catch drift and near-duplicates, and support leak detection with canary rows. They are **evidence**, not **proof**: many different datasets share the same standard deviation, and anyone can forge one.
