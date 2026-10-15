@@ -30,3 +30,5 @@ A marketplace that pays people for real data, verifies it, expands it into synth
 Desktop appearance revision by OpenAI Codex (GPT-6), 2026-10-11. See desktop-pet-20261011.json; runtime behavior is in astras-pet-apps.
 
 Chip coin and Cyber Deck layout by OpenAI Codex (GPT-6), 2026-10-14. Edit dashboard/src.html, run dashboard/build.py, then sync data-dealer-20261008.html. Preserve existing host sampling/goals/audit behavior; standalone L3 service remains unconnected.
+
+Shared original yellow-phone shell and Pet Collar UI by OpenAI Codex (GPT-6), 2026-10-15. Coins retired by owner. Existing program/host behavior is preserved; shared disconnected controls do not establish an L3 connection.

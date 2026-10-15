@@ -10,12 +10,31 @@
   "status": "hatching",
   "cage": {
     "topic": "pet-app",
-    "home": "https://github.com/findastra/astras-pet-apps"
+    "home": "https://github.com/findastra/astras-pet-apps",
+    "submit": {
+      "date": "2026-10-15",
+      "audit": {
+        "cadence": "manual",
+        "subject": "Pet Program source, shared controls and declared tool behavior",
+        "needs": "Local source review; real runtime and desktop actions require separate verification"
+      }
+    }
   },
   "version": "0.2.0-draft-20261014",
   "source": "https://github.com/findastra/data-dealer/tree/codex/chip-coin-20261014",
   "built_with": "OpenAI Codex (GPT-6), 2026-10-08; OpenAI Codex (GPT-6), 2026-10-11; Chip coin/Cyber Deck by OpenAI Codex (GPT-6), 2026-10-14",
   "desktop_pet": "desktop-pet-20261011.json",
   "desktop_art_built_with": "OpenAI Codex (GPT-6), built-in imagegen and native renderer, 2026-10-11",
-  "chat_status": "Existing Claude host sampling preserved; standalone L3 backend not connected"
+  "chat_status": "Existing Claude host sampling preserved; standalone L3 backend not connected",
+  "audit": {
+    "cadence": "manual",
+    "subject": "Pet Program source, shared controls and declared tool behavior",
+    "needs": "Local source review; real runtime and desktop actions require separate verification"
+  },
+  "framework": "PET-PROGRAM-FRAMEWORK.md (shared shell 2026-10-15; partial implementation)",
+  "framework_limitations": [
+    "Shared presentation does not establish a connected L3 harness",
+    "Native click bindings and per-tool runtime acceptance require verification"
+  ],
+  "updated": "2026-10-15"
 }
