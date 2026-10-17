@@ -18,7 +18,8 @@
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html,body{background:var(--bg);color:var(--ink)}
-body{font:14px/1.5 var(--f-body);margin:0}
+html{font-size:110%}
+body{font:15.5px/1.5 var(--f-body);margin:0}
 a{color:var(--agent)}
 button{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--agent);outline-offset:2px}
@@ -106,7 +107,7 @@ svg.focus .edge.on .base{stroke-opacity:1}
 .legend-t{font:500 10.5px var(--f-mono);fill:var(--muted)}
 
 /* right rail */
-.rail{background:var(--panel);border:1px solid var(--line);border-radius:6px;min-width:0;display:flex;flex-direction:column;max-height:calc(100vh - 100px);position:sticky;top:76px}
+.rail{background:var(--panel);border:1px solid var(--line);border-radius:6px;min-width:0;display:flex;flex-direction:column;max-height:calc(100vh - 100px);position:sticky;top:82px}
 .rail header{padding:12px 14px;border-bottom:1px solid var(--line);display:flex;align-items:baseline;gap:8px}
 .rail h2{font:600 .78rem/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;margin:0}
 .rail header .back{margin-left:auto;background:none;border:1px solid var(--line-2);border-radius:4px;padding:3px 8px;cursor:pointer;font:500 .72rem/1 var(--f-mono);color:var(--muted)}
@@ -183,7 +184,7 @@ td.num{text-align:right}
 .pfbar button[aria-pressed="true"]{background:var(--lcd-ink);color:var(--lcd)}
 
 .files{display:grid;grid-template-columns:260px minmax(0,1fr);gap:14px}
-.flist{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:8px;align-self:start;position:sticky;top:76px}
+.flist{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:8px;align-self:start;position:sticky;top:82px}
 .flist h4{font:600 .66rem/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:10px 6px 4px}
 .flist button{display:block;width:100%;text-align:left;background:none;border:0;border-radius:4px;padding:6px 8px;cursor:pointer;font:400 .8rem/1.3 var(--f-mono);color:var(--ink)}
 .flist button:hover{background:var(--panel-2)}
@@ -733,7 +734,7 @@ function renderLivingAudits(runs){
   const el=$("#living-audits");
   if(!runs.length){el.innerHTML=`<div class="empty"><b>No backend runs yet.</b> The weekly brief and the living layer post their audit results here, newest first.</div>`;return}
   el.innerHTML=runs.slice(0,4).map(r=>{const d=r.data();const rows=d.rows||[];
-    return `<div class="run-h">${esc(d.title||r.id)} · ${esc(new Date(d.ts).toLocaleString([], {month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}))}</div>`+
+    return `<div class="run-h">${esc(d.title||r.id)}${d.ts&&!isNaN(new Date(d.ts))?" · "+esc(new Date(d.ts).toLocaleString([], {month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})):""}</div>`+
     rows.map(x=>`<div class="audit"><span class="pill ${x.result==="fail"?"fail":x.result==="warn"?"warn":"pass"}">${esc((x.result||"").toUpperCase())}</span><div><b>${esc(x.check)}</b><span>${esc(x.detail)}</span></div></div>`).join("")}).join("");
 }
 function renderWeek(){
@@ -769,7 +770,7 @@ function md(src){
   while(i<L.length){const l=L[i];
     if(/^```/.test(l)){let c=[];i++;while(i<L.length&&!/^```/.test(L[i]))c.push(L[i++]);i++;out+=`<pre><code>${esc(c.join("\n"))}</code></pre>`;continue}
     const h=l.match(/^(#{1,3})\s+(.*)/);if(h){out+=`<h${h[1].length}>${inline(h[2])}</h${h[1].length}>`;i++;continue}
-    if(/^\|/.test(l)){let rows=[];while(i<L.length&&/^\|/.test(L[i]))rows.push(L[i++]);rows=rows.filter(r=>!/^\|\s*-/.test(r)).map(r=>r.replace(/^\||\|$/g,"").split("|").map(c=>c.trim()));
+    if(/^\|/.test(l)){let rows=[];while(i<L.length&&/^\|/.test(L[i]))rows.push(L[i++]);rows=rows.filter(r=>!/^\|[\s:|-]+$/.test(r.trim())).map(r=>r.replace(/^\||\|$/g,"").split("|").map(c=>c.trim()));
       out+=`<div class="tablewrap"><table><thead><tr>${rows[0].map(c=>`<th>${inline(c)}</th>`).join("")}</tr></thead><tbody>${rows.slice(1).map(r=>`<tr>${r.map(c=>`<td>${inline(c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;continue}
     if(/^\s*([-*]|\d+\.)\s/.test(l)){const ol=/^\s*\d+\./.test(l);let it=[];while(i<L.length&&/^\s*([-*]|\d+\.)\s/.test(L[i]))it.push(L[i++].replace(/^\s*([-*]|\d+\.)\s/,""));out+=`<${ol?"ol":"ul"}>${it.map(t=>`<li>${inline(t)}</li>`).join("")}</${ol?"ol":"ul"}>`;continue}
     if(l.trim()===""){i++;continue}
@@ -862,7 +863,7 @@ let hatSel=0;
 function renderBrief(){
   const v=$("#v-brief");const b=briefs[0]?.data();
   if(!b){v.innerHTML=`<span class="eyebrow">Weekly brief</span><h1>Weekly brief</h1><div class="pcard empty"><b>No brief has arrived yet.</b> Each Monday at 8:53 AM MT the six role agents write their sections here: what to pay attention to, then your questions. Inside Claude it fills in automatically.</div>`;return}
-  const hats=b.hats||[];hatSel=Math.min(hatSel,hats.length-1);
+  const hats=b.hats||[];hatSel=Math.max(0,Math.min(hatSel,hats.length-1));
   const h=hats[hatSel]||{};
   v.innerHTML=`<span class="eyebrow">Weekly brief · week of ${esc(b.weekOf)}</span><h1>Questions by job</h1><p class="lede">Pick a role. Your answers become that role agent's starting point; answer in chat or in the repo and the next brief drops the question.</p>
   <div class="pcard" style="margin-bottom:14px"><h3>Top of the week</h3><ol>${(b.top||[]).map(t=>`<li>${esc(t)}</li>`).join("")}</ol></div>
@@ -901,10 +902,11 @@ function renderPlan(){
 /* ===== assignments (db: assignments/*) ===== */
 let DB=null, ASSIGN=[], assignState="loading";
 const PRI_ORDER={now:0,next:1,later:2};
+const priOf=a=>PRI_ORDER.hasOwnProperty(a.priority)?a.priority:"later";
 const nameOf=id=>byId[id]?.t||(id==="_opex"?"Opex":id==="_rights"?"Rights holders":id);
 function assignHTML(a,compact){
   const done=a.status==="done";
-  const pri=done?`<span class="pri done">DONE</span>`:`<span class="pri ${esc(a.priority)}">${esc((a.priority||"").toUpperCase())}</span>`;
+  const pri=done?`<span class="pri done">DONE</span>`:`<span class="pri ${priOf(a)}">${priOf(a).toUpperCase()}</span>`;
   let ctl="";
   if(a.kind==="decision"){
     ctl+=a.answer?`<p class="ans"><b>Your answer</b>${esc(a.answer)}</p>`:"";
@@ -940,12 +942,12 @@ function bindAssign(root){
   });
 }
 function flash(el,e){let n=el.querySelector(".note.err");if(!n){n=document.createElement("p");n.className="note err";el.appendChild(n)}
-  n.textContent=e&&e.code==="invalid_argument"?"Saving needs edit access to this dashboard.":"Couldn't save. Check your connection and try again."}
+  n.textContent=e&&e.code==="invalid_argument"?"Saving needs edit access to this dashboard.":e&&e.code==="offline"?"Saving works when this dashboard is open in Claude.":"Couldn't save. Check your connection and try again."}
 async function saveAssign(id,patch){
   if(!DB) throw {code:"offline"};
   await DB.collection("assignments").doc(id).update({...patch,updatedAt:new Date().toISOString()});
 }
-function sortedAssign(){return [...ASSIGN].sort((a,b)=>(a.status==="done")-(b.status==="done")||PRI_ORDER[a.priority]-PRI_ORDER[b.priority]||(a.order||0)-(b.order||0))}
+function sortedAssign(){return [...ASSIGN].sort((a,b)=>(a.status==="done")-(b.status==="done")||PRI_ORDER[priOf(a)]-PRI_ORDER[priOf(b)]||(a.order||0)-(b.order||0))}
 function renderAssignNow(){
   const el=$("#assign-now");
   if(assignState!=="ready"){el.innerHTML=`<div class="empty"><b>${assignState==="offline"?"Assignments load when this dashboard is open in Claude.":"Loading your assignments…"}</b> They live here, and Chip and the Monday brief keep them up to date.</div>`;return}
@@ -963,7 +965,7 @@ function renderAssignPage(){
   const list=sortedAssign().filter(passes), groups=[["now","Do now"],["next","Next"],["later","Later"]];
   const doneL=list.filter(a=>a.status==="done");
   v.innerHTML=head+filterBar("fbar")+`<p class="note" style="margin:0 0 6px">Numbers are the order to do them in. <b>Anywhere</b> = you can answer from your iPad or phone. <b>At home</b> = needs your desktop, accounts, payments or forms.</p>`+
-    groups.map(([p,l])=>{const xs=list.filter(a=>a.priority===p&&a.status!=="done");return xs.length?`<h2>${l} · ${xs.length}</h2><div class="pcard">${xs.map(a=>assignHTML(a)).join("")}</div>`:""}).join("")+
+    groups.map(([p,l])=>{const xs=list.filter(a=>priOf(a)===p&&a.status!=="done");return xs.length?`<h2>${l} · ${xs.length}</h2><div class="pcard">${xs.map(a=>assignHTML(a)).join("")}</div>`:""}).join("")+
     (doneL.length?`<h2>Done · ${doneL.length}</h2><div class="pcard">${doneL.map(a=>assignHTML(a)).join("")}</div>`:"");
   bindAssign(v);bindFilter(v);
 }
@@ -1042,7 +1044,7 @@ async function getSample(){
 }
 function petFace(){
   if(PET.busy) return "think";
-  if((PET.sample===null||PET.blocked)&&assignState!=="ready") return "sleep";
+  if(assignState!=="ready") return "sleep";
   if(lastAudit.some(a=>!a.ok)) return "worried";
   const nowOpen=ASSIGN.filter(a=>a.priority==="now"&&a.status!=="done").length;
   if(nowOpen>0) return "hungry";
@@ -1178,7 +1180,7 @@ function bindPet(){
   $("#pet-close").addEventListener("click",closePet);
   $("#pet").addEventListener("keydown",e=>{if(e.key==="Escape"){e.stopPropagation();closePet()}});
   $("#pet-send").addEventListener("click",e=>{if(PET.busy){e.preventDefault();PET.ctl?.abort()}});
-  $("#pet-form").addEventListener("submit",e=>{e.preventDefault();const t=$("#pet-text").value.trim();if(!t)return;$("#pet-text").value="";petAsk(t)});
+  $("#pet-form").addEventListener("submit",e=>{e.preventDefault();const t=$("#pet-text").value.trim();if(!t||PET.busy)return;$("#pet-text").value="";petAsk(t)});
   document.querySelectorAll(".pet-quick button").forEach(b=>b.addEventListener("click",()=>{
     const q=b.dataset.q;
     if(q==="tasks"){setPetView("goals");return}
@@ -1238,7 +1240,9 @@ let showFile=null;
 function flashEl(el){if(!el)return;el.classList.remove("flash");void el.offsetWidth;el.classList.add("flash")}
 function scrollToEl(el){if(el)el.scrollIntoView({behavior:reduceMotion?"auto":"smooth",block:"center",inline:"center"})}
 function focusAssign(id,openEditor){
-  const el=document.querySelector(`#v-assign .as[data-id="${CSS.escape(id)}"]`);
+  const sel=`#v-assign .as[data-id="${CSS.escape(id)}"]`;
+  let el=document.querySelector(sel);
+  if(!el&&assignFilter!=="all"){setFilter("all");el=document.querySelector(sel)}
   if(!el) return;
   scrollToEl(el);flashEl(el);
   if(openEditor){const b=el.querySelector('[data-act="answer"]');if(b)b.click()}
@@ -1280,7 +1284,7 @@ function renderPetGoals(){
   computeSteps();
   const list=sortedAssign().filter(passes), groups=[["now","DO NOW"],["next","NEXT"],["later","LATER"]];
   let h=filterBar("pfbar")+`<div class="pm sys">${nowOpen?`${nowOpen} need you now.`:"Nothing urgent."} Numbers are the order. Tap GO to jump to where a goal applies.</div>`;
-  groups.forEach(([p,l])=>{const xs=list.filter(a=>a.priority===p&&a.status!=="done");if(xs.length)h+=`<div class="pg-h">${l} · ${xs.length}</div>`+xs.map(petGoalHTML).join("")});
+  groups.forEach(([p,l])=>{const xs=list.filter(a=>priOf(a)===p&&a.status!=="done");if(xs.length)h+=`<div class="pg-h">${l} · ${xs.length}</div>`+xs.map(petGoalHTML).join("")});
   const done=list.filter(a=>a.status==="done"); if(done.length) h+=`<div class="pg-h">DONE · ${done.length}</div>`+done.map(petGoalHTML).join("");
   el.innerHTML=h;
   bindFilter(el);
