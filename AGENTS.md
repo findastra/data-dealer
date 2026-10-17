@@ -27,4 +27,4 @@ A marketplace that pays people for real data, verifies it, expands it into synth
 4. Never commit secrets, API keys, `.env` files or real personal data.
 5. Public-facing credit is **Astra**.
 
-Desktop appearance revision by OpenAI Codex (GPT-6), 2026-10-11. See desktop-pet-20261011.json; runtime behavior is in astras-pet-apps.
+Desktop appearance revision by OpenAI Codex (GPT-6), 2026-10-11. See desktop-pet-20261011.json; runtime behavior is in astras-pet-os.
